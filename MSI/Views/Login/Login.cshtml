@@ -1,0 +1,184 @@
+﻿@{
+    Layout = null;
+}
+<html>
+<head>
+    <link href="~/css/style.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+</head>
+<body data-new-gr-c-s-check-loaded="14.1191.0" data-gr-ext-installed>
+    <section class="form-02-main">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="_lk_de">
+                        <div class="form-03-main">
+                            <div class="logo">
+                                <img src="~/images/syrmasgs.png" style="margin-left:-70%;" />
+                            </div>
+                            <div class="form-group">
+                                <input type="text" id="txtuserid" class="form-control _ge_de_ol" placeholder=" Enter User Name" required aria-required="true" />
+                            </div>
+                            <div class="form-group">
+                                <input type="password" id="txtpassword" class="form-control _ge_de_ol" placeholder="Enter Password" required aria-required="true" />
+                            </div>
+                            <div class="checkbox form-group">
+                                <div class="form-check" style="display:none;">
+                                    <input class="form-check-input" type="checkbox" />
+                                    <label class="form-check-label">Remember me</label>
+                                </div>
+                                <a href="#" id="frmPassword" onclick="showpopup()">Forgot Password</a>
+                            </div>
+                            <div class="form-group" id="userlogin" onclick="userValidation()" style="cursor:pointer;">
+                                <div class="_btn_04">
+                                    <a href="#">Login</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+</body>
+</html>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">Forget Password</h5>
+                <button type="button" id="btnModalClose" style="width:10%;border-color:aliceblue" ; class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-header">
+                        <span></span>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-0">
+                                <label>Employee ID</label>
+                                <input type="text" id="txtEmpID" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-0">
+                                <label>New Password</label>
+                                <input type="password" id="txtPassword" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-0">
+                                <label>Confirm Password</label>
+                                <input type="password" id="txtConfirmPassword" class="form-control" />
+                            </div>
+                        </div>
+                        @*   <div class="row">
+                        <div class="col-lg-0">
+                        <button type="submit" id="btnsubmit" class="btn btn-primary" >Save</button>
+                        </div>
+                        </div> *@
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="btnClose" data-dismiss="modal">Close</button>
+                <button type="button" id="btnSaveChanges" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#userlogin').keydown(function (event) {
+
+            if (event.key === "Enter") {
+                userValidation();
+            }
+        });
+    });
+    $('#btnClose').on('click', function () {
+        $('#myModal').modal('hide');
+    });
+    $('#btnSaveChanges').on('click', function () {
+
+        var empid = $('#txtEmpID').val();
+        var passWord = $('#txtPassword').val();
+        var ConpassWord = $('#txtConfirmPassword').val();
+        var pass = true;
+        if (empid != '' & passWord != '' & ConpassWord != '') {
+            alert("Please enter the value for empty fields .");
+            pass = false;
+        }
+        else if (passWord != ConpassWord) {
+            alert("Password and Confirm Password Not Matched");
+            pass = false;
+        }
+        else if (passWord.length <= 4) {
+            alert("Password length should be greater then 3");
+            pass = false;
+        }
+        if (pass) {
+            $.ajax({
+                url: '/Login/UpdatePassword/',
+                type: 'POST',
+                dataType: 'json',
+                data: { userid: empid, password: passWord },
+                cache: false,
+                async: false,
+                success: function (result) {
+                    if (result > 0) {
+                        alert('Update Password Successfully');
+                        $('#myModal').modal('hide');
+                    }
+                },
+                error: function (result) {
+                    alert('Error :' + result);
+                }
+            });
+        }
+    });
+    $('#btnModalClose').on('click', function () {
+        $('#myModal').modal('hide');
+    });
+    function showpopup() {
+        $('#myModal').modal('show');
+    }
+
+    function userValidation() {
+
+        var uid = $('#txtuserid').val();
+        var pwd = $('#txtpassword').val();
+        $.ajax({
+            url: 'Login/loginValidation',
+            type: 'GET', // or 'GET' depending on your backend
+            dataType: 'json', // expecting JSON response from the server
+            data: {
+                userid: uid,
+                password: pwd
+            },
+            cache: false,
+            success: function (result) {
+                if (result != null) {
+                    if (result == 'valid') {
+                        window.location.href = "Master/MasterDetails";
+                    } else if (result == "invalid") {
+                        alert('Please check your username and password');
+                    }
+                }
+            },
+            error: function (result) {
+                alert('An error occurred :' + result);
+                $('#txtuserid').val('');
+                $('#txtpassword').val('');
+            },
+        });
+
+    }
+</script>
