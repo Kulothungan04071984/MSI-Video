@@ -125,7 +125,6 @@ namespace MSI.Controllers
             catch (Exception ex)
             {
                 writeErrorMessage(ex.Message.ToString(), "Process_systemname");
-                // Console.WriteLine("Error retrieving data: " + me.Message);
                 return string.Empty;
             }
         }
