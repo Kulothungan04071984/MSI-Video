@@ -49,7 +49,7 @@ app.Use(async (context, next) =>
 
 app.MapControllerRoute(
 	name: "default",
-	pattern: "{controller=Master}/{action=MasterDetails}/{id?}");
+	pattern: "{controller=Login}/{action=Login}/{id?}");
 //await EnsureFFmpegIsAvailable();
 
 app.Run();
