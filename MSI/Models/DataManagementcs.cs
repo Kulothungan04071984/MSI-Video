@@ -251,6 +251,60 @@ namespace MSI.Models
             }
         }
 
+        DataTable dt;
+        SqlDataAdapter da;
+
+        public DataTable getLoginDetails(string userid, string password)
+        {
+
+            dt = new DataTable();
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(ConnectionString))
+                {
+                    using (SqlCommand cmd = new SqlCommand("pro_getLoginDetails", conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@empid", userid);
+                        cmd.Parameters.AddWithValue("@pwd", password);
+                        SqlDataAdapter da = new SqlDataAdapter(cmd);
+                        da.Fill(dt);
+                    }
+
+                    return dt;
+                }
+            }
+            catch (Exception ex)
+            {
+                return dt;
+            }
+        }
+
+        public int UpdatePassword(string empid, string password)
+        {
+            int updateResult = 0;
+            try
+            {
+                using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
+                {
+                    using (SqlCommand com_password = new SqlCommand("pro_UpdatePassword", sqlConnection))
+                    {
+                        com_password.CommandType = CommandType.StoredProcedure;
+                        com_password.Parameters.AddWithValue("@empid", empid);
+                        com_password.Parameters.AddWithValue("@Password", password);
+                        sqlConnection.Open();
+                        updateResult = com_password.ExecuteNonQuery();
+                        sqlConnection.Close();
+                        return updateResult;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return updateResult;
+            }
+        }
+
         public void writeErrorMessage(string errorMessage, string functionName)
         {
             var systemPath = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Syrma_Training_Errors" + "\\" + DateTime.Now.ToString("dd-MM-yyyy");

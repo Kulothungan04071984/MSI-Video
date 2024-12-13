@@ -5,8 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-//FFmpeg.SetExecutablesPath(Path.Combine(Directory.GetCurrentDirectory(), "ffmpeg"));
-//FFmpeg.ExecutablesPath = "/path/to/ffmpeg";
+
 builder.Services.AddScoped<MSI.Models.DataManagementcs>();
 builder.WebHost.ConfigureKestrel(options =>
 {
@@ -50,7 +49,7 @@ app.Use(async (context, next) =>
 
 app.MapControllerRoute(
 	name: "default",
-	pattern: "{controller=Master}/{action=MasterDetails}/{id?}");
+	pattern: "{controller=Login}/{action=Login}/{id?}");
 //await EnsureFFmpegIsAvailable();
 
 app.Run();
