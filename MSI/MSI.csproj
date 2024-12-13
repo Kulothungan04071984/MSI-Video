@@ -19,9 +19,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="DevFans.Client.SystemModel" Version="1.0.0" />
     <PackageReference Include="MediaToolkit" Version="1.1.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
+    <PackageReference Include="NuGet.Protocol" Version="6.12.1" />
     <PackageReference Include="System.DirectoryServices" Version="9.0.0" />
     <PackageReference Include="System.DirectoryServices.AccountManagement" Version="9.0.0" />
   </ItemGroup>

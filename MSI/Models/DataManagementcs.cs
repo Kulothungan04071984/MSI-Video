@@ -269,5 +269,82 @@ namespace MSI.Models
                 errLogs.Close();
             }
         }
+
+        public List<insert_stat> SaveDataToDatabase(string SystemId)
+        {
+            //var dt = DateTime.Today;
+            var insertlist = new List<insert_stat>();
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("pro_Insert_SystemId", connection))
+                {
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@SystemId", SystemId);
+                    connection.Open();
+                    {
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                insertlist.Add(new insert_stat
+                                {
+                                    Insert_status = reader.GetInt32(0)
+                                });
+                            }
+                        }
+                    }
+                    connection.Close();
+                }
+
+
+            }
+            return insertlist;
+        }
+
+        public List<Systemid> GetData()
+        {
+            var dataList = new List<Systemid>();
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("pro_GetSystem_Id", connection))
+                {
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    connection.Open();
+                    {
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                dataList.Add(new Systemid
+                                {
+                                    Id = reader.GetString(0),
+                                    SystemId = reader.GetString(1),
+                                });
+                            }
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            return dataList;
+        }
+        public int deleteSystemid(string deletesystemId)
+        {
+            int result = 0;
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("pro_delete_ipaddress", connection))
+                {
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    connection.Open();
+                    cmd.Parameters.AddWithValue("@SystemId", deletesystemId);
+                    result = cmd.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            return result;
+        }
+
     }
 }
