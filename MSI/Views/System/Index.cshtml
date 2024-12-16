@@ -16,74 +16,79 @@
                     <div class="card-body">
                         <h4 class="card-title text-center">Enter System ID</h4>
                             <div class="row align-items-center">
-                                <div class="col-md-3 text-center">
-                                    <label for="lblsystemid" class="form-label fw-bold"style="font-size:130%;">System Id:</label>
+                                <div class="col-md-6 text-center">
+                                    <label for="lblsystemid" class="form-label fw-bold"style="font-size:130%;">System Ip:</label>
                                 </div>
-                                <div class="col-md-7">
+                                <div class="col-md-6">
                                     <input type="text" id="txtsystemid" name="systemid"placeholder="Enter the System Id" class="form-control">
-                                </div>
-                                <div class="col-md-2" >
-                                    <button class="btn-lg btn-success  text-light" style="border-radius:100px" id="btnadd" onclick="addvalue()">Add</button>
-                                </div>
+                                </div>                              
                             </div>
                               <div class="row align-items-center">
-                                <div class="col-auto text-start"style="font-size:130%">
+                                <div class="col-md-6 text-center"style="font-size:130%;margin-top:1%">
                                     <label for="userType" class="form-label fw-bold">User Type:</label>
                                 </div>
-
-                                <div class="col-auto"style="margin-left:2%">
+                                <div class="col-md-6">
                                     <select id="ddlusertype" name="userType" class="form-select">
                                         <option value="">Select</option>
                                         <option value="1">Admin</option>
                                         <option value="2">User</option>
                                     </select>
                                 </div>
-                            </div>                      
+                            </div>
+                            <div class="row">
+                                  <div class="col-0"style="margin-left:60%;margin-top:3%">
+                                    <button class="btn btn-success  text-light" id="btnadd" onclick="addvalue()">Add</button>
+                                    <button class="btn btn-outline-secondary"onclick="clear()">Clear</button>
+                                    <input type="button" onclick="goback()" name="Back" value="Back" class="btn btn-primary" />
+                                  </div>
+                            </div>
                     </div>
                     
                 </div>
             </div>
         </div>
-   </div>
+    </div>
+    <div>
         <div class="row justify-content-center mt-4">
             <div class="col-md-8">
-                <div class="card">
+                <div class="card" style="margin-top:2%">
                     <div class="card-body">
                         <h4 class="card-title text-center">System IDs List</h4>
                         <div class="tab-content" style="height:300px;overflow-y: auto">
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-striped"style="overflow:scroll">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center">System ID</th>
-                                        <th class="text-center">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var item in Model ?? new List<MSI.Models.Systemid>())
-                                    {
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped" style="overflow:scroll">
+                                    <thead>
                                         <tr>
-                                            <td class="text-center">@item.SystemId</td>
-                                            <td class="text-center">
-                                                <input type="button" class="btn btn-outline-secondary " name="Edit" value="Edit" data-txtsystemid="@item.SystemId" onclick="editvalue(@item.SystemId)" />
-                                                <input type="button" class="btn btn-danger" name="Delete" value="Delete" data-txtsystemid="@item.SystemId" onclick="deletesystemvalue(@item.SystemId)" />
-                                            </td>
+                                            <th class="text-center">System ID</th>
+                                            <th class="text-center">Action</th>
                                         </tr>
-                                    }
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model ?? new List<MSI.Models.Systemid>())
+                                        {
+                                            <tr>
+                                                <td class="text-center">@item.SystemId</td>
+                                                <td class="text-center">
+                                                    <input type="button" class="btn btn-outline-secondary " name="Edit" value="Edit" data-txtsystemid="@item.SystemId" onclick="editvalue(@item.SystemId)" />
+                                                    <input type="button" class="btn btn-danger" name="Delete" value="Delete" data-txtsystemid="@item.SystemId" onclick="deletesystemvalue(@item.SystemId)" />
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
     </div>
 </form>
-<form method="get"asp-controller="Master"asp-action="MasterDetails">
-<div class="gobackbtn" style="position:relative;right:-85%;margin-right:50%;width:8%">
-    <button id="btngoback" class="btn btn-primary" onclick="goBack()">Back</button>
-</div>
-</form>
+
+    
+
+
 
 @if (TempData["AlertMessage"] != null)
 {
@@ -180,8 +185,13 @@
         }
     }); 
     function goback(){
+        debugger;
+        window.location.href = '/Master/MasterDetails';
+    }
+    function clear() {
 
-        window.history.back();
+        $('#txtsystemid').val('');
+        $('#ddlusertype').prop('selectedIndex', 0);
     }
   </script>
 
