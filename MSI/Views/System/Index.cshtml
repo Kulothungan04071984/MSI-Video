@@ -8,6 +8,7 @@
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
 <form asp-action="index" method="post">
+   
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-6">
@@ -19,7 +20,7 @@
                                     <label for="lblsystemid" class="form-label fw-bold"style="font-size:130%;">System Id:</label>
                                 </div>
                                 <div class="col-md-7">
-                                    <input type="text" id="txtsystemid" name="systemid" class="form-control">
+                                    <input type="text" id="txtsystemid" name="systemid"placeholder="Enter the System Id" class="form-control">
                                 </div>
                                 <div class="col-md-2" >
                                     <button class="btn-lg btn-success  text-light" style="border-radius:100px" id="btnadd" onclick="addvalue()">Add</button>
@@ -32,6 +33,7 @@
 
                                 <div class="col-auto"style="margin-left:2%">
                                     <select id="ddlusertype" name="userType" class="form-select">
+                                        <option value="">Select</option>
                                         <option value="1">Admin</option>
                                         <option value="2">User</option>
                                     </select>
@@ -43,9 +45,6 @@
             </div>
         </div>
    </div>
-   
-    
-
         <div class="row justify-content-center mt-4">
             <div class="col-md-8">
                 <div class="card">
@@ -79,9 +78,12 @@
             </div>
         </div>
     </div>
-
 </form>
-
+<form method="get"asp-controller="Master"asp-action="MasterDetails">
+<div class="gobackbtn" style="position:relative;right:-85%;margin-right:50%;width:8%">
+    <button id="btngoback" class="btn btn-primary" onclick="goBack()">Back</button>
+</div>
+</form>
 
 @if (TempData["AlertMessage"] != null)
 {
@@ -166,18 +168,23 @@
         }
         else
         {
-            alert('Please enter a System Id');
+            alert('Please Enter a System Id And Select the Type');
         }
     }
-    $(document).on('click', '.btn-primary', function () {
+    $(document).on('click', 'btn-primary', function () {
         var SystemId = $(this).data('txtsystemid');
         if (SystemId) {
             addvalue(SystemId);
         } else {
             console.log("SystemId is missing!");
         }
-    });
-</script>
+    }); 
+    function goback(){
+
+        window.history.back();
+    }
+  </script>
+
 
 
 

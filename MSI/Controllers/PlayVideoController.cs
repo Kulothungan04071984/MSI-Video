@@ -28,8 +28,8 @@ namespace MSI.Controllers
         {
             writeErrorMessage("PlayVideoController", "VideoPlaying Enter");
             // Get the device name (machine name)
-            string deviceName =await Process_systemname();
-           // string deviceName = "STPLPC903";
+            //string deviceName =await Process_systemname();
+            string deviceName = "10.10.120.234"; // Testing
 
             // Fetch file path using DataAccess
             string filePath1 = _domainServices.getfilepath(deviceName);
