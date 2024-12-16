@@ -323,17 +323,18 @@ namespace MSI.Models
                 errLogs.Close();
             }
         }
-
-        public List<insert_stat> SaveDataToDatabase(string SystemId)
+        public List<insert_stat> SaveDataToDatabase(string SystemId, string Usertype)
         {
-            //var dt = DateTime.Today;
+            // var dt = DateTime.Today;
             var insertlist = new List<insert_stat>();
+
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 using (SqlCommand cmd = new SqlCommand("pro_Insert_SystemId", connection))
                 {
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@SystemId", SystemId);
+                    cmd.Parameters.AddWithValue("@Usertype", Usertype);
                     connection.Open();
                     {
                         using (SqlDataReader reader = cmd.ExecuteReader())
@@ -346,6 +347,7 @@ namespace MSI.Models
                                 });
                             }
                         }
+
                     }
                     connection.Close();
                 }
@@ -354,7 +356,6 @@ namespace MSI.Models
             }
             return insertlist;
         }
-
         public List<Systemid> GetData()
         {
             var dataList = new List<Systemid>();
@@ -383,6 +384,7 @@ namespace MSI.Models
             }
             return dataList;
         }
+
         public int deleteSystemid(string deletesystemId)
         {
             int result = 0;
@@ -399,6 +401,5 @@ namespace MSI.Models
             }
             return result;
         }
-
     }
 }

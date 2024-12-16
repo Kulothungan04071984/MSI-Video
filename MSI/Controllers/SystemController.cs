@@ -16,17 +16,15 @@ namespace MSI.Controllers
 {
     public class SystemController : Controller
     {
-        private readonly string ConnectionString;
-        public SystemController(IConfiguration configuration)
+        private readonly DataManagementcs _ipAddress;
+        public SystemController(DataManagementcs ipAddress)
         {
-            ConnectionString = configuration.GetConnectionString("conn");
-
+            _ipAddress = ipAddress;
         }
-
-
+       
         public IActionResult Index()
         {
-            var datalist = GetData() ?? new List<Systemid>();
+            var datalist = _ipAddress.GetData() ?? new List<Systemid>();
             return View(datalist);
         }
 
@@ -37,7 +35,7 @@ namespace MSI.Controllers
             int resultdel = 0;
             try
             {
-                resultdel = deleteSystemid(SystemId);
+                resultdel =_ipAddress.deleteSystemid(SystemId);
             }
 
             catch (Exception ex)
@@ -52,7 +50,7 @@ namespace MSI.Controllers
             try
             {
 
-                var result = SaveDataToDatabase(SystemId,Usertype);
+                var result = _ipAddress.SaveDataToDatabase(SystemId,Usertype);
                 
                 
 
@@ -83,83 +81,6 @@ namespace MSI.Controllers
 
             
         }
-        public List<insert_stat> SaveDataToDatabase(string SystemId ,string Usertype)
-        {
-           // var dt = DateTime.Today;
-            var insertlist= new List<insert_stat>();
-           
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
-            {
-                using (SqlCommand cmd = new SqlCommand("pro_Insert_SystemId", connection))
-                {
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@SystemId", SystemId);
-                    cmd.Parameters.AddWithValue ("@Usertype", Usertype);
-                    connection.Open();
-                    {
-                        using (SqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                insertlist.Add(new insert_stat
-                                {
-                                    Insert_status = reader.GetInt32(0)
-                                });
-                            }
-                        }
-
-                    }
-                    connection.Close();
-                }
-              
-
-            }
-            return insertlist;
-        }
-        public List<Systemid> GetData()
-        {
-            var dataList = new List<Systemid>();
-
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
-            {
-                using (SqlCommand cmd = new SqlCommand("pro_GetSystem_Id", connection))
-                {
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    connection.Open();
-                    {
-                        using (SqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                dataList.Add(new Systemid
-                                {
-                                    Id = reader.GetString(0),
-                                    SystemId = reader.GetString(1),
-                                });
-                            }
-                        }
-                    }
-                    connection.Close();
-                }
-            }
-            return dataList;
-        }
         
-        public int deleteSystemid( string deletesystemId) 
-        {
-            int result = 0;
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
-            {
-                using (SqlCommand cmd = new SqlCommand("pro_delete_ipaddress", connection))
-                {
-                    cmd.CommandType=System.Data.CommandType.StoredProcedure;
-                    connection.Open();
-                    cmd.Parameters.AddWithValue("@SystemId", deletesystemId);
-                    result= cmd.ExecuteNonQuery();
-                    connection.Close(); 
-                }
-            } 
-            return result;
-        }
     }
 } 
