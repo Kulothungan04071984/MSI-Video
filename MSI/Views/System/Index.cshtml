@@ -1,0 +1,192 @@
+﻿@*{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+*@
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+<form asp-action="index" method="post">
+   
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow-lg">
+                    <div class="card-body">
+                        <h4 class="card-title text-center">Enter System ID</h4>
+                            <div class="row align-items-center">
+                                <div class="col-md-3 text-center">
+                                    <label for="lblsystemid" class="form-label fw-bold"style="font-size:130%;">System Id:</label>
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="txtsystemid" name="systemid"placeholder="Enter the System Id" class="form-control">
+                                </div>
+                                <div class="col-md-2" >
+                                    <button class="btn-lg btn-success  text-light" style="border-radius:100px" id="btnadd" onclick="addvalue()">Add</button>
+                                </div>
+                            </div>
+                              <div class="row align-items-center">
+                                <div class="col-auto text-start"style="font-size:130%">
+                                    <label for="userType" class="form-label fw-bold">User Type:</label>
+                                </div>
+
+                                <div class="col-auto"style="margin-left:2%">
+                                    <select id="ddlusertype" name="userType" class="form-select">
+                                        <option value="">Select</option>
+                                        <option value="1">Admin</option>
+                                        <option value="2">User</option>
+                                    </select>
+                                </div>
+                            </div>                      
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+   </div>
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title text-center">System IDs List</h4>
+                        <div class="tab-content" style="height:300px;overflow-y: auto">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped"style="overflow:scroll">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">System ID</th>
+                                        <th class="text-center">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model ?? new List<MSI.Models.Systemid>())
+                                    {
+                                        <tr>
+                                            <td class="text-center">@item.SystemId</td>
+                                            <td class="text-center">
+                                                <input type="button" class="btn btn-outline-secondary " name="Edit" value="Edit" data-txtsystemid="@item.SystemId" onclick="editvalue(@item.SystemId)" />
+                                                <input type="button" class="btn btn-danger" name="Delete" value="Delete" data-txtsystemid="@item.SystemId" onclick="deletesystemvalue(@item.SystemId)" />
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<form method="get"asp-controller="Master"asp-action="MasterDetails">
+<div class="gobackbtn" style="position:relative;right:-85%;margin-right:50%;width:8%">
+    <button id="btngoback" class="btn btn-primary" onclick="goBack()">Back</button>
+</div>
+</form>
+
+@if (TempData["AlertMessage"] != null)
+{
+    <script type="text/javascript">
+        alert('@TempData["AlertMessage"]');
+    </script>
+}
+<script>
+    $(document).ready(function () {
+        $('#txtsystemid').val('');
+    });
+
+    function editvalue(sysid) {
+
+        $('#txtsystemid').val(sysid);
+
+    }
+    function deletesystemvalue(sysid) {
+
+        $.ajax({
+            url: '/System/Delete',
+            type: 'POST',
+            data: { SystemId: sysid },
+            catch: false,
+            async: false,
+            success: function (resultdel) {
+                if (resultdel >= 0) {
+                    alert('Delete Successfully');
+                    window.location.href = '/System/Index';
+                }
+                else {
+                    alert("Not Deleted");
+                }
+            },
+            Error: function (resultdel) {
+                alert(resultdel);
+            },
+
+        });
+    }
+    $(document).on('click', '.btn-outline-secondary', function () {
+        var SystemId = $(this).data('txtsystemid'); 
+        if (SystemId) {
+            editvalue(SystemId); 
+        } else {
+            console.log("SystemId is missing!");
+        }
+    });
+    $(document).on('click', '.btn-danger', function () {
+        var SystemId = $(this).data('txtsystemid');
+        if (SystemId) {
+            deletesystemvalue(SystemId);
+        } else {
+            console.log("SystemId is missing!");
+        }
+    });                                                  
+    function addvalue() {
+        debugger;
+        var systemID = $('#txtsystemid',).val().trim();
+        var userType = $('#ddlusertype').val();
+        if (systemID !== "" && userType !=="") {
+            $.ajax({
+                url: '/System/Savedata',
+                type: 'POST',
+                cache: false,
+                async: false,
+                data: { SystemId: systemID, UserType: userType },
+                success: function (response) {
+                    console.log(response);
+                    if (response.success) {
+                        alert('System Added Successfully');
+                        window.location.reload
+                    } else {
+                        alert('The System is Already Added');
+                        window.location.reload;
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Error while adding data: ' + error);
+                }
+            });
+        }
+        else
+        {
+            alert('Please Enter a System Id And Select the Type');
+        }
+    }
+    $(document).on('click', 'btn-primary', function () {
+        var SystemId = $(this).data('txtsystemid');
+        if (SystemId) {
+            addvalue(SystemId);
+        } else {
+            console.log("SystemId is missing!");
+        }
+    }); 
+    function goback(){
+
+        window.history.back();
+    }
+  </script>
+
+
+
+
+
+

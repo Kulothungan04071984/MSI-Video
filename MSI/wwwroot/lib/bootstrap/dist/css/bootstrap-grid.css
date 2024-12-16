@@ -340,10 +340,11 @@
     width: 41.66666667%;
   }
 
-  .col-sm-6 {
-    flex: 0 0 auto;
-    width: 50%;
-  }
+    .col-sm-6 {
+        flex: none;
+        width: 50%;
+        margin-left: -8%;
+    }
 
   .col-sm-7 {
     flex: 0 0 auto;
@@ -556,6 +557,7 @@
   .col-md-6 {
     flex: 0 0 auto;
     width: 50%;
+
   }
 
   .col-md-7 {

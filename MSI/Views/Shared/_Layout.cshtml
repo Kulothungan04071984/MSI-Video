@@ -23,9 +23,10 @@
 @*                 <a class="nav-link text-dark" asp-area="" asp-controller="Master" asp-action="MasterDetails">Stage WI Mapping</a> *@
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-primary" asp-area="" asp-controller="PlayVideo" asp-action="VideoPlaying">Work Instruction</a>
+                            <a class="nav-link text-primary"style="white-space:nowrap;margin-left:10%" asp-area="" asp-controller="PlayVideo" asp-action="VideoPlaying">Work Instruction</a>
                         </li>
                     </ul>
+                  
                 </div> 
 
 @*                 <a href="@Url.Action("VideoPlaying", "PlayVideo")" style="margin-left: 10%; font-size: 100%; font-weight: bold; white-space: nowrap;">
@@ -33,12 +34,16 @@
                 </a> *@
 
 
-                <div style="margin-right: 13%;font-size: 150%;font-weight: bold; white-space: nowrap;">
+                <div style="margin-left:19%;font-size: 150%;font-weight: bold; white-space: nowrap;">
                     <span>Stage WI Mapping To System</span>
                 </div>
 
+                <div class="nav-item" style="margin-left:12%;white-space: nowrap">
+                    <a class="nav-link text-primary" asp-area="" asp-controller="System" asp-action="Index">Add New System</a>
+                </div>
+
                 <div>
-                    <img src="~/images/download.png" style="width:30%;margin-left:60%;" />
+                    <img src="~/images/download.png" style="width:30%;margin-left:40%;" />
                 </div>
             </div>
         </nav>
