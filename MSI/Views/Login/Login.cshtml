@@ -168,7 +168,12 @@
                 if (result != null) {
                     if (result == 'valid') {
                         window.location.href = "Master/MasterDetails";
-                    } else if (result == "invalid") {
+                    }
+                    else if(result=="valid-user")
+                    {
+                          window.location.href = "PlayVideo/VideoPlaying";
+                    }
+                    else if (result == "invalid") {
                         alert('Please check your username and password');
                     }
                 }
