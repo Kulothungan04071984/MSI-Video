@@ -6,6 +6,8 @@
     <link href="~/css/style.css" rel="stylesheet" />
     <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    @* <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script> *@
+
     <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
 </head>
 <body data-new-gr-c-s-check-loaded="14.1191.0" data-gr-ext-installed>
@@ -153,10 +155,12 @@
 
     function userValidation() {
 
+         debugger;
+
         var uid = $('#txtuserid').val();
         var pwd = $('#txtpassword').val();
         $.ajax({
-            url: 'Login/loginValidation',
+            url: '/Login/loginValidation',
             type: 'GET', // or 'GET' depending on your backend
             dataType: 'json', // expecting JSON response from the server
             data: {
@@ -164,14 +168,15 @@
                 password: pwd
             },
             cache: false,
+            async:false,
             success: function (result) {
                 if (result != null) {
                     if (result == 'valid') {
-                        window.location.href = "Master/MasterDetails";
+                        window.location.href = "/Master/MasterDetails";
                     }
                     else if(result=="valid-user")
                     {
-                          window.location.href = "PlayVideo/VideoPlaying";
+                          window.location.href = "/PlayVideo/VideoPlaying";
                     }
                     else if (result == "invalid") {
                         alert('Please check your username and password');
@@ -179,7 +184,8 @@
                 }
             },
             error: function (result) {
-                alert('An error occurred :' + result);
+                debugger;
+                alert('An error occurred  :' + result);
                 $('#txtuserid').val('');
                 $('#txtpassword').val('');
             },
