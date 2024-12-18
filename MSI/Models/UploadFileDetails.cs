@@ -14,6 +14,12 @@ namespace MSI.Models
 
         public int systemid { get; set; }
 
+        public DateTime VideoDate { get; set; }
+
+        public TimeSpan VideoFromTime { get; set; }
+
+        public TimeSpan VideoToTime { get; set; }
+
         public List<SelectListItem> lstSystem { get; set; }
 
         public List<FileMappingDetails> lstFileMappings { get; set; }

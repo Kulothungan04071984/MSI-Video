@@ -41,11 +41,29 @@
                     <div style="padding:1%">
                                         <input type="file" class="form-control" id="file" name="file" accept="video/*,application/pdf">
                     </div>
-                    <div style="padding:1%;text-align:end;">
-                    <button id="btnUpload" class="btn btn-primary">Upload</button>
+                    <div style="padding:1%;">
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <span>Video Date </span>
+                                            <input type="date" id="dtVideoDate" asp-for="VideoDate" name="Videodate" class="form-control" style="width:112%;"/>
+                                        </div>
+                                        <div class="col-3">
+                                            <span>From Time </span>
+                                            <input type="time" id="dtFromTime" asp-for="VideoFromTime" name="VideoFromTime" class="form-control" style="width:112%;" />
+                                        </div>
+                                        <div class="col-3">
+                                            <span>To Time </span>
+                                            <input type="time" id="dtToTime" asp-for="VideoToTime" name="VideoToTime" class="form-control" style="width:112%;" />
+                                        </div>
+                                        <div class="col-3">
+                                            <button id="btnUpload" class="btn btn-primary" style="margin-top:22%;margin-left:40%;">Upload</button>
+                                        </div>
+                                    </div>
+                   
                     </div>
             </div>
         </div>
+      
         <div class="row">
             <div class="col-lg-0" style="color:green;">
                     @ViewBag.Message
@@ -132,11 +150,24 @@
 <script>
     $(document).ready(function(){
         $('#ddlsystem').val('');
+       var today = new Date();
+            var day = ("0" + today.getDate()).slice(-2);
+            var month = ("0" + (today.getMonth() + 1)).slice(-2); // January is 0!
+            var year = today.getFullYear();
+
+            // Format the date as YYYY-MM-DD
+            var minDate = year + "-" + month + "-" + day;
+        $('#dtVideoDate').attr('min', minDate);
+        $('#dtVideodate').val(today);
     });
     $('#btnUpload').on('click', function(event){
+        
         var systemname=$('#ddlsystem').val();
         var uploadfile=$('#file').val();
-        if(systemname == "" || uploadfile == "")
+        var vdate= $('#dtVideoDate').val();
+        var ftime=$('#dtFromTime').val();
+        var ttime=$('#dtToTime').val();
+        if(systemname == "" || uploadfile == "" || vdate == "" || ftime == "00:00:00" || ttime == "00:00:00")
         {
             alert("Please Give Valid Input");
             event.preventDefault();
