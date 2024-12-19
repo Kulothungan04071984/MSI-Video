@@ -123,7 +123,7 @@ namespace MSI.Models
                             {
                                 foreach (DataRow row in dtGetValue.Rows)
                                 {
-                                    list.Add(new SelectListItem { Value = row["system_id"].ToString(), Text = row["system_name"].ToString() });
+                                    list.Add(new SelectListItem { Value = row["system_id"].ToString(), Text = row["Stage_Name"].ToString() });
                                 }
                             }
                         }
