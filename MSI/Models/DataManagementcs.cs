@@ -180,7 +180,7 @@ namespace MSI.Models
             }
         }
 
-        public string getfilepath(string device_name)
+        public string getfilepath(string device_name,string currentTime , string currentDate)
         {
             
             DataTable dt = new DataTable();
@@ -197,7 +197,8 @@ namespace MSI.Models
                         // Add parameters for the stored procedure
                         string dname= string.IsNullOrEmpty(device_name) ? "10.10.120.234" : device_name;
                         cmd.Parameters.AddWithValue("@device_name", dname);
-
+                        cmd.Parameters.AddWithValue("@timedetails", currentTime);
+                        cmd.Parameters.AddWithValue("@date", currentDate);
                         // Use SqlDataAdapter to fill the DataTable
                         SqlDataAdapter da = new SqlDataAdapter(cmd);
                         da.Fill(dt);
