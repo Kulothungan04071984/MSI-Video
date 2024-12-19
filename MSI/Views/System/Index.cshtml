@@ -14,36 +14,47 @@
             <div class="col-md-6">
                 <div class="card shadow-lg">
                     <div class="card-body">
-                        <h4 class="card-title text-center">Enter System ID</h4>
+                        <h4 class="card-title text-center">Enter System details</h4>
+                            
                             <div class="row align-items-center">
+
                                 <div class="col-md-6 text-center">
-                                    <label for="lblsystemid" class="form-label fw-bold"style="font-size:130%;">System Ip:</label>
+                                    <label for="lblstageid" class="form-label fw-bold"style="font-size:100%;">Stage Name :</label>
+                                </div>
+                                <div class="col-md-6"style="margin-bottom:1%">
+                                    <input type="text" id="txtstageid" name="stageid"placeholder="Enter the Stage Name" class="form-control">
+                                </div>                              
+                            </div>
+                            <div class="row align-items-center">
+
+                                <div class="col-md-6 text-center">
+                                    <label for="lblsystemid" class="form-label fw-bold"style="font-size:100%;">System Ip:</label>
                                 </div>
                                 <div class="col-md-6">
                                     <input type="text" id="txtsystemid" name="systemid"placeholder="Enter the System Id" class="form-control">
                                 </div>                              
                             </div>
                               <div class="row align-items-center">
-                                <div class="col-md-6 text-center"style="font-size:130%;margin-top:1%">
+                                <div class="col-md-6 text-center"style="font-size:100%;margin-top:1%">
                                     <label for="userType" class="form-label fw-bold">User Type:</label>
                                 </div>
                                 <div class="col-md-6">
                                     <select id="ddlusertype" name="userType" class="form-select">
                                         <option value="">Select</option>
-                                        <option value="1">Admin</option>
-                                        <option value="2">User</option>
+                                        <option value="Admin">Admin</option>
+                                        <option value="User">User</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="row">
-                                  <div class="col-0"style="margin-left:60%;margin-top:3%">
-                                    <button class="btn btn-success  text-light" id="btnadd" onclick="addvalue()">Add</button>
+                                  <div class="col-0"style="margin-left:58%;margin-top:3%">
+                                    <button class="btn btn-success  text-light" id="btnadd" onclick="addvalue()"style="margin-right:1%">Add</button>                                    
+                                    <button class="btn btn-success  text-light" id="btnupdate" onclick="updatevalue()"style="display:none">Update</button>
                                     <button class="btn btn-outline-secondary"onclick="clear()">Clear</button>
-                                    <input type="button" onclick="goback()" name="Back" value="Back" class="btn btn-primary" />
+                                    <input type="button" onclick="back()" name="Back" value="Back" class="btn btn-primary" />                               
                                   </div>
                             </div>
-                    </div>
-                    
+                    </div>                   
                 </div>
             </div>
         </div>
@@ -60,6 +71,8 @@
                                     <thead>
                                         <tr>
                                             <th class="text-center">System ID</th>
+                                            <th class="text-center">Usertype</th>
+                                            <th class="text-center">Stage Name</th>                                            
                                             <th class="text-center">Action</th>
                                         </tr>
                                     </thead>
@@ -68,9 +81,11 @@
                                         {
                                             <tr>
                                                 <td class="text-center">@item.SystemId</td>
+                                                <td class="text-center">@item.Usertype</td>
+                                                <td class="text-center">@item.StageName</td>                                           
                                                 <td class="text-center">
-                                                    <input type="button" class="btn btn-outline-secondary " name="Edit" value="Edit" data-txtsystemid="@item.SystemId" onclick="editvalue(@item.SystemId)" />
-                                                    <input type="button" class="btn btn-danger" name="Delete" value="Delete" data-txtsystemid="@item.SystemId" onclick="deletesystemvalue(@item.SystemId)" />
+                                                    <input type="button" class="btn btn-outline-secondary "id="btnedit" name="Edit" value="Edit" data-txtsystemid="@item.SystemId"data-ddlusertype="@item.Usertype" data-txtstageid="@item.StageName"/>
+                                                    <input type="button" class="btn btn-danger" name="Delete" value="Delete" data-txtsystemid="@item.SystemId"data-ddlusertype="@item.Usertype"data-txtstageid="@item.StageName"/>
                                                 </td>
                                             </tr>
                                         }
@@ -85,41 +100,25 @@
 
     </div>
 </form>
-
-    
-
-
-
-@if (TempData["AlertMessage"] != null)
-{
-    <script type="text/javascript">
-        alert('@TempData["AlertMessage"]');
-    </script>
-}
 <script>
-    $(document).ready(function () {
-        $('#txtsystemid').val('');
-    });
-
-    function editvalue(sysid) {
-
-        $('#txtsystemid').val(sysid);
-
-    }
-    function deletesystemvalue(sysid) {
+    function deletesystemvalue(sysid) 
+    {
 
         $.ajax({
             url: '/System/Delete',
             type: 'POST',
-            data: { SystemId: sysid },
+            data: { SystemId:sysid},
             catch: false,
             async: false,
-            success: function (resultdel) {
-                if (resultdel >= 0) {
+            success: function (resultdel)
+            {
+                if (resultdel >= 0) 
+                {
                     alert('Delete Successfully');
                     window.location.href = '/System/Index';
                 }
-                else {
+                else
+                {
                     alert("Not Deleted");
                 }
             },
@@ -129,40 +128,144 @@
 
         });
     }
-    $(document).on('click', '.btn-outline-secondary', function () {
-        var SystemId = $(this).data('txtsystemid'); 
-        if (SystemId) {
-            editvalue(SystemId); 
-        } else {
-            console.log("SystemId is missing!");
-        }
-    });
-    $(document).on('click', '.btn-danger', function () {
+   
+    $(document).on('click', '.btn-danger', function () 
+    {
         var SystemId = $(this).data('txtsystemid');
-        if (SystemId) {
+        if (SystemId)
+        {
             deletesystemvalue(SystemId);
-        } else {
+        }
+        else
+        {
             console.log("SystemId is missing!");
         }
     });                                                  
     function addvalue() {
-       
+        debugger;
         var systemID = $('#txtsystemid',).val().trim();
         var userType = $('#ddlusertype').val();
-        if (systemID !== "" && userType !=="") {
-            $.ajax({
+        var stageName =$('#txtstageid').val().trim();
+        if (systemID !== "" && userType !=="" && stageName !=="")
+        {
+            $.ajax
+            ({
                 url: '/System/Savedata',
                 type: 'POST',
                 cache: false,
                 async: false,
-                data: { SystemId: systemID, UserType: userType },
-                success: function (response) {
+                data: { SystemId: systemID, UserType: userType,StageName:stageName},
+                success: function (response)
+                {
                     console.log(response);
-                    if (response.success) {
-                        alert('System Added Successfully');
+                    if (response.success) 
+                    {
+                        alert('System Ip Added Successfully');
                         window.location.reload
-                    } else {
-                        alert('The System is Already Added');
+                    }
+                    else 
+                    {
+                        alert('The System Ip is Already Added');
+                        window.location.reload;
+                    }
+                },
+                error: function (xhr, status, error)
+                {
+                    alert('Error while adding data: ' + error);
+                }
+            });
+        }
+        else
+        {
+            alert('Please Enter All Details');
+        }
+    }
+    $(document).on('click', '.btn-success', function () 
+    {
+        var SystemId = $(this).data('txtsystemid');
+        var Usertype = $(this).data('ddlusertype');
+        var StageName = $(this).data('txtstageid');      
+        if (SystemId && Usertype && StageName)
+        {
+            addvalue(SystemId,Usertype,StageName);
+        }
+        else
+        {
+            console.log("SystemId is missing!");
+        }
+    }); 
+    function back()
+    {
+        window.location.href = '/Master/MasterDetails';
+    }
+    function clear()
+    {
+
+        $('#txtsystemid').val('');
+        $('#ddlusertype').prop('selectedIndex', 0);
+        $('#txtstageid').val('');
+    }
+    $(document).on('click', '.btn-outline-secondary', function ()
+    {
+        var SystemId = $(this).data('txtsystemid');
+        var Usertype = $(this).data('ddlusertype');
+        var StageName = $(this).data('txtstageid');     
+        if (SystemId && Usertype && StageName) 
+        {
+            editvalue(SystemId,Usertype,StageName);
+        }
+        else
+        {
+            console.log("SystemId is missing!");
+        }
+    }); 
+    function editvalue(sysid, usrtyp,stgname)
+    {
+        debugger;
+        $('#txtsystemid').val(sysid);
+        $('#ddlusertype').val(usrtyp);
+        $('#txtstageid').val(stgname);
+        $('#btnadd').hide();
+        $('#btnupdate').show();
+        $('#btnupdate').data('systemid', sysid);  
+        $('#btnupdate').data('usertype', usrtyp);
+        $('#btnupdate').data('stagename', stgname);
+    }
+    function updatevalue() 
+    {
+        debugger;
+         var systemID = $('#txtsystemid').val().trim();
+         var userType = $('#ddlusertype').val();
+         var stageName = $('#txtstageid').val();
+        if (systemID !== "" && userType !== "" && stageName != "") {
+            var oldSystemID = $('#btnupdate').data('systemid');
+            var oldUserType = $('#btnupdate').data('usertype');
+            var oldStageName = $('#btnupdate').data('stagename');
+            $.ajax({
+                url: '/System/Updatedata',
+                type: 'POST',
+                cache: false,
+                async: false,
+                data:
+                {  
+                    SystemId: oldSystemID,       
+                    UserType: oldUserType,
+                    StageName: oldStageName,
+                    Updatesystemid: systemID,    
+                    Updateusertype: userType,
+                    UpdateStageName : stageName
+                },
+                success: function (response) 
+                {
+                    console.log(response);
+                    if (response.success) 
+                    {
+                        alert('System Ip Updated Successfully');
+                        window.location.reload
+                    }
+                    else 
+                    {
+                        alert('The System Ip is Already Added');
                         window.location.reload;
                     }
                 },
@@ -171,29 +274,13 @@
                 }
             });
         }
-        else
+        else 
         {
-            alert('Please Enter a System Id And Select the Type');
+            alert('Please Enter All Details');
         }
     }
-    $(document).on('click', 'btn-primary', function () {
-        var SystemId = $(this).data('txtsystemid');
-        if (SystemId) {
-            addvalue(SystemId);
-        } else {
-            console.log("SystemId is missing!");
-        }
-    }); 
-    function goback(){
 
-        window.location.href = '/Master/MasterDetails';
-    }
-    function clear() {
-
-        $('#txtsystemid').val('');
-        $('#ddlusertype').prop('selectedIndex', 0);
-    }
-  </script>
+</script>
 
 
 
