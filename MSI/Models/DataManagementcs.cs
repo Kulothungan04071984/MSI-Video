@@ -31,6 +31,9 @@ namespace MSI.Models
                         cmd.Parameters.AddWithValue("@uploadVideoPath", objFileDetails.filepath);
                         cmd.Parameters.AddWithValue("@uploadDateTime", objFileDetails.uploaddatetime);
                         cmd.Parameters.AddWithValue("@userid", objFileDetails.uploadEmployee);
+                        cmd.Parameters.AddWithValue("@fromTime", objFileDetails.VideoFromTime);
+                        cmd.Parameters.AddWithValue("@toTime",objFileDetails.VideoToTime);
+                        cmd.Parameters.AddWithValue("@videodate",objFileDetails.VideoDate);
                         conn.Open();
                         result = cmd.ExecuteNonQuery();
                         conn.Close();

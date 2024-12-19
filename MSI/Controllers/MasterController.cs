@@ -66,6 +66,9 @@ namespace MSI.Controllers
                             uploadDetails.filepath = filePath;
                             uploadDetails.uploaddatetime = DateTime.Today.ToString();
                             uploadDetails.uploadEmployee = "70192";
+                            uploadDetails.VideoFromTime= uploadFileDetails.VideoFromTime;
+                            uploadDetails.VideoToTime = uploadFileDetails.VideoToTime;
+                            uploadDetails.VideoDate = uploadFileDetails.VideoDate;
                             //uploadFileDetails.systemname = uploadFileDetails.lstSystem.Where(a => a.Value == uploadFileDetails.systemid.ToString()).Select(a => a.Text.ToString()).FirstOrDefault();
                             //uploadFileDetails.systemname = "";
                             result = _domainServices.uploaddatainserted(uploadDetails);
