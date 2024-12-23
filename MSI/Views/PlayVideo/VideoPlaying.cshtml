@@ -81,6 +81,17 @@
 </html>
 <script>
     $(document).ready(function () {
+        var userT='@ViewBag.UserType';
+        if(userT == 'valid-user')
+        {
+            $('#dvNewSystem').css('display','none');
+            $('#dvWorkInstruction').css('display','none');
+        }
+        else
+        {
+         $('#dvNewSystem').css('display','');
+          $('#dvWorkInstruction').css('display','');
+        }
 
           var videoElement = $("#videoPlayer");
            var path='@ViewBag.VideoFolderPath';

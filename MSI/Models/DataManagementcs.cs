@@ -163,9 +163,9 @@ namespace MSI.Models
                                         objFileMapping.systemid = Convert.ToInt32(row["systemid"].ToString());
                                         objFileMapping.systemname = row["system_name"].ToString();
                                         objFileMapping.filepath = row["File_Path"].ToString();
-                                        objFileMapping.FromTime = TimeOnly.Parse(row["FromTime"].ToString());
-                                        objFileMapping.ToTime = TimeOnly.Parse(row["ToTime"].ToString());
-                                        objFileMapping.Date = DateOnly.Parse(row["Date"].ToString());
+                                        objFileMapping.videoDate = row["VideoDate"].ToString();
+                                        objFileMapping.fromtime = row["FromTime"].ToString();
+                                        objFileMapping.totime = row["Totime"].ToString();
                                         lstFileMapping.Add(objFileMapping);
                                     }
                                 }

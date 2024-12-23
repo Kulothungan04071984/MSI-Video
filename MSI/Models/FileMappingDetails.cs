@@ -8,11 +8,11 @@
 
         public string filename { get; set; }
 
-        public TimeOnly FromTime { get; set; }
+        public string videoDate { get; set; }
 
-        public TimeOnly ToTime { get; set; }
+        public string fromtime { get; set; }
 
-        public DateOnly Date { get; set; }
+        public string totime { get; set; }
     }
 
 }

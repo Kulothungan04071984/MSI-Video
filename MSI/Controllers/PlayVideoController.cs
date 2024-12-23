@@ -25,7 +25,7 @@ namespace MSI.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
         
-        public async Task<IActionResult> VideoPlaying()
+        public async Task<IActionResult> VideoPlaying(string userType)
         {
             writeErrorMessage("PlayVideoController", "VideoPlaying Enter");
             // Get the device name (machine name)
@@ -73,6 +73,8 @@ namespace MSI.Controllers
 
                 _logger.LogInformation($"Video copied successfully to {videoFilePath}");
                 ViewBag.VideoFolderPath = dname + ".mp4";
+                // ViewBag.UserType = Request.Query[userType].ToString();
+                ViewBag.UserType = userType;
                 return View();
             }
             catch (Exception ex)
