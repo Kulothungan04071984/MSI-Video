@@ -123,7 +123,7 @@ namespace MSI.Models
                             {
                                 foreach (DataRow row in dtGetValue.Rows)
                                 {
-                                    list.Add(new SelectListItem { Value = row["system_id"].ToString(), Text = row["system_name"].ToString() });
+                                    list.Add(new SelectListItem { Value = row["system_id"].ToString(), Text = row["Stage_Name"].ToString() });
                                 }
                             }
                         }
@@ -145,6 +145,7 @@ namespace MSI.Models
             try
             {
                 using (SqlConnection con = new SqlConnection(ConnectionString))
+                
                 {
                     using (SqlCommand cmd = new SqlCommand("pro_getFilemappingDetails", con))
                     {
@@ -162,12 +163,14 @@ namespace MSI.Models
                                         objFileMapping.systemid = Convert.ToInt32(row["systemid"].ToString());
                                         objFileMapping.systemname = row["system_name"].ToString();
                                         objFileMapping.filepath = row["File_Path"].ToString();
+                                        objFileMapping.FromTime = TimeOnly.Parse(row["FromTime"].ToString());
+                                        objFileMapping.ToTime = TimeOnly.Parse(row["ToTime"].ToString());
+                                        objFileMapping.Date = DateOnly.Parse(row["Date"].ToString());
                                         lstFileMapping.Add(objFileMapping);
                                     }
                                 }
                             }
-
-                        }
+                        }  
                     }
                 }
                 return lstFileMapping;

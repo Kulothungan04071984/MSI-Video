@@ -1,4 +1,4 @@
-﻿    using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using MSI.Models;
@@ -72,7 +72,8 @@ namespace MSI.Controllers
                             //uploadFileDetails.systemname = uploadFileDetails.lstSystem.Where(a => a.Value == uploadFileDetails.systemid.ToString()).Select(a => a.Text.ToString()).FirstOrDefault();
                             //uploadFileDetails.systemname = "";
                             result = _domainServices.uploaddatainserted(uploadDetails);
-                            writeErrorMessage(result.ToString(), "Video File Upload successfully");
+                            writeErrorMessage(result.ToString(),
+                                "Video File Upload successfully");
                             if (result > 0)
                             {
                                 ViewBag.Message = "Video uploaded successfully";

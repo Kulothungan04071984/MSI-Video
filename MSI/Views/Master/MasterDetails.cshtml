@@ -81,7 +81,7 @@
             <div class="card" style="padding:1%;">
                  <div class="tab-content" style="height:300px;">
                     <table class="table table-responsive table-bordered" style="overflow:scroll;">
-                        <thead>
+                        <thead class="text-center">
                             <tr>
                             <th>
                                 System ID
@@ -92,6 +92,16 @@
                             <th>
                                 File Path
                             </th>
+                             <th>
+                                 Date
+                             </th>
+                            <th>
+                                From Time
+                            </th>
+                            <th>
+                                To Time
+                            </th>
+                            
                             <th>
                                 Action
                             </th>
@@ -104,9 +114,9 @@
                                 {
 
                               
-                            @foreach (var item in Model.lstFileMappings)
-                            {
-                                <tr>
+                                @foreach (var item in Model.lstFileMappings)
+                                {
+                                  <tr>
                                     <td>
                                         @item.systemid
                                     </td>
@@ -117,23 +127,33 @@
                                         @item.filepath
                                     </td>
                                     <td>
+                                        @item.Date
+                                    </td>
+                                    <td>.
+                                       @item.FromTime
+                                    </td>
+                                    <td>
+                                        @item.ToTime
+                                    </td>
+                                  
+                                    <td>
                                          <input type="button" class="btn btn-outline-secondary" name="Edit" value="Edit" onclick="updateValue(@item.systemid)" />
                                         <input type="button" class="btn btn-danger" name="Delete" value="Delete" onclick="deleteValue(@item.systemid)" />
                                     </td>
-                                </tr>
-                             }
+                                 </tr>
+                            }
                                 }
                                         else
                                         {
                                             <tr>
-                                                <td colspan="4" style="text-align:center;"><span>No Data Found</span></td>
+                                                <td colspan="12" style="text-align:center;"><span>No Data Found</span></td>
                                             </tr>
                                         }
                             }
                             else
                             {
                                 <tr>
-                                    <td colspan="4" style="text-align:center;"><span>No Data Found</span></td>
+                                    <td colspan="12" style="text-align:center;"><span>No Data Found</span></td>
                                 </tr>
                             }
                         </tbody>
@@ -144,7 +164,6 @@
                 </div>
             
     </section>
-
 </div>
 </form>
 <script>
