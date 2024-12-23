@@ -123,7 +123,7 @@ namespace MSI.Models
                             {
                                 foreach (DataRow row in dtGetValue.Rows)
                                 {
-                                    list.Add(new SelectListItem { Value = row["system_id"].ToString(), Text = row["system_name"].ToString() });
+                                    list.Add(new SelectListItem { Value = row["system_id"].ToString(), Text = row["Stage_Name"].ToString() });
                                 }
                             }
                         }
@@ -145,6 +145,7 @@ namespace MSI.Models
             try
             {
                 using (SqlConnection con = new SqlConnection(ConnectionString))
+                
                 {
                     using (SqlCommand cmd = new SqlCommand("pro_getFilemappingDetails", con))
                     {
@@ -169,8 +170,7 @@ namespace MSI.Models
                                     }
                                 }
                             }
-
-                        }
+                        }  
                     }
                 }
                 return lstFileMapping;
@@ -183,7 +183,7 @@ namespace MSI.Models
             }
         }
 
-        public string getfilepath(string device_name)
+        public string getfilepath(string device_name,string currentTime , string currentDate)
         {
             
             DataTable dt = new DataTable();
@@ -200,7 +200,8 @@ namespace MSI.Models
                         // Add parameters for the stored procedure
                         string dname= string.IsNullOrEmpty(device_name) ? "10.10.120.234" : device_name;
                         cmd.Parameters.AddWithValue("@device_name", dname);
-
+                        cmd.Parameters.AddWithValue("@timedetails", currentTime);
+                        cmd.Parameters.AddWithValue("@date", currentDate);
                         // Use SqlDataAdapter to fill the DataTable
                         SqlDataAdapter da = new SqlDataAdapter(cmd);
                         da.Fill(dt);
@@ -329,7 +330,7 @@ namespace MSI.Models
                 errLogs.Close();
             }
         }
-        public List<insert_stat> SaveDataToDatabase(string SystemId, string Usertype)
+        public List<insert_stat> SaveDataToDatabase(string SystemId, string Usertype,string StageName)
         {
             // var dt = DateTime.Today;
             var insertlist = new List<insert_stat>();
@@ -341,6 +342,7 @@ namespace MSI.Models
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@SystemId", SystemId);
                     cmd.Parameters.AddWithValue("@Usertype", Usertype);
+                    cmd.Parameters.AddWithValue("@StageName", StageName);            
                     connection.Open();
                     {
                         using (SqlDataReader reader = cmd.ExecuteReader())
@@ -362,6 +364,43 @@ namespace MSI.Models
             }
             return insertlist;
         }
+         public List<update_stat> UpdateDataToDatabase(string SystemId, string Usertype,string StageName, string Updateystemid,string Updateusertype,string UpdateStageName)
+        {
+            // var dt = DateTime.Today;
+            var updatelist = new List<update_stat>();
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("pro_Update_SystemId", connection))
+                {
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@SystemId", SystemId);
+                    cmd.Parameters.AddWithValue("@Usertype", Usertype);                  
+                    cmd.Parameters.AddWithValue("@StageName", StageName);                  
+                    cmd.Parameters.AddWithValue("@UpdateSystemId", Updateystemid);                  
+                    cmd.Parameters.AddWithValue("@UpdateUserType", Updateusertype);                  
+                    cmd.Parameters.AddWithValue("@UpdateStageName", UpdateStageName);                  
+                    connection.Open();
+                    {
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                updatelist.Add(new update_stat
+                                {
+                                    Update_status = reader.GetInt32(0)
+                                });
+                            }
+                        }
+
+                    }
+                    connection.Close();
+                }
+
+
+            }
+            return updatelist;
+        }
         public List<Systemid> GetData()
         {
             var dataList = new List<Systemid>();
@@ -379,8 +418,10 @@ namespace MSI.Models
                             {
                                 dataList.Add(new Systemid
                                 {
-                                    Id = reader.GetString(0),
+                                    
                                     SystemId = reader.GetString(1),
+                                    Usertype= reader.GetString(0),
+                                   StageName = reader.GetString(2), 
                                 });
                             }
                         }
@@ -400,7 +441,7 @@ namespace MSI.Models
                 {
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     connection.Open();
-                    cmd.Parameters.AddWithValue("@SystemId", deletesystemId);
+                    cmd.Parameters.AddWithValue("@SystemId", deletesystemId);                   
                     result = cmd.ExecuteNonQuery();
                     connection.Close();
                 }

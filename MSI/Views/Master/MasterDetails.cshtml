@@ -45,21 +45,20 @@
                                     <div class="row">
                                         <div class="col-3">
                                             <span>Video Date </span>
-                                            <input type="date" id="dtVideoDate" asp-for="VideoDate" name="Videodate" class="form-control" style="width:112%;"/>
+                                            <input type="date" id="dtVideoDate" asp-for="VideoDate" name="Videodate" class="form-control" style="width:120%;"/>
                                         </div>
                                         <div class="col-3">
                                             <span>From Time </span>
-                                            <input type="time" id="dtFromTime" asp-for="VideoFromTime" name="VideoFromTime" class="form-control" style="width:112%;" />
+                                            <input type="time" id="dtFromTime" asp-for="VideoFromTime" name="VideoFromTime" class="form-control" style="width:120%;" />
                                         </div>
                                         <div class="col-3">
                                             <span>To Time </span>
-                                            <input type="time" id="dtToTime" asp-for="VideoToTime" name="VideoToTime" class="form-control" style="width:112%;" />
+                                            <input type="time" id="dtToTime" asp-for="VideoToTime" name="VideoToTime" class="form-control" style="width:120%;" />
                                         </div>
                                         <div class="col-3">
-                                            <button id="btnUpload" class="btn btn-primary" style="margin-top:22%;margin-left:40%;">Upload</button>
+                                            <button id="btnUpload" class="btn btn-primary" style="margin-top:22%;margin-left:30%;">Upload</button>
                                         </div>
                                     </div>
-                   
                     </div>
             </div>
         </div>
@@ -81,7 +80,7 @@
             <div class="card" style="padding:1%;">
                  <div class="tab-content" style="height:300px;">
                     <table class="table table-responsive table-bordered" style="overflow:scroll;">
-                        <thead>
+                        <thead class="text-center">
                             <tr>
                             <th>
                                 System ID
@@ -92,6 +91,16 @@
                             <th>
                                 File Path
                             </th>
+                             <th>
+                                 Date
+                             </th>
+                            <th>
+                                From Time
+                            </th>
+                            <th>
+                                To Time
+                            </th>
+                            
                             <th>
                                 Action
                             </th>
@@ -104,9 +113,9 @@
                                 {
 
                               
-                            @foreach (var item in Model.lstFileMappings)
-                            {
-                                <tr>
+                                @foreach (var item in Model.lstFileMappings)
+                                {
+                                  <tr>
                                     <td>
                                         @item.systemid
                                     </td>
@@ -117,23 +126,33 @@
                                         @item.filepath
                                     </td>
                                     <td>
+                                        @item.Date
+                                    </td>
+                                    <td>.
+                                       @item.FromTime
+                                    </td>
+                                    <td>
+                                        @item.ToTime
+                                    </td>
+                                  
+                                    <td>
                                          <input type="button" class="btn btn-outline-secondary" name="Edit" value="Edit" onclick="updateValue(@item.systemid)" />
                                         <input type="button" class="btn btn-danger" name="Delete" value="Delete" onclick="deleteValue(@item.systemid)" />
                                     </td>
-                                </tr>
-                             }
+                                 </tr>
+                            }
                                 }
                                         else
                                         {
                                             <tr>
-                                                <td colspan="4" style="text-align:center;"><span>No Data Found</span></td>
+                                                <td colspan="12" style="text-align:center;"><span>No Data Found</span></td>
                                             </tr>
                                         }
                             }
                             else
                             {
                                 <tr>
-                                    <td colspan="4" style="text-align:center;"><span>No Data Found</span></td>
+                                    <td colspan="12" style="text-align:center;"><span>No Data Found</span></td>
                                 </tr>
                             }
                         </tbody>
@@ -144,7 +163,6 @@
                 </div>
             
     </section>
-
 </div>
 </form>
 <script>
@@ -190,7 +208,7 @@
             success: function(result){
                 if(result > 0)
                 {
-                    alert('Delete Successfully');
+                     alert('Delete Successfully');
                      window.location.href = '/Master/MasterDetails';
                 }
                 else

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using MSI.Models;
+using SqlSugar;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
@@ -28,11 +29,16 @@ namespace MSI.Controllers
         {
             writeErrorMessage("PlayVideoController", "VideoPlaying Enter");
             // Get the device name (machine name)
-            //string deviceName =await Process_systemname();
-            string deviceName = "10.10.120.234"; // Testing
+            string deviceName =await Process_systemname();
+           // string deviceName = "10.10.120.234"; // Testing
+            DateOnly currentDate1 = DateOnly.FromDateTime(DateTime.Now);
+            string currentDate2 = currentDate1.ToString("yyyy-MM-dd");
+            String currentDate = currentDate2.Replace('/', '-');
+            DateTime currentDateTime = DateTime.Now;
+            string currentTime  = currentDateTime.ToString("HH:mm:ss");
 
             // Fetch file path using DataAccess
-            string filePath1 = _domainServices.getfilepath(deviceName);
+            string filePath1 = _domainServices.getfilepath(deviceName, currentTime, currentDate);
            // string filePath = $@"{filePath1}";
            
            
@@ -59,7 +65,7 @@ namespace MSI.Controllers
                 // Use file I/O to copy the file
                 //if (Directory.Exists(videoFilePath))
                 //{
-                var npath=string.IsNullOrEmpty(networkPath) ? "\\\\192.168.1.188\\MSI_Videos\\uploads\\WIRE ROUTING.mp4" : networkPath;
+                var npath=string.IsNullOrEmpty(networkPath) ? "\\\\192.168.1.188\\MSI_Videos\\uploads\\FileNotFound.mp4" : networkPath;
                 writeErrorMessage(networkPath, "Strat Copy the video File");
                 await Task.Run(() => System.IO.File.Copy(npath, videoFilePath, true));
                 //}
