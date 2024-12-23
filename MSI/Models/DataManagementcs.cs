@@ -330,10 +330,10 @@ namespace MSI.Models
                 errLogs.Close();
             }
         }
-        public List<insert_stat> SaveDataToDatabase(string SystemId, string Usertype,string StageName)
+        public int SaveDataToDatabase(string SystemId, string Usertype,string StageName)
         {
             // var dt = DateTime.Today;
-            var insertlist = new List<insert_stat>();
+            var insertlist = 0;
 
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
@@ -344,19 +344,7 @@ namespace MSI.Models
                     cmd.Parameters.AddWithValue("@Usertype", Usertype);
                     cmd.Parameters.AddWithValue("@StageName", StageName);            
                     connection.Open();
-                    {
-                        using (SqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                insertlist.Add(new insert_stat
-                                {
-                                    Insert_status = reader.GetInt32(0)
-                                });
-                            }
-                        }
-
-                    }
+                    insertlist = cmd.ExecuteNonQuery();
                     connection.Close();
                 }
 
@@ -364,10 +352,10 @@ namespace MSI.Models
             }
             return insertlist;
         }
-         public List<update_stat> UpdateDataToDatabase(string SystemId, string Usertype,string StageName, string Updateystemid,string Updateusertype,string UpdateStageName)
+         public int UpdateDataToDatabase(string SystemId, string Usertype,string StageName, string Updateystemid,string Updateusertype,string UpdateStageName)
         {
             // var dt = DateTime.Today;
-            var updatelist = new List<update_stat>();
+            var upresult = 0;
 
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
@@ -380,26 +368,12 @@ namespace MSI.Models
                     cmd.Parameters.AddWithValue("@UpdateSystemId", Updateystemid);                  
                     cmd.Parameters.AddWithValue("@UpdateUserType", Updateusertype);                  
                     cmd.Parameters.AddWithValue("@UpdateStageName", UpdateStageName);                  
-                    connection.Open();
-                    {
-                        using (SqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                updatelist.Add(new update_stat
-                                {
-                                    Update_status = reader.GetInt32(0)
-                                });
-                            }
-                        }
-
-                    }
+                    connection.Open();                    
+                    upresult=cmd.ExecuteNonQuery();
                     connection.Close();
                 }
-
-
             }
-            return updatelist;
+            return upresult;
         }
         public List<Systemid> GetData()
         {

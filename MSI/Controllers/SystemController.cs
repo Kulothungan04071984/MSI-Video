@@ -48,27 +48,20 @@ namespace MSI.Controllers
         {
             try
             {
-                if (Usertype == "Admin")
-                {
+                if (Usertype == "Admin")        
                     Usertype = "1";
-                }
-                if (Usertype == "User")
-                {
+                else                           
                     Usertype = "2";
-                }
-               
+                
+                    var insertlist = _ipAddress.SaveDataToDatabase(SystemId,Usertype,StageName);
 
-                    var result = _ipAddress.SaveDataToDatabase(SystemId,Usertype,StageName);
-
-
-
-                if (result[0].Insert_status == 1)
+                if (insertlist == 1)
                 {
                     Index();
                     return Json(new { success = true, Message = "System Add successflly" });
 
                 }
-                else if (result[0].Insert_status == 0)
+                else if (insertlist == 5)
                 {
                     Index();
                     return Json(new { success = false, Message = "The System is Already Added " });
@@ -79,8 +72,6 @@ namespace MSI.Controllers
                     Index();
                     return Json(new { success = false, Message = "System is not Added" });
                 }
-
-
             }
             catch (Exception ex)
             {
@@ -90,34 +81,28 @@ namespace MSI.Controllers
             [HttpPost]
             public JsonResult Updatedata(string SystemId, string Usertype,string StageName, string Updatesystemid,string Updateusertype,string UpdateStageName)
             {
+            
                 try
                 {
                    if(Usertype=="Admin")
-                   {
                      Usertype = "1";
-                   }
-                   if(Usertype=="User")
-                   {
-                     Usertype = "2";                
-                   }
-                   if (Updateusertype == "Admin") 
-                   {
-                     Updateusertype = "1";               
-                   }
-                   if(Updateusertype == "User")
-                   {
+                  else                  
+                     Usertype = "2";                                
+                   if (Updateusertype == "Admin")                  
+                     Updateusertype = "1";                                
+                   else           
                     Updateusertype = "2";
-                }
-                    var result = _ipAddress.UpdateDataToDatabase(SystemId, Usertype, StageName, Updatesystemid, Updateusertype, UpdateStageName);
+                
+                    var updateresult = _ipAddress.UpdateDataToDatabase(SystemId, Usertype, StageName, Updatesystemid, Updateusertype, UpdateStageName);
 
 
-                    if (result[0].Update_status == 1)
+                    if (updateresult == 1)
                     {
                         Index();
                         return Json(new { success = true, Message = "System Updated successflly" });
 
                     }
-                    else if (result[0].Update_status == 0)
+                    else if (updateresult == 5)
                     {
                         Index();
                         return Json(new { success = false, Message = "The System is Already Added " });
