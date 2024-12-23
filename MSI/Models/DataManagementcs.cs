@@ -162,6 +162,9 @@ namespace MSI.Models
                                         objFileMapping.systemid = Convert.ToInt32(row["systemid"].ToString());
                                         objFileMapping.systemname = row["system_name"].ToString();
                                         objFileMapping.filepath = row["File_Path"].ToString();
+                                        objFileMapping.videoDate = row["VideoDate"].ToString();
+                                        objFileMapping.fromtime = row["FromTime"].ToString();
+                                        objFileMapping.totime = row["Totime"].ToString();
                                         lstFileMapping.Add(objFileMapping);
                                     }
                                 }

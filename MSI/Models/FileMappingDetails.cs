@@ -7,6 +7,12 @@
         public string filepath { get; set; }
 
         public string filename { get; set; }
+
+        public string videoDate { get; set; }
+
+        public string fromtime { get; set; }
+
+        public string totime { get; set; }
     }
 
 }
