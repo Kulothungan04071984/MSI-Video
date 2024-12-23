@@ -58,7 +58,7 @@ namespace MSI.Controllers
                 if (insertlist == 1)
                 {
                     Index();
-                    return Json(new { success = true, Message = "System Add successflly" });
+                    return Json(new { success = true, Message = "System Add successfully" });
 
                 }
                 else if (insertlist == 5)
@@ -70,7 +70,7 @@ namespace MSI.Controllers
 
                 {
                     Index();
-                    return Json(new { success = false, Message = "System is not Added" });
+                    return Json(new { success = false, Message = "Error Inserting The Value" });
                 }
             }
             catch (Exception ex)
@@ -99,7 +99,7 @@ namespace MSI.Controllers
                     if (updateresult == 1)
                     {
                         Index();
-                        return Json(new { success = true, Message = "System Updated successflly" });
+                        return Json(new { success = true, Message = "System Updated successfully" });
 
                     }
                     else if (updateresult == 5)
@@ -111,7 +111,7 @@ namespace MSI.Controllers
 
                     {
                         Index();
-                        return Json(new { success = false, Message = "System is not Updated" });
+                        return Json(new { success = false, Message = "Error Updating The Value" });
                     }
 
 
