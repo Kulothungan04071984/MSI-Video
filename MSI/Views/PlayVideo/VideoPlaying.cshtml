@@ -92,15 +92,10 @@
          $('#dvNewSystem').css('display','');
           $('#dvWorkInstruction').css('display','');
         }
-
           var videoElement = $("#videoPlayer");
            var path='@ViewBag.VideoFolderPath';
-           alert(path + 'videopath');
-             // var videoSrc = "../wwwroot/videos/"+path;
-              // var videoSrc = path; // Path to video file
-             // alert(videoSrc + 'finalpath');
-              //videoElement.attr("src", videoSrc);
-              videoElement.attr("src", path);
+           var videoSrc = "/videos/"+path;
+              videoElement.attr("src", videoSrc);
               videoElement.prop('loop', true); // Set the loop attribute
               videoElement.on("canplay", function () {
                   $("#loading").hide();

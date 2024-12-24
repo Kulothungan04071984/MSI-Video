@@ -71,8 +71,8 @@ namespace MSI.Controllers
                 //}
                 writeErrorMessage(videoFilePath +'-' + dname, "End Copy the video File");
 
-               // _logger.LogInformation($"Video copied successfully to {videoFilePath}");
-                ViewBag.VideoFolderPath = videoFolderPath + "\\" + dname + ".mp4";
+                // _logger.LogInformation($"Video copied successfully to {videoFilePath}");
+                ViewBag.VideoFolderPath = dname + ".MP4";
                 // ViewBag.UserType = Request.Query[userType].ToString();
                 ViewBag.UserType = userType;
                 return View();
