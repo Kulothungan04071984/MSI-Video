@@ -95,8 +95,12 @@
 
           var videoElement = $("#videoPlayer");
            var path='@ViewBag.VideoFolderPath';
-              var videoSrc = "/videos/"+path; // Path to video file
-              videoElement.attr("src", videoSrc);
+           alert(path + 'videopath');
+             // var videoSrc = "../wwwroot/videos/"+path;
+              // var videoSrc = path; // Path to video file
+             // alert(videoSrc + 'finalpath');
+              //videoElement.attr("src", videoSrc);
+              videoElement.attr("src", path);
               videoElement.prop('loop', true); // Set the loop attribute
               videoElement.on("canplay", function () {
                   $("#loading").hide();

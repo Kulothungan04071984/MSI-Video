@@ -30,7 +30,7 @@ namespace MSI.Controllers
             writeErrorMessage("PlayVideoController", "VideoPlaying Enter");
             // Get the device name (machine name)
              string deviceName =await Process_systemname();
-           // string deviceName = "10.10.120.234"; // Testing
+            // string deviceName = "10.10.120.83"; // Testing
             DateOnly currentDate1 = DateOnly.FromDateTime(DateTime.Now);
             string currentDate2 = currentDate1.ToString("yyyy-MM-dd");
             String currentDate = currentDate2.Replace('/', '-');
@@ -72,7 +72,7 @@ namespace MSI.Controllers
                 writeErrorMessage(videoFilePath +'-' + dname, "End Copy the video File");
 
                // _logger.LogInformation($"Video copied successfully to {videoFilePath}");
-                ViewBag.VideoFolderPath = dname + ".mp4";
+                ViewBag.VideoFolderPath = videoFolderPath + "\\" + dname + ".mp4";
                 // ViewBag.UserType = Request.Query[userType].ToString();
                 ViewBag.UserType = userType;
                 return View();
