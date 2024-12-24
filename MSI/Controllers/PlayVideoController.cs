@@ -29,7 +29,7 @@ namespace MSI.Controllers
         {
             writeErrorMessage("PlayVideoController", "VideoPlaying Enter");
             // Get the device name (machine name)
-            string deviceName =await Process_systemname();
+             string deviceName =await Process_systemname();
            // string deviceName = "10.10.120.234"; // Testing
             DateOnly currentDate1 = DateOnly.FromDateTime(DateTime.Now);
             string currentDate2 = currentDate1.ToString("yyyy-MM-dd");
@@ -60,7 +60,7 @@ namespace MSI.Controllers
                 }
 
                 // Log the attempt to copy the file
-                _logger.LogInformation($"Attempting to copy video from {networkPath} to {videoFilePath}");
+              //  _logger.LogInformation($"Attempting to copy video from {networkPath} to {videoFilePath}");
 
                 // Use file I/O to copy the file
                 //if (Directory.Exists(videoFilePath))
@@ -69,9 +69,9 @@ namespace MSI.Controllers
                 writeErrorMessage(networkPath, "Strat Copy the video File");
                 await Task.Run(() => System.IO.File.Copy(npath, videoFilePath, true));
                 //}
-                writeErrorMessage(networkPath, "End Copy the video File");
+                writeErrorMessage(videoFilePath +'-' + dname, "End Copy the video File");
 
-                _logger.LogInformation($"Video copied successfully to {videoFilePath}");
+               // _logger.LogInformation($"Video copied successfully to {videoFilePath}");
                 ViewBag.VideoFolderPath = dname + ".mp4";
                 // ViewBag.UserType = Request.Query[userType].ToString();
                 ViewBag.UserType = userType;
