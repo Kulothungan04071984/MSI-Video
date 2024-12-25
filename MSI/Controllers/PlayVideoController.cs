@@ -29,6 +29,10 @@ namespace MSI.Controllers
         {
             writeErrorMessage("PlayVideoController", "VideoPlaying Enter");
             // Get the device name (machine name)
+
+         //   string deviceName =await Process_systemname();
+          //  string deviceName = "10.10.120.218"; // Testing
+
              string deviceName =await Process_systemname();
            // string deviceName = "10.10.120.234"; // Testing
             DateOnly currentDate1 = DateOnly.FromDateTime(DateTime.Now);
