@@ -8,44 +8,44 @@
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
 <form asp-action="MasterDetails" method="post" enctype="multipart/form-data">
-<div class="container">
-    <section>
-        <div class="card">
-            <div class="card-title">
-                
-                <div class="card-body">
-                    <div class="card-header">
-                            <span>File Mapping</span>
-                    </div>
-           
-        <div class="row">
-            <div class="col-lg-6" style="padding:1.6%;">
-              @*   System Name :
-                @Html.DropDownList("Systemid", new SelectList(ViewBag.computerName, "Systemid", "SystemName")) *@
+    <div class="container">
+        <section>
+            <div class="card">
+                <div class="card-title">
 
-               <div style="padding:2%;">System Name</div>
-             @*    <select class="form-control" ">
-                @foreach (var item in ViewBag.computerName)
-                {
-                   <option> @item</option>
-                }
-                </select> *@
-                    <div>
-                    @Html.DropDownListFor(model => model.systemid, Model.lstSystem, "Select an SystemName", new { @id="ddlsystem", @class = "form-control" })
-                    </div>
-            </div>
+                    <div class="card-body">
+                        <div class="card-header">
+                            <span>File Mapping</span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-6" style="padding:1.6%;">
+                                @*   System Name :
+                                @Html.DropDownList("Systemid", new SelectList(ViewBag.computerName, "Systemid", "SystemName")) *@
+
+                                <div style="padding:2%;">System Name</div>
+                                @*    <select class="form-control" ">
+                                @foreach (var item in ViewBag.computerName)
+                                {
+                                <option> @item</option>
+                                }
+                                </select> *@
+                                <div>
+                                    @Html.DropDownListFor(model => model.systemid, Model.lstSystem, "Select an SystemName", new { @id = "ddlsystem", @class = "form-control" })
+                                </div>
+                            </div>
                             <div class="col-lg-6" style="padding:1.8%;">
-                    <div style="padding:1%">
-                        <span>File Upload</span>
-                    </div>
-                    <div style="padding:1%">
-                                        <input type="file" class="form-control" id="file" name="file" accept="video/*,application/pdf">
-                    </div>
-                    <div style="padding:1%;">
+                                <div style="padding:1%">
+                                    <span>File Upload</span>
+                                </div>
+                                <div style="padding:1%">
+                                    <input type="file" class="form-control" id="file" name="file" accept="video/*,application/pdf">
+                                </div>
+                                <div style="padding:1%;">
                                     <div class="row">
                                         <div class="col-3">
                                             <span>Video Date </span>
-                                            <input type="date" id="dtVideoDate" asp-for="VideoDate" name="Videodate" class="form-control" style="width:120%;"/>
+                                            <input type="date" id="dtVideoDate" asp-for="VideoDate" name="Videodate" class="form-control" style="width:120%;" />
                                         </div>
                                         <div class="col-3">
                                             <span>From Time </span>
@@ -59,176 +59,160 @@
                                             <button id="btnUpload" class="btn btn-primary" style="margin-top:22%;margin-left:30%;">Upload</button>
                                         </div>
                                     </div>
-                    </div>
-            </div>
-        </div>
-      
-        <div class="row">
-            <div class="col-lg-0" style="color:green;">
-                    @ViewBag.Message
-            </div>
-         
-            
-        </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-0" style="color:green;">
+                                @ViewBag.Message
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-lg-0">
+                    <div class="card" style="padding:1%;">
+                        <div class="tab-content" style="height:300px;">
+                            <table class="table table-responsive table-bordered" style="overflow:scroll;">
+                                <thead class="text-center">
+                                    <tr>
+                                        <th>
+                                            System ID
+                                        </th>
+                                        <th>
+                                            System Name
+                                        </th>
+                                        <th>
+                                            File Path
+                                        </th>
+                                        <th>
+                                            Date
+                                        </th>
+                                        <th>
+                                            From Time
+                                        </th>
+                                        <th>
+                                            To Time
+                                        </th>
 
-                
-            <div class="card" style="padding:1%;">
-                 <div class="tab-content" style="height:300px;">
-                    <table class="table table-responsive table-bordered" style="overflow:scroll;">
-                        <thead class="text-center">
-                            <tr>
-                            <th>
-                                System ID
-                            </th>
-                            <th>
-                                System Name
-                            </th>
-                            <th>
-                                File Path
-                            </th>
-                             <th>
-                                 Date
-                             </th>
-                            <th>
-                                From Time
-                            </th>
-                            <th>
-                                To Time
-                            </th>
-                            
-                            <th>
-                                Action
-                            </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if(Model != null)
-                            {
-                                @if(Model.lstFileMappings != null && Model.lstFileMappings.Count >0 )
-                                {
-
-                              
-                                @foreach (var item in Model.lstFileMappings)
-                                {
-                                  <tr>
-                                    <td>
-                                        @item.systemid
-                                    </td>
-                                    <td>
-                                        @item.systemname
-                                    </td>
-                                    <td>
-                                        @item.filepath
-                                    </td>
-                                    <td>
-                                        @item.videoDate
-                                    </td>
-                                    <td>.
-                                       @item.fromtime
-                                    </td>
-                                    <td>
-                                        @item.totime
-                                    </td>
-                                  
-                                    <td>
-                                         <input type="button" class="btn btn-outline-secondary" name="Edit" value="Edit" onclick="updateValue(@item.systemid)" />
-                                        <input type="button" class="btn btn-danger" name="Delete" value="Delete" onclick="deleteValue(@item.systemid)" />
-                                    </td>
-                                 </tr>
-                            }
-                                }
+                                        <th>
+                                            Action
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model != null)
+                                    {
+                                        @if (Model.lstFileMappings != null && Model.lstFileMappings.Count > 0)
+                                        {
+                                            @foreach (var item in Model.lstFileMappings)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        @item.systemid
+                                                    </td>
+                                                    <td>
+                                                        @item.systemname
+                                                    </td>
+                                                    <td>
+                                                        @item.filepath
+                                                    </td>
+                                                    <td>
+                                                        @item.videoDate
+                                                    </td>
+                                                    <td>
+                                                        @item.fromtime
+                                                    </td>
+                                                    <td>
+                                                        @item.totime
+                                                    </td>
+                                                    <td>
+                                                        <input type="button" class="btn btn-outline-secondary" name="Edit" value="Edit" onclick="updateValue(@item.systemid)" />
+                                                        <input type="button" class="btn btn-danger" name="Delete" value="Delete" onclick="deleteValue(@item.systemid)" />
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
                                         else
                                         {
                                             <tr>
                                                 <td colspan="12" style="text-align:center;"><span>No Data Found</span></td>
                                             </tr>
                                         }
-                            }
-                            else
-                            {
-                                <tr>
-                                    <td colspan="12" style="text-align:center;"><span>No Data Found</span></td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="12" style="text-align:center;"><span>No Data Found</span></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
-            
-    </section>
-</div>
+            </div>
+        </section>
+    </div>
 </form>
 <script>
-    $(document).ready(function(){
+    $(document).ready(function () {
         $('#ddlsystem').val('');
-       var today = new Date();
-           $('#dtVideodate').val(today);
-            var day = ("0" + today.getDate()).slice(-2);
-            var month = ("0" + (today.getMonth() + 1)).slice(-2); // January is 0!
-            var year = today.getFullYear();
+        var today = new Date();
+        $('#dtVideodate').val(today);
+        var day = ("0" + today.getDate()).slice(-2);
+        var month = ("0" + (today.getMonth() + 1)).slice(-2); // January is 0!
+        var year = today.getFullYear();
 
-            // Format the date as YYYY-MM-DD
-            var minDate = year + "-" + month + "-" + day;
+        // Format the date as YYYY-MM-DD
+        var minDate = year + "-" + month + "-" + day;
         $('#dtVideoDate').attr('min', minDate);
     });
-    $('#btnUpload').on('click', function(event){
-        
-        var systemname=$('#ddlsystem').val();
-        var uploadfile=$('#file').val();
-        var vdate= $('#dtVideoDate').val();
-        var ftime=$('#dtFromTime').val();
-        var ttime=$('#dtToTime').val();
-        if(systemname == "" || uploadfile == "" || vdate == "" || ftime == "00:00:00" || ttime == "00:00:00" || vdate=="0001-01-01")
-        {
+    $('#btnUpload').on('click', function (event) {
+
+        var systemname = $('#ddlsystem').val();
+        var uploadfile = $('#file').val();
+        var vdate = $('#dtVideoDate').val();
+        var ftime = $('#dtFromTime').val();
+        var ttime = $('#dtToTime').val();
+        if (systemname == "" || uploadfile == "" || vdate == "" || ftime == "00:00:00" || ttime == "00:00:00" || vdate == "0001-01-01") {
             alert("Please Give Valid Input");
             event.preventDefault();
         }
     });
 
-    function updateValue(sysid)
-    {
-        $('#ddlsystem').val(sysid); 
+    function updateValue(sysid) {
+        $('#ddlsystem').val(sysid);
     }
     function deleteValue(sysid)
     {
-        
+       
         $.ajax({
-            url:'/Master/deleteFileMapping',
-            type:'POST',
-            data:{systemid:sysid},
-            catch:false,
-            async:false,
-            success: function(result){
-                if(result > 0)
-                {
-                     alert('Delete Successfully');
-                     window.location.href = '/Master/MasterDetails';
+            url: '/Master/deleteFileMapping',
+            type: 'POST',
+            data: { systemid: sysid },
+            catch: false,
+            async: false,
+            success: function (result) {
+                if (result > 0) {
+                    alert('Delete Successfully');
+                    window.location.href = '/Master/MasterDetails';
                 }
-                else
-                {
-                alert("Not Deleted");
+                else {
+                    alert("Not Deleted");
                 }
             },
-            Error:function(result){
-                 alert(result);
+            Error: function (result) {
+                alert(result);
             },
 
         });
     }
-    
-        
 </script>
 <style>
-    .btn
-    {
-    height: 2em;
-    font-family: serif;
+    .btn {
+        height: 2em;
+        font-family: serif;
     }
 </style>

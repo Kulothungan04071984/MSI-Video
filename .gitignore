@@ -361,3 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/MSI/Models/DataManagementcs.cs
+/MSI/Models/FileMappingDetails.cs
+/MSI/Views/Master/MasterDetails.cshtml
+/MSI/Views/PlayVideo/VideoPlaying.cshtml
