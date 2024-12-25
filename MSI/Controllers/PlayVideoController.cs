@@ -29,8 +29,13 @@ namespace MSI.Controllers
         {
             writeErrorMessage("PlayVideoController", "VideoPlaying Enter");
             // Get the device name (machine name)
+<<<<<<< HEAD
          //   string deviceName =await Process_systemname();
             string deviceName = "10.10.120.218"; // Testing
+=======
+             string deviceName =await Process_systemname();
+            // string deviceName = "10.10.120.83"; // Testing
+>>>>>>> f8f5666887bebf66b9db2abe0a0f0c2fb5fa0a49
             DateOnly currentDate1 = DateOnly.FromDateTime(DateTime.Now);
             string currentDate2 = currentDate1.ToString("yyyy-MM-dd");
             String currentDate = currentDate2.Replace('/', '-');
@@ -60,7 +65,7 @@ namespace MSI.Controllers
                 }
 
                 // Log the attempt to copy the file
-                _logger.LogInformation($"Attempting to copy video from {networkPath} to {videoFilePath}");
+              //  _logger.LogInformation($"Attempting to copy video from {networkPath} to {videoFilePath}");
 
                 // Use file I/O to copy the file
                 //if (Directory.Exists(videoFilePath))
@@ -69,10 +74,10 @@ namespace MSI.Controllers
                 writeErrorMessage(networkPath, "Strat Copy the video File");
                 await Task.Run(() => System.IO.File.Copy(npath, videoFilePath, true));
                 //}
-                writeErrorMessage(networkPath, "End Copy the video File");
+                writeErrorMessage(videoFilePath +'-' + dname, "End Copy the video File");
 
-                _logger.LogInformation($"Video copied successfully to {videoFilePath}");
-                ViewBag.VideoFolderPath = dname + ".mp4";
+                // _logger.LogInformation($"Video copied successfully to {videoFilePath}");
+                ViewBag.VideoFolderPath = dname + ".MP4";
                 // ViewBag.UserType = Request.Query[userType].ToString();
                 ViewBag.UserType = userType;
                 return View();
