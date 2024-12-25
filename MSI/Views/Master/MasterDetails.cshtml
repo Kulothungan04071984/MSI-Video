@@ -72,8 +72,8 @@
             </div>
             <div class="row">
                 <div class="col-lg-0">
-                    <div class="card" style="padding:1%;">
-                        <div class="tab-content" style="height:300px;">
+                    <div class="card" style="padding:1%;height:350px;">
+                        <div class="tab-content" style="height:320px;overflow:scroll;">
                             <table class="table table-responsive table-bordered" style="overflow:scroll;">
                                 <thead class="text-center">
                                     <tr>
@@ -128,8 +128,8 @@
                                                         @item.totime
                                                     </td>
                                                     <td>
-                                                        <input type="button" class="btn btn-outline-secondary" name="Edit" value="Edit" onclick="updateValue(@item.systemid)" />
-                                                        <input type="button" class="btn btn-danger" name="Delete" value="Delete" onclick="deleteValue(@item.systemid)" />
+                                                        <input type="button" class="btn btn-outline-secondary" style="width:40%;" name="Edit" value="Edit" onclick="updateValue(@item.systemid)" />
+                                                        <input type="button" class="btn btn-danger" name="Delete" style="width:50%;" value="Delete" onclick="deleteValue(@item.systemid)" />
                                                     </td>
                                                 </tr>
                                             }
