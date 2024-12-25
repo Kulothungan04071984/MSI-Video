@@ -185,8 +185,9 @@
     function updateValue(sysid) {
         $('#ddlsystem').val(sysid);
     }
-    function deleteValue(sysid) {
-
+    function deleteValue(sysid)
+    {
+       
         $.ajax({
             url: '/Master/deleteFileMapping',
             type: 'POST',
