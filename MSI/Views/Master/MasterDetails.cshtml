@@ -20,18 +20,9 @@
 
                         <div class="row">
                             <div class="col-lg-6" style="padding:1.6%;">
-                                @*   System Name :
-                                @Html.DropDownList("Systemid", new SelectList(ViewBag.computerName, "Systemid", "SystemName")) *@
-
-                                <div style="padding:2%;">System Name</div>
-                                @*    <select class="form-control" ">
-                                @foreach (var item in ViewBag.computerName)
-                                {
-                                <option> @item</option>
-                                }
-                                </select> *@
+                                <div style="padding:2%;">Stage Name</div>
                                 <div>
-                                    @Html.DropDownListFor(model => model.systemid, Model.lstSystem, "Select an SystemName", new { @id = "ddlsystem", @class = "form-control" })
+                                    @Html.DropDownListFor(model => model.systemid, Model.lstSystem, "Select an Stage Name", new { @id = "ddlsystem", @class = "form-control" })
                                 </div>
                             </div>
                             <div class="col-lg-6" style="padding:1.8%;">
