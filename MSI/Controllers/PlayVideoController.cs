@@ -31,10 +31,8 @@ namespace MSI.Controllers
             // Get the device name (machine name)
 
          //   string deviceName =await Process_systemname();
-          //  string deviceName = "10.10.120.218"; // Testing
-
-             string deviceName =await Process_systemname();
-           // string deviceName = "10.10.120.234"; // Testing
+            string deviceName = "10.10.120.218"; // Testing
+                
             DateOnly currentDate1 = DateOnly.FromDateTime(DateTime.Now);
             string currentDate2 = currentDate1.ToString("yyyy-MM-dd");
             String currentDate = currentDate2.Replace('/', '-');
@@ -52,8 +50,14 @@ namespace MSI.Controllers
             string wwwrootPath = _webHostEnvironment.WebRootPath;
             writeErrorMessage(wwwrootPath, "WWW root path Enter");
             string videoFolderPath = Path.Combine(wwwrootPath, "videos");
-            string dname = deviceName.Replace(".", "");
+            string d1name = DateTime.Now.ToString("HH:mm:ss");
+            d1name = d1name.Replace("-", "");
+            d1name = d1name.Replace(":", "");
+            d1name = d1name.Replace(" ", "");
+            string d2name = deviceName.Replace(".", "");
+            string dname = d2name + d1name;
             writeErrorMessage(dname, "DeviceName");
+
             string videoFilePath = Path.Combine(videoFolderPath, dname + ".mp4");
             writeErrorMessage(videoFilePath, "VideoFilePath Enter");
             try
