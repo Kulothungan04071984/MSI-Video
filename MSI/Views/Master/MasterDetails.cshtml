@@ -129,7 +129,7 @@
                                                     </td>
                                                     <td>
                                                         <input type="button" class="btn btn-outline-secondary" style="width:40%;" name="Edit" value="Edit" onclick="updateValue(@item.systemid)" />
-                                                        <input type="button" class="btn btn-danger" name="Delete" style="width:50%;" value="Delete" onclick="deleteValue(@item.systemid)" />
+                                                        <input type="button" class="btn btn-danger" name="Delete" value="Delete" onclick="deleteValue(@item.systemid,'@item.videoDate','@item.fromtime','@item.totime')" />
                                                     </td>
                                                 </tr>
                                             }
@@ -185,13 +185,12 @@
     function updateValue(sysid) {
         $('#ddlsystem').val(sysid);
     }
-    function deleteValue(sysid)
-    {
-       
+    function deleteValue(sysid, vdate, ftime, ttime) {
+        debugger;
         $.ajax({
             url: '/Master/deleteFileMapping',
             type: 'POST',
-            data: { systemid: sysid },
+            data: { systemid: sysid, videoDate: vdate, fromtime: ftime, totime: ttime },
             catch: false,
             async: false,
             success: function (result) {

@@ -232,7 +232,7 @@ namespace MSI.Models
             return null;
         }
 
-        public int deleteFileMapping(int fileMappingId)
+        public int deleteFileMapping(int fileMappingId,string videoDate, string fromtime, string totime)
         {
             int resultDelete = 0;
             try
@@ -243,6 +243,9 @@ namespace MSI.Models
                     {
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@systemid", fileMappingId);
+                        command.Parameters.AddWithValue("@videodate", videoDate);
+                        command.Parameters.AddWithValue("@fromTime", fromtime);
+                        command.Parameters.AddWithValue("@toTime", totime);
                         con.Open();
                         resultDelete = command.ExecuteNonQuery();
                         con.Close();
