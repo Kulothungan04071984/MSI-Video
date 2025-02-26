@@ -424,5 +424,46 @@ namespace MSI.Models
             }
             return result;
         }
+
+        public List<DocVerified> getDocVerifiedList()
+        {
+            var lstDocVerified = new List<DocVerified>();
+            var objDocVerified = new DocVerified();
+            try
+            {
+                using (var connection = new SqlConnection(ConnectionString))
+                using (var cmd = new SqlCommand("pro_getDocDetails", connection))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    connection.Open();
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            objDocVerified = new DocVerified
+                            {
+                                docId = Convert.ToInt32(reader["id"]),
+                                empId = reader["Emp_id"].ToString(),
+                                empName = reader["Emp_name"].ToString(),
+                                docName = reader["Doc_name"].ToString(),
+                                docDateTime = reader["Upload_time"].ToString(),
+                                docType = reader["Doc_Type"].ToString(),
+                                docStatus = reader["Doc_status"].ToString(),
+                                isActive = Convert.ToBoolean(reader["IsActive"].ToString())
+                            };
+
+                            lstDocVerified.Add(objDocVerified);
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            catch(Exception ex)
+            {
+                return lstDocVerified;
+            }
+            return lstDocVerified;
+        }
     }
 }

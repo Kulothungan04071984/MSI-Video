@@ -1,12 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MSI.Models;
 
 namespace MSI.Controllers
 {
     public class DocVerifiedController : Controller
     {
+        public readonly DataManagementcs _dataManagementcs;
+        public DocVerifiedController(DataManagementcs dataManagementcs)
+        {
+                _dataManagementcs= dataManagementcs;
+        }
         public IActionResult ShowDocDetails()
         {
-            return View();
+            var resultDocDetails = _dataManagementcs.getDocVerifiedList();
+            return View(resultDocDetails);
         }
     }
 }
