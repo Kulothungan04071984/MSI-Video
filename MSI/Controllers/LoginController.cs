@@ -32,10 +32,14 @@ namespace MSI.Controllers
                 {
                     if (result.Rows[0][0].ToString() == userid && result.Rows[0][1].ToString() == password)
                     {
-                        if (result.Rows[0][2].ToString() == "2")
-                            res = "valid-user";
-                        else
-                            res = "valid";
+                        if (result.Rows[0][2].ToString() == "1")
+                            res = "Prod_Admin";
+                        else if (result.Rows[0][2].ToString()=="2")
+                            res = "Prod_User";
+                        else if (result.Rows[0][2].ToString() == "3")
+                            res = "Doc_Dept";
+                        else 
+                            res = "QA_Dept";
                     }
                     else
                         res = "invalid";
