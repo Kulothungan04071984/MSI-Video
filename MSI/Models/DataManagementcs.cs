@@ -465,5 +465,50 @@ namespace MSI.Models
             }
             return lstDocVerified;
         }
+
+        public int updateDocStatus(int docId)
+        {
+            int updateStatus = 0;
+            try
+            {
+                using (var conn = new SqlConnection(ConnectionString))
+                using (var cmd = new SqlCommand("pro_DocStatusUpdated", conn))
+                {
+                    cmd.CommandType= CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@docid", docId);
+                    conn.Open();
+                    updateStatus = cmd.ExecuteNonQuery();
+                    conn.Close();
+
+                }
+            }
+            catch (Exception ex) {
+                return updateStatus;
+            }
+            return updateStatus;
+        }
+
+        public int updateDocRejectDetails(int docId, string rejectReason)
+        {
+            int updateResult = 0;
+            try
+            {
+                using (SqlConnection con = new SqlConnection(ConnectionString))
+                using (var cmd = new SqlCommand("pro_DocRejectStatus", con))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@docid", docId);
+                    cmd.Parameters.AddWithValue("@rejectReason", rejectReason);
+                    con.Open();
+                    updateResult = cmd.ExecuteNonQuery();
+                    con.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                return updateResult;
+            }
+            return updateResult;
+        }
     }
 }

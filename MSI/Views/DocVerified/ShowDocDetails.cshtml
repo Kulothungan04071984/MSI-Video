@@ -44,7 +44,7 @@
                                                         <td>@item.docDateTime</td>
                                                         <td>@item.docType</td>
                                                         <td>@item.docStatus</td>
-                                                        <td><input type="button" class="btn btn-primary" name="View" value="View" id="btnView" /></td>
+                                                        <td><input type="button" class="btn btn-primary" name="View" value="View" onclick="ViewDocument('@item.docId')" id="btnView" /></td>
                                                     </tr>
                                                 }
 
@@ -78,6 +78,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">Documnet Verified</h5>
+                        <input type="hidden" id="hdndocid" />
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -101,7 +102,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                     <textarea style="width:100%;height:100px;"></textarea>
+                     <textarea style="width:100%;height:100px;" id="txtRejectReason" ></textarea>
                     </div>
                     <div class="modal-footer">
                         <button type="button" id="btnSave" class="btn btn-primary">Save</button>
@@ -146,17 +147,85 @@
 
 <script>
         $(document).ready(function () {
-        $("#btnView").click(function () {
-            $("#myModalDocView").modal("show");
-   
-        });
+              $('#hdndocid').val('');
+      
         });
 
+         function ViewDocument(docid) {
+             
+                 $('#hdndocid').val(docid);
+                 $("#myModalDocView").modal("show");
+         }
+            
         $('#btnReject').click(function(){
         $("#myModalDocView").modal("hide");
         $('#myModalReject').modal('show');
         });
        
-    
+        $('#btnApprove').click(function()
+        {
+            
+    var docid=$('#hdndocid').val();
+    if(docid != '' && docid != null){
+    $.ajax({
+        url:'/DocVerified/docStatus',
+        dataType:'json',
+        data:{Docid:docid},
+        catch:false,
+        async:false,
+        success: function(result){
+            if(result > 0)
+            {
+            alert("Approved : Status Updated Successfully");
+            window.location.href="/DocVerified/ShowDocDetails";
+            }
+            else
+            alert("Not Updated");
+
+             $("#myModalDocView").modal("hide");
+        },
+        error:function(result){
+            alert("Error - " + result);
+              $("#myModalDocView").modal("hide");
+        },
+
+    });
+    }
+    else
+    alert("Dcument id Invalid");
+      });
+
+      $('#btnSave').click(function(){
+          
+          var rejectReason = $('#txtRejectReason').val();
+           var docid=$('#hdndocid').val();
+          if(rejectReason != '' && rejectReason != null)
+          {
+              $.ajax({
+                  url:'/DocVerified/docRejectStatusUpdate',
+                  dataType:'json',
+                  data:{Docid :docid,RejectReason:rejectReason  },
+                  catch:false,
+                  async:false,
+                  success:function(result){
+                      if(result > 0)
+                      {
+                      alert("Reject : Status Updated");
+                       window.location.href="/DocVerified/ShowDocDetails";
+                      }
+                      else
+                      alert("Not Updated");
+
+                        $('#myModalReject').modal('hide');
+                  },
+                  error:function(result){
+                      alert("Error - " + result);
+                       $('#myModalReject').modal('hide');
+                  }
+              });
+          }
+          else
+          alert("Please enter valid reason");
+      });
 
 </script>
