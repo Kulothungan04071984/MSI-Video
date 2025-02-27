@@ -1,6 +1,6 @@
 ﻿@model List<DocVerified>
 @{
-    ViewData["Title"] = "ShowDocDetails";
+    ViewData["Title"] = "Fileuploaddetails";
 }
 <head>
 	<script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -113,50 +113,62 @@
         </div>
     </section>
 </div>
-<style>
-    .table-container {
-        max-height: 400px; /* Adjust height as needed */
-        overflow-y: auto;
-    }
-
-    thead th {
-        position: sticky;
-        top: 0;
-        background: #f8f9fa;
-        z-index: 2;
-    }
-
-    .modal-dialog
-    {
-        margin-right: 49%;
-    }
-    .modal-content
-    {
-        width:190%;
-    }
-
-    #pdfViewer
-    {
-       height:30rem;
-        width:100%;
-    }
-
-
-</style>
-
 <script>
-        $(document).ready(function () {
-        $("#btnView").click(function () {
-            $("#myModalDocView").modal("show");
-   
-        });
-        });
+    $(document).ready(function () {
+        $('#ddlsystem').val('');
+        var today = new Date();
+        $('#dtVideodate').val(today);
+        var day = ("0" + today.getDate()).slice(-2);
+        var month = ("0" + (today.getMonth() + 1)).slice(-2); // January is 0!
+        var year = today.getFullYear();
 
-        $('#btnReject').click(function(){
-        $("#myModalDocView").modal("hide");
-        $('#myModalReject').modal('show');
-        });
-       
-    
+        // Format the date as YYYY-MM-DD
+        var minDate = year + "-" + month + "-" + day;
+        $('#dtVideoDate').attr('min', minDate);
+    });
+    $('#btnUpload').on('click', function (event) {
 
+        var systemname = $('#ddlsystem').val();
+        var uploadfile = $('#file').val();
+        var vdate = $('#dtVideoDate').val();
+        var ftime = $('#dtFromTime').val();
+        var ttime = $('#dtToTime').val();
+        if (systemname == "" || uploadfile == "" || vdate == "" || ftime == "00:00:00" || ttime == "00:00:00" || vdate == "0001-01-01") {
+            alert("Please Give Valid Input");
+            event.preventDefault();
+        }
+    });
+
+    function updateValue(sysid) {
+        $('#ddlsystem').val(sysid);
+    }
+    function deleteValue(sysid, vdate, ftime, ttime) {
+        debugger;
+        $.ajax({
+            url: '/Master/deleteFileMapping',
+            type: 'POST',
+            data: { systemid: sysid, videoDate: vdate, fromtime: ftime, totime: ttime },
+            catch: false,
+            async: false,
+            success: function (result) {
+                if (result > 0) {
+                    alert('Delete Successfully');
+                    window.location.href = '/Master/MasterDetails';
+                }
+                else {
+                    alert("Not Deleted");
+                }
+            },
+            Error: function (result) {
+                alert(result);
+            },
+
+        });
+    }
 </script>
+<style>
+    .btn {
+        height: 2em;
+        font-family: serif;
+    }
+</style>
