@@ -9,7 +9,6 @@
         public string docDateTime { get; set; }
         public string docType { get; set; }
         public string docStatus { get; set; }
-
         public bool isActive { get; set; }
     }
 }

@@ -171,13 +171,17 @@
             async:false,
             success: function (result) {
                 if (result != null) {
-                    if (result == 'valid') {
+                    if (result == 'Prod_Admin') {
                         window.location.href = "/Master/MasterDetails";
                     }
-                    else if(result=="valid-user")
-                    {
-                          window.location.href = "/PlayVideo/VideoPlaying?userType=" + result;
-                        
+                    else if (result == "Prod_User") {
+                          window.location.href = "/PlayVideo/VideoPlaying?userType=" + result;                      
+                    }
+                    else if (result == "Doc_Dept") {
+                        window.location.href = "/DocUpload/ShowuploadDetails";
+                    }
+                    else if (result == "QA_Dept") {
+                        window.location.href = "/DocVerified/ShowDocDetails";
                     }
                     else if (result == "invalid") {
                         alert('Please check your username and password');
