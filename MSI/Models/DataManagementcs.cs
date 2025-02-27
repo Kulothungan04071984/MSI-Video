@@ -286,6 +286,7 @@ namespace MSI.Models
             }
             catch (Exception ex)
             {
+                writeErrorMessage(ex.Message.ToString(), "getLoginDetails");
                 return dt;
             }
         }
@@ -311,6 +312,7 @@ namespace MSI.Models
             }
             catch (Exception ex)
             {
+                writeErrorMessage(ex.Message.ToString(), "UpdatePassword");
                 return updateResult;
             }
         }
@@ -410,17 +412,25 @@ namespace MSI.Models
 
         public int deleteSystemid(string deletesystemId)
         {
+
             int result = 0;
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            try
             {
-                using (SqlCommand cmd = new SqlCommand("pro_delete_ipaddress", connection))
+                using (SqlConnection connection = new SqlConnection(ConnectionString))
                 {
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    connection.Open();
-                    cmd.Parameters.AddWithValue("@SystemId", deletesystemId);                   
-                    result = cmd.ExecuteNonQuery();
-                    connection.Close();
+                    using (SqlCommand cmd = new SqlCommand("pro_delete_ipaddress", connection))
+                    {
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                        connection.Open();
+                        cmd.Parameters.AddWithValue("@SystemId", deletesystemId);
+                        result = cmd.ExecuteNonQuery();
+                        connection.Close();
+                    }
                 }
+            }
+            catch (Exception ex) {
+                writeErrorMessage(ex.Message.ToString(), "deleteSystemid");
+                return result;
             }
             return result;
         }
@@ -461,6 +471,7 @@ namespace MSI.Models
             }
             catch(Exception ex)
             {
+                writeErrorMessage(ex.Message.ToString(), "getDocVerifiedList");
                 return lstDocVerified;
             }
             return lstDocVerified;
@@ -483,6 +494,7 @@ namespace MSI.Models
                 }
             }
             catch (Exception ex) {
+                writeErrorMessage(ex.Message.ToString(), "updateDocStatus");
                 return updateStatus;
             }
             return updateStatus;
@@ -506,6 +518,7 @@ namespace MSI.Models
             }
             catch (Exception ex)
             {
+                writeErrorMessage(ex.Message.ToString(), "updateDocRejectDetails");
                 return updateResult;
             }
             return updateResult;

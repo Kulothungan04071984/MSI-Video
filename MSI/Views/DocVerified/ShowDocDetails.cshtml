@@ -106,7 +106,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" id="btnSave" class="btn btn-primary">Save</button>
-                        <button type="button" id-="btnClear" class="btn btn-danger">Clear</button>
+                        <button type="button" id="btnClear" class="btn btn-danger">Clear</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
@@ -196,11 +196,13 @@
       });
 
       $('#btnSave').click(function(){
-          
+          debugger;
           var rejectReason = $('#txtRejectReason').val();
            var docid=$('#hdndocid').val();
           if(rejectReason != '' && rejectReason != null)
           {
+              if(rejectReason.length >= 3){
+              
               $.ajax({
                   url:'/DocVerified/docRejectStatusUpdate',
                   dataType:'json',
@@ -222,10 +224,17 @@
                       alert("Error - " + result);
                        $('#myModalReject').modal('hide');
                   }
+                  
               });
+              }
           }
           else
           alert("Please enter valid reason");
+      });
+
+      $('#btnClear').click(function(){
+          debugger;
+          $('#txtRejectReason').val('');
       });
 
 </script>
