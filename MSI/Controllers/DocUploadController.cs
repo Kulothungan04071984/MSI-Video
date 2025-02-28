@@ -38,6 +38,7 @@ namespace MSI.Controllers
             ViewBag.DomainSid = domainSid;
             //ViewBag.computerName = systemName;
             Fileuploaddetails.lstcustomers = _domainServices.getcustomernames();
+            Fileuploaddetails.lstfgnames = new List<SelectListItem>();
             Fileuploaddetails.lstdocVerifieds = _domainServices.getFileUploaddetails();
             return View(Fileuploaddetails);
         }
@@ -177,21 +178,22 @@ namespace MSI.Controllers
             return Json(resultdel);
         }
         [HttpGet]
-        public JsonResult Getfgnamefromcustomer(int customerId)
+        public JsonResult GetFgNamesByCustomer(int customerId)
         {
             try
             {
-                Fileuploaddetails Fileuploaddetails = new Fileuploaddetails();
-                Fileuploaddetails.lstfgnames = _domainServices.getfgnames(customerId);
-                return Json(Fileuploaddetails);
+                // Get the list of FG Names for the selected customer
+                var fgNames = _domainServices.getfgnames(customerId);
+
+                // Return the list of FG Names as JSON
+                return Json(fgNames);
             }
             catch (Exception ex)
             {
-                // Log error and return an empty response or error message
-                writeErrorMessage(ex.Message, "getfgnamefromcustomer");
-                return Json(new { error = "An error occurred while fetching FG names." });
+                return Json(new { success = false, message = ex.Message });
             }
         }
+
 
         public void writeErrorMessage(string errorMessage, string functionName)
         {
