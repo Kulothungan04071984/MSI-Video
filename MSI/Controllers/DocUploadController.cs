@@ -70,14 +70,7 @@ namespace MSI.Controllers
                             if (Directory.Exists(path))
                             {
                                 //Directory.CreateDirectory(uploadVideoFile);
-                                var filePath = Path.Combine(uploadVideoFile, file.FileName);
-                                using (var filestream = new FileStream(filePath, FileMode.Create))
-                                {
-                                    await file.CopyToAsync(filestream);
-                                    writeErrorMessage(filePath.ToString(), "File Copy successfully");
-                                }
-                                var thumbnailPath = Path.Combine(uploadVideoFile, $"{Path.GetFileNameWithoutExtension(file.FileName)}.jpg");
-                                ExtractThumbnail(filePath, thumbnailPath);
+                             
                                 var uploadDetails1 = new Fileuploaddetails();
                                 //uploadDetails1.empId = string.IsNullOrEmpty(fileuploaddetails.empId.ToString()) ? "0" : fileuploaddetails.empId;
                                 uploadDetails1.empId = "123";
@@ -85,21 +78,41 @@ namespace MSI.Controllers
                                 uploadDetails1.docDateTime = DateTime.Today.ToString();
                                 uploadDetails1.docName = "abc";
                                 uploadDetails1.docType = "Reference copy";
-                                uploadDetails1.filepath=filePath;
+                                //uploadDetails1.filepath=filePath;
+                                uploadDetails1.filepath = string.Empty;
 
                                 //Fileuploaddetails.systemname = Fileuploaddetails.lstSystem.Where(a => a.Value == Fileuploaddetails.systemid.ToString()).Select(a => a.Text.ToString()).FirstOrDefault();
                                 //Fileuploaddetails.systemname = "";
-                                result = _domainServices.uploaddatadetails(uploadDetails1);
-                                writeErrorMessage(result.ToString(),
-                                    "Video File Upload successfully");
+                                result = _domainServices.uploaddatadetails(uploadDetails1); 
                                 if (result > 0)
                                 {
-                                    ViewBag.Message = "Document uploaded successfully";
-                                    ViewBag.ThumbnailPath = $"/uploads/{Path.GetFileName(thumbnailPath)}";
-                                    fileuploaddetails.lstcustomers = _domainServices.getcustomernames();
-                                    //fileuploaddetails.lstfgnames = -_domainServices.getfgnames(string cus);
-                                    fileuploaddetails.lstdocVerifieds = _domainServices.getFileUploaddetails();
-                                    objupload1 = fileuploaddetails;
+                                    //docName Created
+                                    var docName = result +  DateTime.Today.ToString();
+                                    docName = docName.Replace("/", "");
+                                    docName = docName.Replace("-", "");
+                                    var pathname = uploadVideoFile;
+                                    pathname = pathname + "//" + docName;
+                                    var filepathUpdate=_domainServices.updateFilePath(result, pathname);
+                                    if (filepathUpdate > 0)
+                                    {
+                                        var filePath = Path.Combine(uploadVideoFile, docName);
+                                        using (var filestream = new FileStream(filePath, FileMode.Create))
+                                        {
+                                            await file.CopyToAsync(filestream);
+                                            writeErrorMessage(filePath.ToString(), "File Copy successfully");
+                                        }
+                                        var thumbnailPath = Path.Combine(uploadVideoFile, $"{Path.GetFileNameWithoutExtension(docName)}.jpg");
+                                        ExtractThumbnail(filePath, thumbnailPath);
+                                        writeErrorMessage(result.ToString(),
+                                        "Video File Upload successfully");
+
+                                        ViewBag.Message = "Document uploaded successfully";
+                                        ViewBag.ThumbnailPath = $"/uploads/{Path.GetFileName(thumbnailPath)}";
+                                        fileuploaddetails.lstcustomers = _domainServices.getcustomernames();
+                                        //fileuploaddetails.lstfgnames = -_domainServices.getfgnames(string cus);
+                                        fileuploaddetails.lstdocVerifieds = _domainServices.getFileUploaddetails();
+                                        objupload1 = fileuploaddetails;
+                                    }
                                 }
                                 else
                                 {
