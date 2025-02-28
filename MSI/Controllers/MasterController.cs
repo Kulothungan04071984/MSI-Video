@@ -122,7 +122,8 @@ namespace MSI.Controllers
                     engine.GetThumbnail(inputFile, outputFile, options);
                 }
             }
-            catch (Exception ex) { 
+            catch (Exception ex) {
+                writeErrorMessage(ex.Message.ToString(), "ExtractThumbnail");
             }
         }
         [HttpPost]
@@ -136,6 +137,7 @@ namespace MSI.Controllers
              
             catch(Exception ex)
             {
+                writeErrorMessage(ex.Message.ToString(), "deleteFileMapping");
                 resultdel = 0;
             }
             return Json(resultdel);

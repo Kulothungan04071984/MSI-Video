@@ -678,5 +678,29 @@ namespace MSI.Models
             }
             return updateResult;
         }
+        public int updateFilePath(int docid, string filepath)
+        {
+            var resultPathUpdate = 0;
+            try
+            {
+                using(SqlConnection con = new SqlConnection(ConnectionString))
+                using (SqlCommand cmd = new SqlCommand("", con))
+                {
+                    cmd.CommandType= CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@docid",docid);
+                    cmd.Parameters.AddWithValue("@filepath", filepath);
+                    con.Open();
+                    resultPathUpdate = cmd.ExecuteNonQuery();
+                    con.Close();
+                }
+
+            }
+            catch (Exception ex) {
+                writeErrorMessage(ex.Message.ToString(), "updateDocRejectDetails");
+                return resultPathUpdate;
+            }
+
+            return resultPathUpdate;
+        }
     }
 }
