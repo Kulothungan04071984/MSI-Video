@@ -3,7 +3,9 @@ using System.Data;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using System.Security.Principal;
+using System.Xml.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Microsoft.Data.SqlClient;
 namespace MSI.Models
 {
@@ -16,7 +18,7 @@ namespace MSI.Models
         public DataManagementcs(IConfiguration configuration)
         {
             ConnectionString = configuration.GetConnectionString("conn");
-            ConnectionString1 = configuration.GetConnectionString("conn1");
+            ConnectionString1 = configuration.GetConnectionString("conn2");
         }
         public int uploaddatainserted(UploadFileDetails objFileDetails)
         {
@@ -172,7 +174,79 @@ namespace MSI.Models
             }
         }
 
-        public List<FileMappingDetails> getFileMappingDetails()
+        public List<SelectListItem> getcustomernames()
+        {
+            var customlist = new List<SelectListItem>();
+            try
+            {
+                DataTable dtcustomValue = new DataTable();
+
+                using (SqlConnection customValue = new SqlConnection(ConnectionString1))
+                {
+                    using (SqlCommand cmdSetValue = new SqlCommand("pro_getCustomerName", customValue))
+                    {
+                        cmdSetValue.CommandType = CommandType.StoredProcedure;
+                        using (SqlDataAdapter daGetValue = new SqlDataAdapter(cmdSetValue))
+                        {
+                            daGetValue.Fill(dtcustomValue);
+                            if (dtcustomValue.Rows.Count > 0)
+                            {
+                                foreach (DataRow row in dtcustomValue.Rows)
+                                {
+                                    customlist.Add(new SelectListItem { Value = row["cutomer_id"].ToString(), Text = row["customer_name"].ToString() });
+                                }
+                            }
+                        }
+                    }
+                }
+                return  customlist;
+            }
+            catch (Exception ex)
+            {
+                writeErrorMessage(ex.Message.ToString(), "getcustomernames");
+                return customlist;
+            }
+        }
+
+        public List<SelectListItem> getfgnames(int customerId)
+        {
+            var Fglist = new List<SelectListItem>();
+            try
+            {
+                DataTable dtFgValue = new DataTable();
+
+                using (SqlConnection FgValue = new SqlConnection(ConnectionString1))
+                {
+                    using (SqlCommand cmdFgValue = new SqlCommand("pro_getFgName", FgValue))
+                    {
+                        
+                        using (SqlDataAdapter daGetValue = new SqlDataAdapter(cmdFgValue))
+                        {
+                            cmdFgValue.CommandType = CommandType.StoredProcedure;
+                            cmdFgValue.Parameters.AddWithValue("@Customer_id", customerId);
+
+                            daGetValue.Fill(dtFgValue);
+                            if (dtFgValue.Rows.Count > 0)
+                            {
+                                foreach (DataRow row in dtFgValue.Rows)
+                                {
+                                    Fglist.Add(new SelectListItem { Value = "", Text = row["customer_name"].ToString() });
+                                }
+                            }
+                        }
+                    }
+                }
+                return Fglist;
+            }
+            catch (Exception ex)
+            {
+                writeErrorMessage(ex.Message.ToString(), "getfgnames");
+                return Fglist;
+            }
+        }
+    
+
+    public List<FileMappingDetails> getFileMappingDetails()
         {
             var lstFileMapping = new List<FileMappingDetails>();
             FileMappingDetails objFileMapping;

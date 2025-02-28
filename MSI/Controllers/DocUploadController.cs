@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using MSI.Models;
+using static Azure.Core.HttpHeader;
 
 namespace MSI.Controllers
 {
@@ -29,14 +30,15 @@ namespace MSI.Controllers
             //_webHostEnvironment = webHostEnvironment;
             // _iinsertDetails = iinsertDetails;
         }
-        public IActionResult ShowuploadDetails()
+        public IActionResult ShowuploadDetails(int customerId)
         {
             Fileuploaddetails Fileuploaddetails = new Fileuploaddetails();
             var domainSid = _domainServices.GetDomainSid();
             //var systemName=_domainServices.GetAllConnectedSystemNames();
             ViewBag.DomainSid = domainSid;
             //ViewBag.computerName = systemName;
-            //Fileuploaddetails.lstSystem = _domainServices.getSystemNames();
+            Fileuploaddetails.lstcustomers = _domainServices.getcustomernames();
+            Fileuploaddetails.lstfgnames   =   _domainServices.getfgnames(customerId);
             Fileuploaddetails.lstdocVerifieds = _domainServices.getFileUploaddetails();
             return View(Fileuploaddetails);
         }
@@ -94,8 +96,8 @@ namespace MSI.Controllers
                                 {
                                     ViewBag.Message = "Document uploaded successfully";
                                     ViewBag.ThumbnailPath = $"/uploads/{Path.GetFileName(thumbnailPath)}";
-                                    //fileuploaddetails.lstcustomers = _domainServices.getcustomernames();
-                                    //fileuploaddetails.lstfgnames = -_domainServices.getfgnames(string cus)
+                                    fileuploaddetails.lstcustomers = _domainServices.getcustomernames();
+                                    //fileuploaddetails.lstfgnames = -_domainServices.getfgnames(string cus);
                                     fileuploaddetails.lstdocVerifieds = _domainServices.getFileUploaddetails();
                                     objupload1 = fileuploaddetails;
                                 }
