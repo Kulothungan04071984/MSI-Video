@@ -69,8 +69,15 @@ namespace MSI.Models
                         cmd.Parameters.AddWithValue("@docname", objFileDetails1.docName);
                         cmd.Parameters.AddWithValue("@doctype", objFileDetails1.docType);
                         cmd.Parameters.AddWithValue("@docfilepath", objFileDetails1.filepath);
+                        SqlParameter outputparam = new SqlParameter("@InsertedId", SqlDbType.Int)
+                        {
+                            Direction = ParameterDirection.Output
+                        };
+                        cmd.Parameters.Add(outputparam);
+
                         conn.Open();
-                        result = cmd.ExecuteNonQuery();
+                        cmd.ExecuteNonQuery();
+                        result = Convert.ToInt32(outputparam.Value);
                         conn.Close();
 
                     }
