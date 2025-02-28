@@ -230,7 +230,7 @@ namespace MSI.Models
                             {
                                 foreach (DataRow row in dtFgValue.Rows)
                                 {
-                                    Fglist.Add(new SelectListItem { Value = "", Text = row["customer_name"].ToString() });
+                                    Fglist.Add(new SelectListItem { Value = row["Fg_id"].ToString(), Text = row["Fg_Name"].ToString() });
                                 }
                             }
                         }

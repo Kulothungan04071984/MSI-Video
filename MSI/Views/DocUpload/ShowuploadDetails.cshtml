@@ -28,7 +28,7 @@
                                         @Html.DropDownListFor(model => model.fgid, Model.lstfgnames, "Select an FG Name", new { @id = "ddlfg", @class = "form-control" })
                                     </div>
                                </div> 
-@*                                 <div style="padding:1%">
+                            @* <div style="padding:1%">
                                     <input type="text" id="foldername" placeholder="Enter your filename">
                                 </div> *@
 
@@ -156,7 +156,7 @@
         if (customerId) {
             // Make an AJAX call to get the FG Names based on the selected Customer ID
             $.ajax({
-                url: '@Url.Action("ShowuploadDetails", "DocUpload")', // Controller/Action URL
+                url: '/DocUpload/getfgnamefromcustomer',
                 type: 'GET',
                 data: { customerId: customerId },
                 success: function (data) {

@@ -30,7 +30,7 @@ namespace MSI.Controllers
             //_webHostEnvironment = webHostEnvironment;
             // _iinsertDetails = iinsertDetails;
         }
-        public IActionResult ShowuploadDetails(int customerId)
+        public IActionResult ShowuploadDetails()
         {
             Fileuploaddetails Fileuploaddetails = new Fileuploaddetails();
             var domainSid = _domainServices.GetDomainSid();
@@ -38,7 +38,6 @@ namespace MSI.Controllers
             ViewBag.DomainSid = domainSid;
             //ViewBag.computerName = systemName;
             Fileuploaddetails.lstcustomers = _domainServices.getcustomernames();
-            Fileuploaddetails.lstfgnames   =   _domainServices.getfgnames(customerId);
             Fileuploaddetails.lstdocVerifieds = _domainServices.getFileUploaddetails();
             return View(Fileuploaddetails);
         }
@@ -164,6 +163,23 @@ namespace MSI.Controllers
             }
             return Json(resultdel);
         }
+        [HttpGet]
+        public JsonResult Getfgnamefromcustomer(int customerId)
+        {
+            try
+            {
+                Fileuploaddetails Fileuploaddetails = new Fileuploaddetails();
+                Fileuploaddetails.lstfgnames = _domainServices.getfgnames(customerId);
+                return Json(Fileuploaddetails);
+            }
+            catch (Exception ex)
+            {
+                // Log error and return an empty response or error message
+                writeErrorMessage(ex.Message, "getfgnamefromcustomer");
+                return Json(new { error = "An error occurred while fetching FG names." });
+            }
+        }
+
         public void writeErrorMessage(string errorMessage, string functionName)
         {
             var systemPath = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Syrma_Training_Errors" + "\\" + DateTime.Now.ToString("dd-MM-yyyy");
