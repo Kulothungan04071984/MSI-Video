@@ -1,0 +1,214 @@
+﻿@model MSI.Models.Fileuploaddetails
+@{
+    ViewData["Title"] = "ShowuploadDetails";
+}
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+<form asp-action="ShowuploadDetails" method="post" enctype="multipart/form-data">
+    <div class="container">
+        <section>
+            <div class="card">
+                <div class="card-title">
+                    <div class="card-body">
+                        <div class="card-header">
+                            <span>File Uploading</span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-6" style="padding:1.8%;">
+                                @* <div style="padding:1%"><span>Document Name</span></div> *@
+                                <div style="padding:1%;">Customer Name</div>
+                                    <div>
+                                        @Html.DropDownListFor(model => model.customid, Model.lstcustomers, "Select an customer Name", new { @id = "ddlcustomid", @class = "form-control" })
+                                    </div>
+                                </div>
+                                <div style="padding:1%;">Fg Name</div>
+                                    <div>
+                                        @Html.DropDownListFor(model => model.fgid, Model.lstfgnames, "Select an FG Name", new { @id = "ddlfg", @class = "form-control" })
+                                    </div>
+                               </div> 
+@*                                 <div style="padding:1%">
+                                    <input type="text" id="foldername" placeholder="Enter your filename">
+                                </div> *@
+
+                                <div style="padding:1%">
+                                    <span>File Upload</span>
+                                </div>
+                                <div style="padding:1%">
+                                    <input type="file" class="form-control" id="files" name="files" accept="application/pdf, video/*" multiple>
+                                </div>
+@* 
+                                <div style="padding:1%">
+                                    <div class="col-3">
+                                        <button id="btnAdd" class="btn btn-primary" style="margin-top:22%;margin-left:30%;">Add File</button>
+                                    </div>
+                                </div> *@
+
+                                <div style="padding:1%">
+                                    <div class="col-3">
+                                        <button id="btnUpload" class="btn btn-primary" style="margin-top:22%;margin-left:30%;">Upload</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-0" style="color:green;">
+                                @ViewBag.Message
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-0">
+                    <div class="card" style="padding:1%;height:350px;">
+                        <div class="tab-content" style="height:320px;overflow:scroll;">
+                            <table class="table table-responsive table-bordered" style="overflow:scroll;">
+                                <thead class="text-center">
+                                    <tr>
+                                        <th>Doc ID</th>
+                                        <th>Emp ID</th>
+                                        <th>Emp Name</th>
+                                        <th>Doc Name</th>
+                                        <th>Doc Upload Time</th>
+                                        <th>Doc Type</th>
+                                        <th>Doc Status</th>
+                                        <th>Reason</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model != null)
+                                    {
+                                        @if (Model.lstdocVerifieds != null && Model.lstdocVerifieds.Count > 0)
+                                        {
+                                            @foreach (var item in Model.lstdocVerifieds)
+                                            {
+                                                <tr>
+                                                    <td>@item.docId</td>
+                                                    <td>@item.empId</td>
+                                                    <td>@item.empName</td>
+                                                    <td>@item.docName</td>
+                                                    <td>@item.docDateTime</td>
+                                                    <td>@item.docType</td>
+                                                    <td>@item.docStatus</td>
+                                                    <td>@item.Reject_reason</td>
+                                                    <td>
+                                                        <input type="button" class="btn btn-danger" name="Delete" value="Delete" onclick="deleteValue(@item.docId)" />
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                <td colspan="9" style="text-align:center;"><span>No Data Found</span></td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="9" style="text-align:center;"><span>No Data Found</span></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</form>
+
+<script>
+    $(document).ready(function () {
+        $('#ddlcustomid').val('');
+        $('#ddlfg').val('');
+        var today = new Date();
+        $('#dtVideodate').val(today);
+
+        // Format the date as YYYY-MM-DD
+        var day = ("0" + today.getDate()).slice(-2);
+        var month = ("0" + (today.getMonth() + 1)).slice(-2); // January is 0!
+        var year = today.getFullYear();
+        var minDate = year + "-" + month + "-" + day;
+        $('#dtVideoDate').attr('min', minDate);
+    });
+
+    $('#btnUpload').on('click', function (event) {
+        var customer_Name = 
+        var folderName = $('#foldername').val();
+        var files = $('#files')[0].files;
+
+        if (!folderName || files.length === 0) {
+            alert("Please provide a folder name and select at least one file.");
+            event.preventDefault();
+        }
+    });
+    $('#ddlcustomid').on('change', function () {
+        var customerId = $(this).val(); // Get selected customer ID
+
+        if (customerId) {
+            // Make an AJAX call to get the FG Names based on the selected Customer ID
+            $.ajax({
+                url: '@Url.Action("ShowuploadDetails", "DocUpload")', // Controller/Action URL
+                type: 'GET',
+                data: { customerId: customerId },
+                success: function (data) {
+                    // Clear existing FG Name dropdown options
+                    $('#ddlfg').empty();
+
+                    // Add a default "Select" option
+                    $('#ddlfg').append('<option value="">Select an FG Name</option>');
+
+                    // Loop through the returned data and populate the FG dropdown
+                    $.each(data, function (index, item) {
+                        $('#ddlfg').append('<option value="' + item.value + '">' + item.text + '</option>');
+                    });
+                },
+                error: function () {
+                    alert('Error fetching FG Names');
+                }
+            });
+        } else {
+            // Clear FG dropdown if no customer is selected
+            $('#ddlfg').empty();
+            $('#ddlfg').append('<option value="">Select an FG Name</option>');
+        }
+    });
+        
+
+    function deleteValue(docId) {
+        var conf = confirm("Are you sure you want to delete this file?");
+        if (conf == true) {
+            $.ajax({
+                url: '/Master/deleteFileMapping',
+                type: 'POST',
+                data: { docId: docId },
+                success: function (result) {
+                    if (result > 0) {
+                        alert('Delete Successfully');
+                        window.location.href = '/Master/ShowuploadDetails';
+                    } else {
+                        alert("Delete Failed");
+                    }
+                },
+                error: function (result) {
+                    alert(result);
+                }
+            });
+        }
+    }
+</script>
+
+<style>
+    .btn {
+        height: 2em;
+        font-family: serif;
+    }
+</style>

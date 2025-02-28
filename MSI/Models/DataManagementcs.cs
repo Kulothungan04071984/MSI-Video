@@ -3,7 +3,9 @@ using System.Data;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using System.Security.Principal;
+using System.Xml.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Microsoft.Data.SqlClient;
 namespace MSI.Models
 {
@@ -11,10 +13,12 @@ namespace MSI.Models
     public class DataManagementcs
     {
         private readonly string ConnectionString;
+        private readonly string ConnectionString1;
 
         public DataManagementcs(IConfiguration configuration)
         {
             ConnectionString = configuration.GetConnectionString("conn");
+            ConnectionString1 = configuration.GetConnectionString("conn2");
         }
         public int uploaddatainserted(UploadFileDetails objFileDetails)
         {
@@ -44,6 +48,38 @@ namespace MSI.Models
             catch (Exception ex)
             {
                 writeErrorMessage(ex.Message.ToString(), "uploaddatainserted");
+                return result;
+            }
+        }
+
+        public int uploaddatadetails(Fileuploaddetails objFileDetails1)
+        {
+            int result = 0;
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(ConnectionString))
+                {
+                    using (SqlCommand cmd = new SqlCommand("pro_InsertUploaddataDetails", conn))
+                    {
+
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@empid", objFileDetails1.empId);
+                        cmd.Parameters.AddWithValue("@empName", objFileDetails1.empName);
+                        cmd.Parameters.AddWithValue("@docDateTime", objFileDetails1.docDateTime);
+                        cmd.Parameters.AddWithValue("@docname", objFileDetails1.docName);
+                        cmd.Parameters.AddWithValue("@doctype", objFileDetails1.docType);
+                        cmd.Parameters.AddWithValue("@docfilepath", objFileDetails1.filepath);
+                        conn.Open();
+                        result = cmd.ExecuteNonQuery();
+                        conn.Close();
+
+                    }
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writeErrorMessage(ex.Message.ToString(), "uploaddocinserted");
                 return result;
             }
         }
@@ -138,7 +174,79 @@ namespace MSI.Models
             }
         }
 
-        public List<FileMappingDetails> getFileMappingDetails()
+        public List<SelectListItem> getcustomernames()
+        {
+            var customlist = new List<SelectListItem>();
+            try
+            {
+                DataTable dtcustomValue = new DataTable();
+
+                using (SqlConnection customValue = new SqlConnection(ConnectionString1))
+                {
+                    using (SqlCommand cmdSetValue = new SqlCommand("pro_getCustomerName", customValue))
+                    {
+                        cmdSetValue.CommandType = CommandType.StoredProcedure;
+                        using (SqlDataAdapter daGetValue = new SqlDataAdapter(cmdSetValue))
+                        {
+                            daGetValue.Fill(dtcustomValue);
+                            if (dtcustomValue.Rows.Count > 0)
+                            {
+                                foreach (DataRow row in dtcustomValue.Rows)
+                                {
+                                    customlist.Add(new SelectListItem { Value = row["cutomer_id"].ToString(), Text = row["customer_name"].ToString() });
+                                }
+                            }
+                        }
+                    }
+                }
+                return  customlist;
+            }
+            catch (Exception ex)
+            {
+                writeErrorMessage(ex.Message.ToString(), "getcustomernames");
+                return customlist;
+            }
+        }
+
+        public List<SelectListItem> getfgnames(int customerId)
+        {
+            var Fglist = new List<SelectListItem>();
+            try
+            {
+                DataTable dtFgValue = new DataTable();
+
+                using (SqlConnection FgValue = new SqlConnection(ConnectionString1))
+                {
+                    using (SqlCommand cmdFgValue = new SqlCommand("pro_getFgName", FgValue))
+                    {
+                        
+                        using (SqlDataAdapter daGetValue = new SqlDataAdapter(cmdFgValue))
+                        {
+                            cmdFgValue.CommandType = CommandType.StoredProcedure;
+                            cmdFgValue.Parameters.AddWithValue("@Customer_id", customerId);
+
+                            daGetValue.Fill(dtFgValue);
+                            if (dtFgValue.Rows.Count > 0)
+                            {
+                                foreach (DataRow row in dtFgValue.Rows)
+                                {
+                                    Fglist.Add(new SelectListItem { Value = "", Text = row["customer_name"].ToString() });
+                                }
+                            }
+                        }
+                    }
+                }
+                return Fglist;
+            }
+            catch (Exception ex)
+            {
+                writeErrorMessage(ex.Message.ToString(), "getfgnames");
+                return Fglist;
+            }
+        }
+    
+
+    public List<FileMappingDetails> getFileMappingDetails()
         {
             var lstFileMapping = new List<FileMappingDetails>();
             FileMappingDetails objFileMapping;
@@ -180,6 +288,53 @@ namespace MSI.Models
             {
                 writeErrorMessage(ex.Message.ToString(), "getFileMappingDetails");
                 return lstFileMapping;
+            }
+        }
+
+        public List<DocVerified> getFileUploaddetails()
+        {
+            var lstFileuploading = new List<DocVerified>();
+            DocVerified objFileupload;
+            try
+            {
+                using (SqlConnection con = new SqlConnection(ConnectionString))
+
+                {
+                    using (SqlCommand cmd = new SqlCommand("pro_getFileuploadDetails", con))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                        {
+                            using (DataTable dataTable = new DataTable())
+                            {
+                                da.Fill(dataTable);
+                                if (dataTable.Rows.Count > 0)
+                                {
+                                    foreach (DataRow row in dataTable.Rows)
+                                    {
+                                        objFileupload = new DocVerified();
+                                        objFileupload.docId = Convert.ToInt32(row["docId"].ToString());
+                                        objFileupload.empId = Convert.ToInt32(row["Emp_id"].ToString());
+                                        objFileupload.empName = row["Emp_name"].ToString();
+                                        objFileupload.docName = row["Doc_name"].ToString();
+                                        objFileupload.docDateTime = row["Upload_time"].ToString();
+                                        objFileupload.docType = row["Doc_Type"].ToString();
+                                        objFileupload.docStatus = row["Doc_status"].ToString();
+                                        objFileupload.Reject_reason = row["Reject_reason"].ToString();
+                                        lstFileuploading.Add(objFileupload);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                return lstFileuploading;
+            }
+
+            catch (Exception ex)
+            {
+                writeErrorMessage(ex.Message.ToString(), "getFileMappingDetails");
+                return lstFileuploading;
             }
         }
 
@@ -454,7 +609,7 @@ namespace MSI.Models
                             objDocVerified = new DocVerified
                             {
                                 docId = Convert.ToInt32(reader["id"]),
-                                empId = reader["Emp_id"].ToString(),
+                                empId = Convert.ToInt32(reader["Emp_id"]),
                                 empName = reader["Emp_name"].ToString(),
                                 docName = reader["Doc_name"].ToString(),
                                 docDateTime = reader["Upload_time"].ToString(),
