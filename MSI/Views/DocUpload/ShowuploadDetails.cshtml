@@ -160,13 +160,13 @@
         var conf = confirm("Are you sure you want to delete this file?");
         if (conf == true) {
             $.ajax({
-                url: '/Master/deleteFileMapping',
+                url: '/DocUpload/deleteFileMapping',
                 type: 'POST',
-                data: { docId: docId },
+                data: { documentId: docId },
                 success: function (result) {
                     if (result > 0) {
                         alert('Delete Successfully');
-                        window.location.href = '/Master/ShowuploadDetails';
+                        window.location.href = '/DocUpload/ShowuploadDetails';
                     } else {
                         alert("Delete Failed");
                     }

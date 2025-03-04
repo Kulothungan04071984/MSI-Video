@@ -433,10 +433,10 @@ namespace MSI.Models
             {
                 using (SqlConnection con = new SqlConnection(ConnectionString))
                 {
-                    using (SqlCommand command = new SqlCommand("pro_deleteFileMapping", con))
+                    using (SqlCommand command = new SqlCommand("pro_deleteFileMapping1", con))
                     {
                         command.CommandType = CommandType.StoredProcedure;
-                        command.Parameters.AddWithValue("@systemid", fileMappingId);
+                        command.Parameters.AddWithValue("@docId", fileMappingId);
                         con.Open();
                         resultDelete = command.ExecuteNonQuery();
                         con.Close();

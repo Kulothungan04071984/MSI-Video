@@ -172,12 +172,12 @@ namespace MSI.Controllers
             }
         }
         [HttpPost]
-        public JsonResult deleteFileMapping(int systemid)
+        public JsonResult deleteFileMapping(int documentId)
         {
             int resultdel = 0;
             try
             {
-                resultdel = _domainServices.deleteFileMapping1(systemid);
+                resultdel = _domainServices.deleteFileMapping1(documentId);
             }
 
             catch (Exception ex)
