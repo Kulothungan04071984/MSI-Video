@@ -16,33 +16,35 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-lg-6" style="padding:1.8%;">
-                                <div style="padding:1%;">Customer Name</div>
+                            <div class="col-lg-6 p-2">
+                                <label style="padding:1%;">Customer Name</label>
                                 <div>
                                     @Html.DropDownListFor(model => model.customid, Model.lstcustomers, "Select a Customer", new { @id = "ddlcustomid", @class = "form-control" })
                                 </div>
                             </div>
 
-                            <div style="padding:1%;">Fg Name</div>
-                            <div>
+                            <div class="col-lg-6 p-2">
+                            <label style="padding:1%;">Fg Name</label>
                                 <div>
                                     @Html.DropDownListFor(model => model.fgid, Model.lstfgnames, "Select an FG Name", new { @id = "ddlfg", @class = "form-control" })
+                                </div>
+                           
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 p-2">
+                                <label style="padding:1%">File Upload</label>
+                                <div >
+                                    <input type="file" class="form-control" id="files" name="files" accept="application/pdf, video/*" multiple>
+                                </div>
+                                <div>
+                                    <button id="btnUpload" class="btn btn-primary" style="margin-top:1%;margin-left:94%;">Upload</button>
                                 </div>
                             </div>
                         </div>
 
-                        <div style="padding:1%">
-                            <span>File Upload</span>
-                        </div>
-                        <div style="padding:1%">
-                            <input type="file" class="form-control" id="files" name="files" accept="application/pdf, video/*" multiple>
-                        </div>
-
-                        <div style="padding:1%">
-                            <div class="col-3">
-                                <button id="btnUpload" class="btn btn-primary" style="margin-top:22%;margin-left:30%;">Upload</button>
-                            </div>
-                        </div>
+                     
                     </div>
                     <div class="row">
                         <div class="col-lg-0" style="color:green;">
