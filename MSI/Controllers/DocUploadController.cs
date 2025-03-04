@@ -49,6 +49,8 @@ namespace MSI.Controllers
 
             int result = 0;
             Fileuploaddetails objupload1 = new Fileuploaddetails();
+            string Customer_name = fileuploaddetails.customerName;
+            string Fg_Name = fileuploaddetails.FgName;
             try
             {
                 if (files != null && files.Count > 0)
@@ -80,6 +82,8 @@ namespace MSI.Controllers
                                 uploadDetails1.docType = "Reference copy";
                                 //uploadDetails1.filepath=filePath;
                                 uploadDetails1.filepath = string.Empty;
+                                uploadDetails1.customerName = "abc";
+                                uploadDetails1.FgName = "abc";
 
                                 //Fileuploaddetails.systemname = Fileuploaddetails.lstSystem.Where(a => a.Value == Fileuploaddetails.systemid.ToString()).Select(a => a.Text.ToString()).FirstOrDefault();
                                 //Fileuploaddetails.systemname = "";
@@ -87,14 +91,19 @@ namespace MSI.Controllers
                                 if (result > 0)
                                 {
                                     //docName Created
-                                    var docName = result +  DateTime.Today.ToString();
+                                    DateTime now = DateTime.Now;
+                                    string dateOnly = now.ToString("yyyy-MM-dd");
+                                    var docName = result + dateOnly;
                                     docName = docName.Replace("/", "");
                                     docName = docName.Replace("-", "");
                                     var pathname = uploadVideoFile;
-                                    pathname = pathname + "//" + docName;
+                                    pathname = pathname + "\\" + docName+".pdf";
                                     var filepathUpdate=_domainServices.updateFilePath(result, pathname);
+                                    writeErrorMessage(result.ToString(), "Document File Upload successfully");
                                     if (filepathUpdate > 0)
                                     {
+                                        ViewBag.Message = "Video uploaded successfully";
+                                        ViewBag.ThumbnailPath = $"/uploads/{Path.GetFileName(pathname)}";
                                         var filePath = Path.Combine(uploadVideoFile, docName);
                                         using (var filestream = new FileStream(filePath, FileMode.Create))
                                         {
@@ -106,10 +115,10 @@ namespace MSI.Controllers
                                         writeErrorMessage(result.ToString(),
                                         "Video File Upload successfully");
 
-                                        ViewBag.Message = "Document uploaded successfully";
-                                        ViewBag.ThumbnailPath = $"/uploads/{Path.GetFileName(thumbnailPath)}";
+                                        //ViewBag.Message = "Document uploaded successfully";
+                                        //ViewBag.ThumbnailPath = $"/uploads/{Path.GetFileName(thumbnailPath)}";
                                         fileuploaddetails.lstcustomers = _domainServices.getcustomernames();
-                                        //fileuploaddetails.lstfgnames = -_domainServices.getfgnames(string cus);
+                                        fileuploaddetails.lstfgnames = new List<SelectListItem>();
                                         fileuploaddetails.lstdocVerifieds = _domainServices.getFileUploaddetails();
                                         objupload1 = fileuploaddetails;
                                     }
@@ -163,12 +172,12 @@ namespace MSI.Controllers
             }
         }
         [HttpPost]
-        public JsonResult deleteFileMapping(int systemid, string videoDate, string fromtime, string totime)
+        public JsonResult deleteFileMapping(int systemid)
         {
             int resultdel = 0;
             try
             {
-                resultdel = _domainServices.deleteFileMapping(systemid, videoDate, fromtime, totime);
+                resultdel = _domainServices.deleteFileMapping1(systemid);
             }
 
             catch (Exception ex)
