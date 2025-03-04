@@ -69,6 +69,9 @@ namespace MSI.Models
                         cmd.Parameters.AddWithValue("@docname", objFileDetails1.docName);
                         cmd.Parameters.AddWithValue("@doctype", objFileDetails1.docType);
                         cmd.Parameters.AddWithValue("@docfilepath", objFileDetails1.filepath);
+                        cmd.Parameters.AddWithValue("@Customer_Name", objFileDetails1.customerName);
+                        cmd.Parameters.AddWithValue("@Fg_Name", objFileDetails1.FgName);
+
                         SqlParameter outputparam = new SqlParameter("@InsertedId", SqlDbType.Int)
                         {
                             Direction = ParameterDirection.Output
@@ -423,6 +426,32 @@ namespace MSI.Models
             }
         }
 
+        public int deleteFileMapping1(int fileMappingId)
+        {
+            int resultDelete = 0;
+            try
+            {
+                using (SqlConnection con = new SqlConnection(ConnectionString))
+                {
+                    using (SqlCommand command = new SqlCommand("pro_deleteFileMapping1", con))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@docId", fileMappingId);
+                        con.Open();
+                        resultDelete = command.ExecuteNonQuery();
+                        con.Close();
+                    }
+                }
+                return resultDelete;
+
+            }
+            catch (Exception ex)
+            {
+                writeErrorMessage(ex.Message.ToString(), "deleteFileMapping");
+                return 0;
+            }
+        }
+
         DataTable dt;
         SqlDataAdapter da;
 
@@ -691,7 +720,7 @@ namespace MSI.Models
             try
             {
                 using(SqlConnection con = new SqlConnection(ConnectionString))
-                using (SqlCommand cmd = new SqlCommand("", con))
+                using (SqlCommand cmd = new SqlCommand("Pro_updateFileName", con))
                 {
                     cmd.CommandType= CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@docid",docid);

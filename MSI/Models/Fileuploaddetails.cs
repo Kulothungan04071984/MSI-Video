@@ -5,6 +5,8 @@ namespace MSI.Models
     public class Fileuploaddetails
     {
         public int customid { get; set; }
+        public string customerName { get; set; }
+        public string FgName {  get; set; }
         public int fgid { get; set; }
         public int docId { get; set; }
         public string empId { get; set; }
