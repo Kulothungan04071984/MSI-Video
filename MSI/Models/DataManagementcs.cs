@@ -651,6 +651,7 @@ namespace MSI.Models
                                 docDateTime = reader["Upload_time"].ToString(),
                                 docType = reader["Doc_Type"].ToString(),
                                 docStatus = reader["Doc_status"].ToString(),
+                                filepath = reader["File_Path"].ToString(),
                                 isActive = Convert.ToBoolean(reader["IsActive"].ToString())
                             };
 
@@ -737,6 +738,32 @@ namespace MSI.Models
             }
 
             return resultPathUpdate;
+        }
+
+        public string pdfFileCopyfromServer(string pdfFile)
+        {
+            var resultfilename = string.Empty;
+            try
+            {
+                string sourcePath = pdfFile; // Network path or local server path
+                string wwwrootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "videos");
+
+                if (!Directory.Exists(wwwrootPath))
+                {
+                    Directory.CreateDirectory(wwwrootPath);
+                }
+                string fileName = Path.GetFileName(pdfFile);
+                string destinationPath = Path.Combine(wwwrootPath, fileName);
+
+                File.Copy(sourcePath, destinationPath, true); // Overwrite if exists
+                resultfilename = fileName;
+            }
+            catch (Exception ex)
+            {
+               return resultfilename;
+            }
+
+            return resultfilename;
         }
     }
 }

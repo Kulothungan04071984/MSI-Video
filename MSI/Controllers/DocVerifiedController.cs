@@ -27,5 +27,11 @@ namespace MSI.Controllers
             var result = _dataManagementcs.updateDocRejectDetails(Convert.ToInt32(Docid), RejectReason);
             return Json(result);
         }
+
+        public JsonResult getPdfFileName(string filepath)
+        {
+            var resultfilename=_dataManagementcs.pdfFileCopyfromServer(filepath);
+            return Json(resultfilename);
+        }
     }
 }
