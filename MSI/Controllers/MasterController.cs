@@ -122,7 +122,8 @@ namespace MSI.Controllers
                     engine.GetThumbnail(inputFile, outputFile, options);
                 }
             }
-            catch (Exception ex) { 
+            catch (Exception ex) {
+                writeErrorMessage(ex.Message.ToString(), "ExtractThumbnail");
             }
         }
         [HttpPost]
@@ -136,10 +137,12 @@ namespace MSI.Controllers
              
             catch(Exception ex)
             {
+                writeErrorMessage(ex.Message.ToString(), "deleteFileMapping");
                 resultdel = 0;
             }
             return Json(resultdel);
         }
+
         public void writeErrorMessage(string errorMessage, string functionName)
         {
             var systemPath = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Syrma_Training_Errors" + "\\" + DateTime.Now.ToString("dd-MM-yyyy");

@@ -7,9 +7,51 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/MSI.styles.css" asp-append-version="true" />
+    <style>
+        .navbar {
+            background: linear-gradient(45deg, #007bff, #6610f2);
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            color: white !important;
+        }
+
+        .nav-link {
+            color: white !important;
+            transition: 0.3s;
+        }
+
+            .nav-link:hover {
+                background-color: rgba(255, 255, 255, 0.2);
+                border-radius: 5px;
+            }
+
+        .dropdown-menu {
+            background: #007bff;
+            border: none;
+        }
+
+        .dropdown-item {
+            color: white;
+        }
+
+            .dropdown-item:hover {
+                background: #0056b3;
+            }
+
+        .search-input {
+            border-radius: 20px;
+            padding: 5px 15px;
+        }
+
+        .btn-search {
+            border-radius: 20px;
+        }
+    </style>
 </head>
 <body>
-    <header>
+   @*  <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand user" asp-area="" asp-controller="Home" asp-action="Index" style="font-weight:bold;font-size:130%;">MSI</a>
@@ -38,7 +80,7 @@
                 <div class="nav-item" style="margin-left:5%;white-space: nowrap">
                     <a class="nav-link text-primary" asp-area="" asp-controller="System" id="dvNewSystem" asp-action="Index">Add New System</a>
                 </div>
-                <!-- Updated Log Out Button with Confirmation -->
+            
                 <div class="nav-item" style="margin-left:1%;white-space: nowrap">
                     <a href="javascript:void(0);" onclick="confirmLogout()"><b>Log Out</b></a>
 
@@ -50,8 +92,42 @@
                 </div>
           
         </nav>
-    </header>
+    </header> *@
     <div class="container">
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+                <a class="navbar-brand" href="#">MSI - Stage WI Mapping To System</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link active" id="dvWorkInstruction" asp-area="" asp-controller="PlayVideo" asp-action="VideoPlaying">Work Instruction</a></li>
+                    <li class="nav-item"><a class="nav-link" id="dvDocVerified" asp-area="" asp-controller="DocVerified" asp-action="ShowDocDetails">Document Details</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="System" id="dvNewSystem" asp-action="Index">Add New System</a></li>
+                   @*  <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Services</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Web Design</a></li>
+                            <li><a class="dropdown-item" href="#">SEO</a></li>
+                            <li><a class="dropdown-item" href="#">Marketing</a></li>
+                        </ul>
+                    </li> *@
+                       @*  <li class="nav-item">  <img src="~/images/download.png" style="width:30%;margin-left:145%;" /></li>
+                    <li class="nav-item"> <a class="nav-link" href="javascript:void(0);" onclick="confirmLogout()" ><b>Log Out</b></a></li> *@
+                   
+                </ul>
+                <form class="d-flex">
+                   @*  <input class="form-control search-input me-2" type="search" placeholder="Search">
+                    <button class="btn btn-light btn-search" type="submit">Go</button> *@
+                        <div> <img src="~/images/download.png" style="width:30%;margin-left:65%;" /></div>
+                        <div><a class="nav-link" href="javascript:void(0);" onclick="confirmLogout()"><b>Log Out</b></a></div>
+                </form>
+            </div>
+        </div>
+    </nav>
+    </div>
+    <div class="container" style="padding-top:1%;">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
@@ -77,6 +153,7 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+	<link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

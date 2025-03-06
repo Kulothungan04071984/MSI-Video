@@ -3,7 +3,9 @@ using System.Data;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using System.Security.Principal;
+using System.Xml.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Microsoft.Data.SqlClient;
 namespace MSI.Models
 {
@@ -16,7 +18,7 @@ namespace MSI.Models
         public DataManagementcs(IConfiguration configuration)
         {
             ConnectionString = configuration.GetConnectionString("conn");
-            ConnectionString1 = configuration.GetConnectionString("conn1");
+            ConnectionString1 = configuration.GetConnectionString("conn2");
         }
         public int uploaddatainserted(UploadFileDetails objFileDetails)
         {
@@ -67,8 +69,18 @@ namespace MSI.Models
                         cmd.Parameters.AddWithValue("@docname", objFileDetails1.docName);
                         cmd.Parameters.AddWithValue("@doctype", objFileDetails1.docType);
                         cmd.Parameters.AddWithValue("@docfilepath", objFileDetails1.filepath);
+                        cmd.Parameters.AddWithValue("@Customer_Name", objFileDetails1.customerName);
+                        cmd.Parameters.AddWithValue("@Fg_Name", objFileDetails1.FgName);
+
+                        SqlParameter outputparam = new SqlParameter("@InsertedId", SqlDbType.Int)
+                        {
+                            Direction = ParameterDirection.Output
+                        };
+                        cmd.Parameters.Add(outputparam);
+
                         conn.Open();
-                        result = cmd.ExecuteNonQuery();
+                        cmd.ExecuteNonQuery();
+                        result = Convert.ToInt32(outputparam.Value);
                         conn.Close();
 
                     }
@@ -172,7 +184,79 @@ namespace MSI.Models
             }
         }
 
-        public List<FileMappingDetails> getFileMappingDetails()
+        public List<SelectListItem> getcustomernames()
+        {
+            var customlist = new List<SelectListItem>();
+            try
+            {
+                DataTable dtcustomValue = new DataTable();
+
+                using (SqlConnection customValue = new SqlConnection(ConnectionString1))
+                {
+                    using (SqlCommand cmdSetValue = new SqlCommand("pro_getCustomerName", customValue))
+                    {
+                        cmdSetValue.CommandType = CommandType.StoredProcedure;
+                        using (SqlDataAdapter daGetValue = new SqlDataAdapter(cmdSetValue))
+                        {
+                            daGetValue.Fill(dtcustomValue);
+                            if (dtcustomValue.Rows.Count > 0)
+                            {
+                                foreach (DataRow row in dtcustomValue.Rows)
+                                {
+                                    customlist.Add(new SelectListItem { Value = row["cutomer_id"].ToString(), Text = row["customer_name"].ToString() });
+                                }
+                            }
+                        }
+                    }
+                }
+                return  customlist;
+            }
+            catch (Exception ex)
+            {
+                writeErrorMessage(ex.Message.ToString(), "getcustomernames");
+                return customlist;
+            }
+        }
+
+        public List<SelectListItem> getfgnames(int customerId)
+        {
+            var Fglist = new List<SelectListItem>();
+            try
+            {
+                DataTable dtFgValue = new DataTable();
+
+                using (SqlConnection FgValue = new SqlConnection(ConnectionString1))
+                {
+                    using (SqlCommand cmdFgValue = new SqlCommand("pro_getFgName", FgValue))
+                    {
+                        
+                        using (SqlDataAdapter daGetValue = new SqlDataAdapter(cmdFgValue))
+                        {
+                            cmdFgValue.CommandType = CommandType.StoredProcedure;
+                            cmdFgValue.Parameters.AddWithValue("@Customer_id", customerId);
+
+                            daGetValue.Fill(dtFgValue);
+                            if (dtFgValue.Rows.Count > 0)
+                            {
+                                foreach (DataRow row in dtFgValue.Rows)
+                                {
+                                    Fglist.Add(new SelectListItem { Value = row["Fg_id"].ToString(), Text = row["Fg_Name"].ToString() });
+                                }
+                            }
+                        }
+                    }
+                }
+                return Fglist;
+            }
+            catch (Exception ex)
+            {
+                writeErrorMessage(ex.Message.ToString(), "getfgnames");
+                return Fglist;
+            }
+        }
+    
+
+    public List<FileMappingDetails> getFileMappingDetails()
         {
             var lstFileMapping = new List<FileMappingDetails>();
             FileMappingDetails objFileMapping;
@@ -342,6 +426,32 @@ namespace MSI.Models
             }
         }
 
+        public int deleteFileMapping1(int fileMappingId)
+        {
+            int resultDelete = 0;
+            try
+            {
+                using (SqlConnection con = new SqlConnection(ConnectionString))
+                {
+                    using (SqlCommand command = new SqlCommand("pro_deleteFileMapping1", con))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@docId", fileMappingId);
+                        con.Open();
+                        resultDelete = command.ExecuteNonQuery();
+                        con.Close();
+                    }
+                }
+                return resultDelete;
+
+            }
+            catch (Exception ex)
+            {
+                writeErrorMessage(ex.Message.ToString(), "deleteFileMapping");
+                return 0;
+            }
+        }
+
         DataTable dt;
         SqlDataAdapter da;
 
@@ -367,6 +477,7 @@ namespace MSI.Models
             }
             catch (Exception ex)
             {
+                writeErrorMessage(ex.Message.ToString(), "getLoginDetails");
                 return dt;
             }
         }
@@ -392,6 +503,7 @@ namespace MSI.Models
             }
             catch (Exception ex)
             {
+                writeErrorMessage(ex.Message.ToString(), "UpdatePassword");
                 return updateResult;
             }
         }
@@ -535,17 +647,25 @@ namespace MSI.Models
 
         public int deleteSystemid(string deletesystemId)
         {
+
             int result = 0;
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            try
             {
-                using (SqlCommand cmd = new SqlCommand("pro_delete_ipaddress", connection))
+                using (SqlConnection connection = new SqlConnection(ConnectionString))
                 {
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    connection.Open();
-                    cmd.Parameters.AddWithValue("@SystemId", deletesystemId);                   
-                    result = cmd.ExecuteNonQuery();
-                    connection.Close();
+                    using (SqlCommand cmd = new SqlCommand("pro_delete_ipaddress", connection))
+                    {
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                        connection.Open();
+                        cmd.Parameters.AddWithValue("@SystemId", deletesystemId);
+                        result = cmd.ExecuteNonQuery();
+                        connection.Close();
+                    }
                 }
+            }
+            catch (Exception ex) {
+                writeErrorMessage(ex.Message.ToString(), "deleteSystemid");
+                return result;
             }
             return result;
         }
@@ -586,6 +706,7 @@ namespace MSI.Models
             }
             catch(Exception ex)
             {
+                writeErrorMessage(ex.Message.ToString(), "getDocVerifiedList");
                 return lstDocVerified;
             }
             return lstDocVerified;
@@ -608,6 +729,7 @@ namespace MSI.Models
                 }
             }
             catch (Exception ex) {
+                writeErrorMessage(ex.Message.ToString(), "updateDocStatus");
                 return updateStatus;
             }
             return updateStatus;
@@ -631,9 +753,34 @@ namespace MSI.Models
             }
             catch (Exception ex)
             {
+                writeErrorMessage(ex.Message.ToString(), "updateDocRejectDetails");
                 return updateResult;
             }
             return updateResult;
+        }
+        public int updateFilePath(int docid, string filepath)
+        {
+            var resultPathUpdate = 0;
+            try
+            {
+                using(SqlConnection con = new SqlConnection(ConnectionString))
+                using (SqlCommand cmd = new SqlCommand("Pro_updateFileName", con))
+                {
+                    cmd.CommandType= CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@docid",docid);
+                    cmd.Parameters.AddWithValue("@filepath", filepath);
+                    con.Open();
+                    resultPathUpdate = cmd.ExecuteNonQuery();
+                    con.Close();
+                }
+
+            }
+            catch (Exception ex) {
+                writeErrorMessage(ex.Message.ToString(), "updateDocRejectDetails");
+                return resultPathUpdate;
+            }
+
+            return resultPathUpdate;
         }
     }
 }

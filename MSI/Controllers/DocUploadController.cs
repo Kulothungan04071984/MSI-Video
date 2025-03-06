@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using MSI.Models;
+using static Azure.Core.HttpHeader;
 
 namespace MSI.Controllers
 {
@@ -36,7 +37,8 @@ namespace MSI.Controllers
             //var systemName=_domainServices.GetAllConnectedSystemNames();
             ViewBag.DomainSid = domainSid;
             //ViewBag.computerName = systemName;
-            //Fileuploaddetails.lstSystem = _domainServices.getSystemNames();
+            Fileuploaddetails.lstcustomers = _domainServices.getcustomernames();
+            Fileuploaddetails.lstfgnames = new List<SelectListItem>();
             Fileuploaddetails.lstdocVerifieds = _domainServices.getFileUploaddetails();
             return View(Fileuploaddetails);
         }
@@ -47,6 +49,8 @@ namespace MSI.Controllers
 
             int result = 0;
             Fileuploaddetails objupload1 = new Fileuploaddetails();
+            string Customer_name = fileuploaddetails.customerName;
+            string Fg_Name = fileuploaddetails.FgName;
             try
             {
                 if (files != null && files.Count > 0)
@@ -68,14 +72,7 @@ namespace MSI.Controllers
                             if (Directory.Exists(path))
                             {
                                 //Directory.CreateDirectory(uploadVideoFile);
-                                var filePath = Path.Combine(uploadVideoFile, file.FileName);
-                                using (var filestream = new FileStream(filePath, FileMode.Create))
-                                {
-                                    await file.CopyToAsync(filestream);
-                                    writeErrorMessage(filePath.ToString(), "File Copy successfully");
-                                }
-                                var thumbnailPath = Path.Combine(uploadVideoFile, $"{Path.GetFileNameWithoutExtension(file.FileName)}.jpg");
-                                ExtractThumbnail(filePath, thumbnailPath);
+                             
                                 var uploadDetails1 = new Fileuploaddetails();
                                 //uploadDetails1.empId = string.IsNullOrEmpty(fileuploaddetails.empId.ToString()) ? "0" : fileuploaddetails.empId;
                                 uploadDetails1.empId = "123";
@@ -83,21 +80,48 @@ namespace MSI.Controllers
                                 uploadDetails1.docDateTime = DateTime.Today.ToString();
                                 uploadDetails1.docName = "abc";
                                 uploadDetails1.docType = "Reference copy";
-                                uploadDetails1.filepath=filePath;
+                                //uploadDetails1.filepath=filePath;
+                                uploadDetails1.filepath = string.Empty;
+                                uploadDetails1.customerName = "abc";
+                                uploadDetails1.FgName = "abc";
 
                                 //Fileuploaddetails.systemname = Fileuploaddetails.lstSystem.Where(a => a.Value == Fileuploaddetails.systemid.ToString()).Select(a => a.Text.ToString()).FirstOrDefault();
                                 //Fileuploaddetails.systemname = "";
-                                result = _domainServices.uploaddatadetails(uploadDetails1);
-                                writeErrorMessage(result.ToString(),
-                                    "Video File Upload successfully");
+                                result = _domainServices.uploaddatadetails(uploadDetails1); 
                                 if (result > 0)
                                 {
-                                    ViewBag.Message = "Document uploaded successfully";
-                                    ViewBag.ThumbnailPath = $"/uploads/{Path.GetFileName(thumbnailPath)}";
-                                    //fileuploaddetails.lstcustomers = _domainServices.getcustomernames();
-                                    //fileuploaddetails.lstfgnames = -_domainServices.getfgnames(string cus)
-                                    fileuploaddetails.lstdocVerifieds = _domainServices.getFileUploaddetails();
-                                    objupload1 = fileuploaddetails;
+                                    //docName Created
+                                    DateTime now = DateTime.Now;
+                                    string dateOnly = now.ToString("yyyy-MM-dd");
+                                    var docName = result + dateOnly;
+                                    docName = docName.Replace("/", "");
+                                    docName = docName.Replace("-", "");
+                                    var pathname = uploadVideoFile;
+                                    pathname = pathname + "\\" + docName+".pdf";
+                                    var filepathUpdate=_domainServices.updateFilePath(result, pathname);
+                                    writeErrorMessage(result.ToString(), "Document File Upload successfully");
+                                    if (filepathUpdate > 0)
+                                    {
+                                        ViewBag.Message = "Video uploaded successfully";
+                                        ViewBag.ThumbnailPath = $"/uploads/{Path.GetFileName(pathname)}";
+                                        var filePath = Path.Combine(uploadVideoFile, docName);
+                                        using (var filestream = new FileStream(filePath, FileMode.Create))
+                                        {
+                                            await file.CopyToAsync(filestream);
+                                            writeErrorMessage(filePath.ToString(), "File Copy successfully");
+                                        }
+                                        var thumbnailPath = Path.Combine(uploadVideoFile, $"{Path.GetFileNameWithoutExtension(docName)}.jpg");
+                                        ExtractThumbnail(filePath, thumbnailPath);
+                                        writeErrorMessage(result.ToString(),
+                                        "Video File Upload successfully");
+
+                                        //ViewBag.Message = "Document uploaded successfully";
+                                        //ViewBag.ThumbnailPath = $"/uploads/{Path.GetFileName(thumbnailPath)}";
+                                        fileuploaddetails.lstcustomers = _domainServices.getcustomernames();
+                                        fileuploaddetails.lstfgnames = new List<SelectListItem>();
+                                        fileuploaddetails.lstdocVerifieds = _domainServices.getFileUploaddetails();
+                                        objupload1 = fileuploaddetails;
+                                    }
                                 }
                                 else
                                 {
@@ -148,12 +172,12 @@ namespace MSI.Controllers
             }
         }
         [HttpPost]
-        public JsonResult deleteFileMapping(int systemid, string videoDate, string fromtime, string totime)
+        public JsonResult deleteFileMapping(int documentId)
         {
             int resultdel = 0;
             try
             {
-                resultdel = _domainServices.deleteFileMapping(systemid, videoDate, fromtime, totime);
+                resultdel = _domainServices.deleteFileMapping1(documentId);
             }
 
             catch (Exception ex)
@@ -162,6 +186,24 @@ namespace MSI.Controllers
             }
             return Json(resultdel);
         }
+        [HttpGet]
+        public JsonResult GetFgNamesByCustomer(int customerId)
+        {
+            try
+            {
+                // Get the list of FG Names for the selected customer
+                var fgNames = _domainServices.getfgnames(customerId);
+
+                // Return the list of FG Names as JSON
+                return Json(fgNames);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+
         public void writeErrorMessage(string errorMessage, string functionName)
         {
             var systemPath = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Syrma_Training_Errors" + "\\" + DateTime.Now.ToString("dd-MM-yyyy");
