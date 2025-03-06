@@ -12,7 +12,7 @@
             <div class="col-lg-12">
 
                 <div class="card">
-                    <div class="card-header"> <h3>Doc Verified</h3></div>
+                    <div class="card-header"> <h3>Document Verified</h3></div>
                     <div class="card-body">
                         <div class="container mt-4">
                             <div class="table-responsive table-container border rounded shadow">
@@ -26,6 +26,7 @@
                                             <th>Doc DateTime</th>
                                             <th>Doc Type</th>
                                             <th>Doc Status</th>
+                                            <th style="display:none;"></th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -36,7 +37,7 @@
                                             {
                                                 @foreach (var item in Model)
                                                 {
-                                                    <tr>
+                                                    <tr file_path="@item.filepath" docid="@item.docId">
                                                         <td>@item.docId</td>
                                                         <td>@item.empId</td>
                                                         <td>@item.empName</td>
@@ -44,7 +45,9 @@
                                                         <td>@item.docDateTime</td>
                                                         <td>@item.docType</td>
                                                         <td>@item.docStatus</td>
-                                                        <td><input type="button" class="btn btn-primary" name="View" value="View" onclick="ViewDocument('@item.docId')" id="btnView" /></td>
+                                                        <td style ="display:none;">
+                                                            @item.filepath</td>
+                                                        <td><input type="button" class="btn btn-primary ViewDocument" name="View" value="View"  id="btnView" /></td>
                                                     </tr>
                                                 }
 
@@ -75,20 +78,21 @@
 
         <div class="modal fade" id="myModalDocView" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
-                <div class="modal-content">
+                <div class="modal-content cls">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">Documnet Verified</h5>
                         <input type="hidden" id="hdndocid" />
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                       @*  <canvas id="pdfViewer"></canvas> *@
-						<iframe id="pdfViewer" src="~/datahandling.pdf"></iframe>
+                        @*  <canvas id="pdfViewer" src="~/datahandling.pdf"></canvas> *@
+                        <iframe id="pdfViewer" src="" ></iframe>
                     </div>
-                    <div class="modal-footer">
+                    <div class="modal-footer"> 
                         <button type="button" id="btnApprove" class="btn btn-primary">Approve</button>
                         <button type="button" id="btnReject" class="btn btn-danger">Reject</button>
                         <button type="button" id="btnClose" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                       
                     </div>
                 </div>
             </div>
@@ -131,9 +135,10 @@
     {
         margin-right: 49%;
     }
-    .modal-content
+    .cls
     {
-        width:190%;
+        width:200% !important;
+        margin-left:-50%;
     }
 
     #pdfViewer
@@ -151,12 +156,30 @@
       
         });
 
-         function ViewDocument(docid) {
-             
-                 $('#hdndocid').val(docid);
-                 $("#myModalDocView").modal("show");
-         }
-            
+         $('.ViewDocument').click(function (){
+          
+                 var path= $(this).closest("tr").attr("file_path");
+                 var did=$(this).closest("tr").attr("docid");
+                 var rootPath = "/videos/";
+                 $('#hdndocid').val(did);
+               
+                 $.ajax({
+                     url:"/DocVerified/getPdfFileName",
+                     dataType:'json',
+                     data:{filepath:path},
+                     async:false,
+                     catch:false,
+                     success:function(filename)
+                     {
+                           $("#pdfViewer").attr("src",rootPath + filename);
+                           $("#myModalDocView").modal("show");
+                     },
+                     error:function(filename){
+                         alert('Error - ' + filename);
+                     },
+                 });
+        });
+
         $('#btnReject').click(function(){
         $("#myModalDocView").modal("hide");
         $('#myModalReject').modal('show');
