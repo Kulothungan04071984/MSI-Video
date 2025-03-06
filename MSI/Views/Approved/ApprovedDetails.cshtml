@@ -1,0 +1,115 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<form asp-action="Approved" method="post">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow-lg">
+                    <div class="card-body">
+                        <h3 class="card-title text-center">Customer Details</h3>
+                        <div class="row align-items-center">
+                            <div class="col-md-6 text-center">
+                                <label for="lblcustomerid" class="form-label fw-bold" style="font-size:120%;">Customer Name :</label>
+                            </div>
+                            <div class="col-md-6" style="margin-bottom:1%">
+                                <select class="form-select ml-2 col-2" aria-label="Customer Dropdown" id="customer" name="customer" onchange="filterFGOptions()">
+                                    <option value="">Select Customer</option>
+                                    <option value="1">Customer 1</option>
+                                    <option value="2">Customer 2</option>
+                                    <option value="3">Customer 3</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row align-items-center">
+                            <div class="col-md-6 text-center">
+                                <label for="lblfgid" class="form-label fw-bold" style="font-size:120%;">FG.No:</label>
+                            </div>
+                            <div class="col-md-6">
+                                <select id="fg" name="fg" class="form-select ml-2 col-2" aria-label="Customer Dropdown">
+                                    <option value="">Select</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-8">
+            <div class="card" style="margin-top:2%">
+                <div class="card-body">
+                    <h3 class="card-title text-center">Approved List</h3>
+                    <div class="tab-content" style="height:300px;overflow-y: auto">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped" style="overflow:scroll">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Customer Name</th>
+                                        <th class="text-center">FG.No</th>
+                                        <th class="text-center">Document Name</th>
+                                        <th class="text-center">Document Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model ?? new List<MSI.Models.FileApprovedData>())
+                                    {
+                                        <tr>
+                                            <td class="text-center">@item.CustomerName</td>
+                                            <td class="text-center">@item.FgNo</td>
+                                            <td class="text-center">@item.DocumentName</td>
+                                            <td class="text-center">@item.DocumentStatus</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    function filterFGOptions() {
+        var customer = document.getElementById("customer").value; 
+        var fg = document.getElementById("fg");
+        fg.innerHTML = "";
+
+        var defaultOption = document.createElement("option");
+        defaultOption.value = "";
+        defaultOption.text = "Select FG";
+        fg.appendChild(defaultOption);
+
+        var options = [];
+
+        if (customer == "1") {
+            options = [
+                { value: "2", text: "FG 2" },
+                { value: "3", text: "FG 3" }
+            ];
+        } else if (customer == "2") {
+            options = [
+                { value: "1", text: "FG 1" },
+                { value: "4", text: "FG 4" },
+                { value: "5", text: "FG 5" }
+            ];
+        } else if (customer == "3") {
+            options = [
+                { value: "6", text: "FG 6" },
+                { value: "7", text: "FG 7" }
+            ];
+        }
+
+        for (var i = 0; i < options.length; i++) {
+            var option = document.createElement("option");
+            option.value = options[i].value;
+            option.text = options[i].text;
+            fg.appendChild(option);
+        }
+    }
+</script>

@@ -461,32 +461,76 @@ namespace MSI.Models
         public List<Systemid> GetData()
         {
             var dataList = new List<Systemid>();
-
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            try
             {
-                using (SqlCommand cmd = new SqlCommand("pro_GetSystem_Id", connection))
+                using (SqlConnection connection = new SqlConnection(ConnectionString))
                 {
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    connection.Open();
+                    using (SqlCommand cmd = new SqlCommand("pro_GetSystem_Id", connection))
                     {
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                        connection.Open();
+                        {
+                            using (SqlDataReader reader = cmd.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    dataList.Add(new Systemid
+                                    {
+
+                                        SystemId = reader.GetString(1),
+                                        Usertype = reader.GetString(0),
+                                        StageName = reader.GetString(2),
+                                    });
+                                }
+                            }
+                        }
+                        connection.Close();
+                    }
+                }
+            }
+            catch (Exception ex) 
+            {
+                writeErrorMessage(ex.Message.ToString(), "GetData");          
+            }
+            return dataList;
+        }
+
+        public List<FileApprovedData> GetApprovedData()
+        {
+            var approvedlist = new List<FileApprovedData>();
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(ConnectionString))
+                {
+                    using (SqlCommand cmd = new SqlCommand("pro_GetApprovedData", connection))
+                    {
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                        connection.Open();
+
                         using (SqlDataReader reader = cmd.ExecuteReader())
                         {
                             while (reader.Read())
                             {
-                                dataList.Add(new Systemid
+                                approvedlist.Add(new FileApprovedData
                                 {
-                                    
-                                    SystemId = reader.GetString(1),
-                                    Usertype= reader.GetString(0),
-                                   StageName = reader.GetString(2), 
+                                    // CustomerName = reader.GetString(2),
+                                    // FgNo = reader.GetString(3),
+                                    DocumentName = reader.GetString(0),
+                                    DocumentStatus = reader.GetString(1),
                                 });
                             }
                         }
+                        connection.Close();
                     }
-                    connection.Close();
                 }
+            }          
+            catch (Exception ex)
+            {
+                writeErrorMessage(ex.Message.ToString(), "ApprovedGetdata");
             }
-            return dataList;
+
+            return approvedlist;
         }
 
         public int deleteSystemid(string deletesystemId)
