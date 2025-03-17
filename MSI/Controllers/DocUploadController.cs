@@ -104,11 +104,7 @@ namespace MSI.Controllers
                                     {
                                         ViewBag.Message = "Video uploaded successfully";
                                         ViewBag.ThumbnailPath = $"/uploads/{Path.GetFileName(pathname)}";
-<<<<<<< HEAD
-                                        // var filePath = Path.Combine(uploadVideoFile, docName);
-=======
->>>>>>> 90074adabb6fbd97863e312541321423ab235aa8
-                                        var filePath = Path.Combine(uploadVideoFile, pathname);
+                                        var filePath = Path.Combine(uploadVideoFile, docName);
                                         using (var filestream = new FileStream(filePath, FileMode.Create))
                                         {
                                             await file.CopyToAsync(filestream);

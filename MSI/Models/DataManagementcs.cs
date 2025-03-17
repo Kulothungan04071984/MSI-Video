@@ -719,44 +719,6 @@ namespace MSI.Models
             return dataList;
         }
 
-        public List<FileApprovedData> GetApprovedData()
-        {
-            var approvedlist = new List<FileApprovedData>();
-
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(ConnectionString))
-                {
-                    using (SqlCommand cmd = new SqlCommand("pro_GetApprovedData", connection))
-                    {
-                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                        connection.Open();
-
-                        using (SqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                approvedlist.Add(new FileApprovedData
-                                {
-                                    // CustomerName = reader.GetString(2),
-                                    // FgNo = reader.GetString(3),
-                                    DocumentName = reader.GetString(0),
-                                    DocumentStatus = reader.GetString(1),
-                                });
-                            }
-                        }
-                        connection.Close();
-                    }
-                }
-            }          
-            catch (Exception ex)
-            {
-                writeErrorMessage(ex.Message.ToString(), "ApprovedGetdata");
-            }
-
-            return approvedlist;
-        }
-
         public int deleteSystemid(string deletesystemId)
         {
 
