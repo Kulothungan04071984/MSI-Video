@@ -93,15 +93,16 @@
     <div class="container">
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-                <a class="navbar-brand" href="#">MSI - Stage WI Mapping To System</a>
+                <a class="navbar-brand" style="white-space:nowrap" href="#">MSI - Stage WI Mapping To System</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link active" id="dvWorkInstruction" asp-area="" asp-controller="PlayVideo" asp-action="VideoPlaying">Work Instruction</a></li>
-                    <li class="nav-item"><a class="nav-link" id="dvDocVerified" asp-area="" asp-controller="DocVerified" asp-action="ShowDocDetails">Document Details</a></li>
-                    <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="System" id="dvNewSystem" asp-action="Index">Add New System</a></li>
+                        <li class="nav-item"><a class="nav-link active" style="white-space:nowrap" id="dvWorkInstruction" asp-area="" asp-controller="PlayVideo" asp-action="VideoPlaying">Work Instruction</a></li>
+                        <li class="nav-item"><a class="nav-link" style="white-space:nowrap" id="dvDocVerified" asp-area="" asp-controller="DocVerified" asp-action="ShowDocDetails">Document Details</a></li>
+                        <li class="nav-item"><a class="nav-link" style="white-space:nowrap" asp-area="" asp-controller="System" id="dvNewSystem" asp-action="Index">Add New System</a></li>
+                        <li class="nav-item"><a class="nav-link" style="white-space:nowrap" asp-area="" asp-controller="Approved" id="dvApproved" asp-action="ApprovedDetails">Approved</a></li>
                    @*  <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Services</a>
                         <ul class="dropdown-menu">
@@ -118,7 +119,7 @@
                    @*  <input class="form-control search-input me-2" type="search" placeholder="Search">
                     <button class="btn btn-light btn-search" type="submit">Go</button> *@
                         <div> <img src="~/images/download.png" style="width:30%;margin-left:65%;" /></div>
-                        <div><a class="nav-link" href="javascript:void(0);" onclick="confirmLogout()"><b>Log Out</b></a></div>
+                        <div><a class="nav-link" href="javascript:void(0);" style="white-space:nowrap" onclick="confirmLogout()"><b>Log Out</b></a></div>
                 </form>
             </div>
         </div>

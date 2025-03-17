@@ -1,0 +1,120 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+@model MSI.Models.FileApprovedData
+<form asp-action="Approved" method="post">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow-lg">
+                    <div class="card-body">
+                        <h3 class="card-title text-center">Customer Details</h3>
+                        <div class="row align-items-center">
+                            <div class="col-md-6 text-center">
+                                <label for="lblcustomerid" class="form-label fw-bold" style="font-size:120%;">Customer Name :</label>
+                            </div>
+                            <div class="col-md-6" style="margin-bottom:1%">                              
+                                    @Html.DropDownListFor(model => model.approvecustomid, Model.lstapprovecustomers, "Select a Customer", new { @id = "ddlapovcustomer", @class = "form-control" })                             
+                            </div>
+                        </div>
+                        <div class="row align-items-center">
+                            <div class="col-md-6 text-center">
+                                <label for="lblfgid" class="form-label fw-bold" style="font-size:120%;">FG.No:</label>
+                            </div>
+                            <div class="col-md-6">
+                                @Html.DropDownListFor(model => model.approvefgid, Model.lstapprovefgnames, "Select an FG Name", new { @id = "ddlapovfg", @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-8">
+            <div class="card" style="margin-top:2%">
+                <div class="card-body">
+                    <h3 class="card-title text-center">Approved List</h3>
+                    <div class="tab-content" style="height:300px;overflow-y: auto">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped" style="overflow:scroll">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Customer Name</th>
+                                        <th class="text-center">FG.No</th>
+                                        <th class="text-center">Document Name</th>
+                                        <th class="text-center">Document Status</th>
+                                        <th class="text-center">Download</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.lstapprovedata)
+                                    {
+                                        <tr>
+                                            <td class="text-center">@item.CustomerName</td>
+                                            <td class="text-center">@item.FgNo</td>
+                                            <td class="text-center">@item.DocumentName</td>
+                                            <td class="text-center">@item.DocumentStatus</td>
+                                            <td class="text-center">
+                                                <input type="button" id="btndownload" class="btn btn-primary" value="Download" data-file-name="@Html.Raw(Uri.EscapeDataString(item.FileName))" onclick="downloadFile('@Html.Raw(Uri.EscapeDataString(item.FileName))')" )" />
+                                           </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    debugger;
+    function downloadFile(fileName) {
+        // Log the file name to make sure it's passed correctly
+        console.log("File to download: " + fileName);
+
+        // Find the button element and disable it
+        var button = event.target;  // This works because `event` will be passed to the function when clicked
+        button.disabled = true;
+        button.value = "Downloading...";
+
+        // Encode the fileName to handle special characters and spaces
+        var encodedFileName = encodeURIComponent(fileName);
+
+        // Redirect to the download route
+        window.location.href = '/Approved/Download?fileName=' + encodedFileName;
+    }
+
+    $('#ddlapovcustomer').change(function () {
+        var customerId = $(this).val();
+
+        $('#ddlapovfg').empty();
+        $('#ddlapovfg').append('<option value="">Select an FG Name</option>');
+
+        if (customerId) {
+            $.ajax({
+                url: '/Approved/GetFgNamesByCustomer',
+                type: 'GET',
+                data: { customerId: customerId },
+                success: function (data) {
+                    $.each(data, function (index, item) {
+                        $('#ddlapovfg').append('<option value="' + item.value + '">' + item.text + '</option>');
+                    });
+                },
+                error: function () {
+                    alert('Error fetching FG Names.');
+                }
+            });
+        }
+    });
+    function downloadFile(fileName) {
+        // Trigger the download action with the file name
+        window.location.href = '/Approved/Download?fileName=' + encodeURIComponent(fileName);
+    }
+</script>

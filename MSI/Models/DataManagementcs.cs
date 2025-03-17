@@ -149,6 +149,48 @@ namespace MSI.Models
 
             return computerNames;
         }
+        public List<DataAprovel> GetApprovedData()
+        {
+            var approvedlist = new List<DataAprovel>();
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(ConnectionString))
+                {
+                    using (SqlCommand cmd = new SqlCommand("pro_GetApprovedData", connection))
+                    {
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                        connection.Open();
+
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                approvedlist.Add(new DataAprovel
+                                {
+                                    CustomerName = reader["customer_name"].ToString(),
+                                    FgNo = reader["Fg_name"].ToString(),
+                                    DocumentName = reader["Doc_name"].ToString(),
+                                    DocumentStatus = reader["Doc_status"].ToString(),
+                                    FileName = reader["File_Path"].ToString()
+                                   // CustomerName = reader.GetString(3),
+                                    //FgNo = reader.GetString(2),
+                                   // DocumentName = reader.GetString(0),
+                                   // DocumentStatus = reader.GetString(1),
+                                });
+                            }
+                        }
+                        connection.Close();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                writeErrorMessage(ex.Message.ToString(), "ApprovedGetdata");
+            }
+
+            return approvedlist;
+        }
 
         public List<SelectListItem> getSystemNames()
         {
@@ -184,6 +226,41 @@ namespace MSI.Models
             }
         }
 
+        public List<SelectListItem> approvedGetCustomer()
+        {
+            var aprovedcustomlist = new List<SelectListItem>();
+            try
+            {
+                DataTable dtaprcustomValue = new DataTable();
+
+                using (SqlConnection customValue = new SqlConnection(ConnectionString))
+                {
+                    using (SqlCommand cmdSetValue = new SqlCommand("Get_customer_Name", customValue))
+                    {
+                        cmdSetValue.CommandType = CommandType.StoredProcedure;
+                        using (SqlDataAdapter daGetValue = new SqlDataAdapter(cmdSetValue))
+                        {
+                            daGetValue.Fill(dtaprcustomValue);
+                            if (dtaprcustomValue.Rows.Count > 0)
+                            {
+                                foreach (DataRow row in dtaprcustomValue.Rows)
+                                {
+                                    aprovedcustomlist.Add(new SelectListItem { Value = row["cutomer_id"].ToString(), Text = row["customer_name"].ToString() });
+                                }
+                            }
+                        }
+                    }
+                }
+                return aprovedcustomlist;
+            }
+            catch (Exception ex)
+            {
+                writeErrorMessage(ex.Message.ToString(), "getcustomernames");
+                return aprovedcustomlist;
+            }
+
+
+        }
         public List<SelectListItem> getcustomernames()
         {
             var customlist = new List<SelectListItem>();
@@ -254,9 +331,44 @@ namespace MSI.Models
                 return Fglist;
             }
         }
-    
+        public List<SelectListItem> approveGetFgnames(int customerId)
+        {
+            var aproveFglist = new List<SelectListItem>();
+            try
+            {
+                DataTable dtFgValue = new DataTable();
 
-    public List<FileMappingDetails> getFileMappingDetails()
+                using (SqlConnection approveFgValue = new SqlConnection(ConnectionString))
+                {
+                    using (SqlCommand cmdaproveFgValue = new SqlCommand("Get_Fg_Name", approveFgValue))
+                    {
+
+                        using (SqlDataAdapter daGetValue = new SqlDataAdapter(cmdaproveFgValue))
+                        {
+                            cmdaproveFgValue.CommandType = CommandType.StoredProcedure;
+                            cmdaproveFgValue.Parameters.AddWithValue("@Customer_id", customerId);
+
+                            daGetValue.Fill(dtFgValue);
+                            if (dtFgValue.Rows.Count > 0)
+                            {
+                                foreach (DataRow row in dtFgValue.Rows)
+                                {
+                                    aproveFglist.Add(new SelectListItem { Value = row["Fg_id"].ToString(), Text = row["Fg_Name"].ToString() });
+                                }
+                            }
+                        }
+                    }
+                }
+                return aproveFglist;
+            }
+            catch (Exception ex)
+            {
+                writeErrorMessage(ex.Message.ToString(), "approveGetFgnames");
+                return aproveFglist;
+            }
+        }
+
+        public List<FileMappingDetails> getFileMappingDetails()
         {
             var lstFileMapping = new List<FileMappingDetails>();
             FileMappingDetails objFileMapping;
