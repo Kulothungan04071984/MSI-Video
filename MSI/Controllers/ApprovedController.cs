@@ -1,9 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+<<<<<<< HEAD
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis;
 using MSI.Models;
 using Microsoft.AspNetCore.StaticFiles;
 
+=======
+using MSI.Models;
+>>>>>>> 90074adabb6fbd97863e312541321423ab235aa8
 
 namespace MSI.Controllers
 {
@@ -17,6 +21,7 @@ namespace MSI.Controllers
 
         public IActionResult ApprovedDetails()
         {
+<<<<<<< HEAD
             FileApprovedData objapprove = new FileApprovedData();
             objapprove.lstapprovecustomers = _approvedData.approvedGetCustomer();
             objapprove.lstapprovefgnames = new List<SelectListItem>();
@@ -60,5 +65,11 @@ namespace MSI.Controllers
             // Return the file as a download
             return File(fileBytes, "application/octet-stream", decodedFileName);
         }
+=======
+            var approvedlist = _approvedData.GetApprovedData() ?? new List<FileApprovedData>();
+            return View(approvedlist);
+        }
+        
+>>>>>>> 90074adabb6fbd97863e312541321423ab235aa8
     }
 }
