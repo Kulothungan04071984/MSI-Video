@@ -59,7 +59,7 @@
                     <div class="card" style="padding:1%;height:350px;">
                         <div class="tab-content" style="height:320px;overflow:scroll;">
                             <table class="table table-responsive table-bordered" style="overflow:scroll;">
-                                <thead class="text-center">
+                                <thead class="text-center table-primary">
                                     <tr>
                                         <th>Doc ID</th>
                                         <th>Emp ID</th>
@@ -185,5 +185,12 @@
     .btn {
         height: 2em;
         font-family: serif;
+    }
+
+    thead th {
+        position: sticky;
+        top: 0;
+        background: #f8f9fa;
+        z-index: 2;
     }
 </style>

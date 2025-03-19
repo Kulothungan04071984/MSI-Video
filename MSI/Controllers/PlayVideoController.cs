@@ -32,7 +32,15 @@ namespace MSI.Controllers
 
             string deviceName =await Process_systemname();
             //string deviceName = "10.10.120.218"; // Testing
-                
+
+            if (deviceName == "::1")
+            {
+                ViewBag.message = "Video Not Found";
+                return View();
+            }
+            else
+                ViewBag.message = string.Empty;
+
             DateOnly currentDate1 = DateOnly.FromDateTime(DateTime.Now);
             string currentDate2 = currentDate1.ToString("yyyy-MM-dd");
             String currentDate = currentDate2.Replace('/', '-');
