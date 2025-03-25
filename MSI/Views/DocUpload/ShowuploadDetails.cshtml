@@ -32,6 +32,8 @@
                             </div>
                         </div>
 
+
+
                         <div class="row">
                             <div class="col-lg-12 p-2">
                                 <label style="padding:1%">File Upload</label>
@@ -63,7 +65,8 @@
                                     <tr>
                                         <th>Doc ID</th>
                                         <th>Emp ID</th>
-                                        <th>Emp Name</th>
+                                        <th>Customer Name</th>
+                                        <th>Fg Name</th>
                                         <th>Doc Name</th>
                                         <th>Doc Upload Time</th>
                                         <th>Doc Type</th>
@@ -80,7 +83,8 @@
                                             <tr>
                                                 <td>@item.docId</td>
                                                 <td>@item.empId</td>
-                                                <td>@item.empName</td>
+                                                <td>@item.customer_name</td>
+                                                <td>@item.Fg_Name</td>
                                                 <td>@item.docName</td>
                                                 <td>@item.docDateTime</td>
                                                 <td>@item.docType</td>
@@ -133,6 +137,7 @@
             alert("Please provide a Fg_name and select at least one file ");
             event.preventDefault();
         }
+
     });
 
     $('#ddlcustomid').change(function () {

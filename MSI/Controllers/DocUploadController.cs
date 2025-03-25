@@ -76,15 +76,15 @@ namespace MSI.Controllers
                                 var uploadDetails1 = new Fileuploaddetails();
                                 var filename=file.FileName;
                                 //uploadDetails1.empId = string.IsNullOrEmpty(fileuploaddetails.empId.ToString()) ? "0" : fileuploaddetails.empId;
-                                uploadDetails1.empId = "123";
-                                uploadDetails1.empName = "70192";
+                                uploadDetails1.empId = TempData["user_id"] as string;
+                                //uploadDetails1.empName = TempData["user_id"] as string;
                                 uploadDetails1.docDateTime = DateTime.Today.ToString();
                                 uploadDetails1.docName = string.IsNullOrEmpty(filename) ? string.Empty : filename;
                                 uploadDetails1.docType = "Reference copy";
                                 //uploadDetails1.filepath=filePath;
                                 uploadDetails1.filepath = string.Empty;
-                                uploadDetails1.customerName = "abc";
-                                uploadDetails1.FgName = "abc";
+                                uploadDetails1.customerName = Customer_name;
+                                uploadDetails1.FgName = Fg_Name;
 
                                 //Fileuploaddetails.systemname = Fileuploaddetails.lstSystem.Where(a => a.Value == Fileuploaddetails.systemid.ToString()).Select(a => a.Text.ToString()).FirstOrDefault();
                                 //Fileuploaddetails.systemname = "";

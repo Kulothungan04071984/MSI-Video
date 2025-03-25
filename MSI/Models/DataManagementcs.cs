@@ -64,7 +64,7 @@ namespace MSI.Models
 
                         cmd.CommandType = System.Data.CommandType.StoredProcedure;
                         cmd.Parameters.AddWithValue("@empid", objFileDetails1.empId);
-                        cmd.Parameters.AddWithValue("@empName", objFileDetails1.empName);
+                        //cmd.Parameters.AddWithValue("@empName", objFileDetails1.empName);
                         cmd.Parameters.AddWithValue("@docDateTime", objFileDetails1.docDateTime);
                         cmd.Parameters.AddWithValue("@docname", objFileDetails1.docName);
                         cmd.Parameters.AddWithValue("@doctype", objFileDetails1.docType);
@@ -437,7 +437,8 @@ namespace MSI.Models
                                         objFileupload = new DocVerified();
                                         objFileupload.docId = Convert.ToInt32(row["docId"].ToString());
                                         objFileupload.empId = Convert.ToInt32(row["Emp_id"].ToString());
-                                        objFileupload.empName = row["Emp_name"].ToString();
+                                        objFileupload.customer_name = row["customer_name"].ToString();
+                                        objFileupload.Fg_Name = row["Fg_name"].ToString();
                                         objFileupload.docName = row["Doc_name"].ToString();
                                         objFileupload.docDateTime = row["Upload_time"].ToString();
                                         objFileupload.docType = row["Doc_Type"].ToString();
@@ -764,7 +765,7 @@ namespace MSI.Models
                             {
                                 docId = Convert.ToInt32(reader["id"]),
                                 empId = Convert.ToInt32(reader["Emp_id"]),
-                                empName = reader["Emp_name"].ToString(),
+                                //empName = reader["Emp_name"].ToString(),
                                 docName = reader["Doc_name"].ToString(),
                                 docDateTime = reader["Upload_time"].ToString(),
                                 docType = reader["Doc_Type"].ToString(),

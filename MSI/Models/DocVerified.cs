@@ -5,7 +5,8 @@
         public int docId {  get; set; }
         public string filepath { get; set; }
         public int empId { get; set; }
-        public string empName { get; set; }
+        public string customer_name { get; set; }
+        public string Fg_Name { get; set; }
         public string docName { get; set; }
         public string docDateTime { get; set; }
         public string docType { get; set; }
