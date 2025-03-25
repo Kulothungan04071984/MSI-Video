@@ -51,83 +51,46 @@
     </style>
 </head>
 <body>
-   @*  <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand user" asp-area="" asp-controller="Home" asp-action="Index" style="font-weight:bold;font-size:130%;">MSI</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+
+    <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container">
+                <a class="navbar-brand" style="white-space:nowrap" href="#">MSI - Stage WI Mapping To System</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-primary" style="white-space:nowrap;margin-left:10%" id="dvWorkInstruction" asp-area="" asp-controller="PlayVideo" asp-action="VideoPlaying">Work Instruction</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-primary" style="white-space:nowrap;margin-left:10%" id="dvDocVerified" asp-area="" asp-controller="DocVerified" asp-action="ShowDocDetails">Document Details</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-primary" style="white-space:nowrap;margin-left:15%" id="dvApproved" asp-area="" asp-controller="Approved" asp-action="ApprovedDetails">Approved Details</a>
-                        </li>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        @* Display the "Work Instruction" button only for Admin (UserType 1) *@
+                        @if (Context.Session.GetString("UserType") == "1")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" style="white-space:nowrap" asp-area="" asp-controller="System" id="dvNewSystem" asp-action="Index">Add New System</a>
+                            </li>
+
+                        }
+
+                        @* Display the "Document Details" button only for User (UserType 2) *@
+                        @if (Context.Session.GetString("UserType") == "2")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link active" style="white-space:nowrap" id="dvWorkInstruction" asp-area="" asp-controller="PlayVideo" asp-action="VideoPlaying">Work Instruction</a>
+                            </li>
+
+
+                        }
+
+
                     </ul>
-                </div>
-
-                <div style="margin-left:25%;font-size: 150%;font-weight: bold; white-space: nowrap;">
-                    <span>Stage WI Mapping To System</span>
-                </div>
-
-                <div class="nav-item" style="margin-left:5%;white-space: nowrap">
-                    <a class="nav-link text-primary" asp-area="" asp-controller="System" id="dvNewSystem" asp-action="Index">Add New System</a>
-                </div>
-            
-                <div class="nav-item" style="margin-left:1%;white-space: nowrap">
-                    <a href="javascript:void(0);" onclick="confirmLogout()"><b>Log Out</b></a>
-
-                </div>
-
-                <div>
-            
-                    <img src="~/images/download.png" style="width:65%;margin-left:40%;" />
-                </div>
-          
-        </nav>
-    </header> *@
-    <div class="container">
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
-                <a class="navbar-brand" style="white-space:nowrap" href="#">MSI - Stage WI Mapping To System</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                        <li class="nav-item"><a class="nav-link active" style="white-space:nowrap" id="dvWorkInstruction" asp-area="" asp-controller="PlayVideo" asp-action="VideoPlaying">Work Instruction</a></li>
-                        <li class="nav-item"><a class="nav-link" style="white-space:nowrap" id="dvDocVerified" asp-area="" asp-controller="DocVerified" asp-action="ShowDocDetails">Document Details</a></li>
-                        <li class="nav-item"><a class="nav-link" style="white-space:nowrap" asp-area="" asp-controller="System" id="dvNewSystem" asp-action="Index">Add New System</a></li>
-                        <li class="nav-item"><a class="nav-link" style="white-space:nowrap" asp-area="" asp-controller="Approved" id="dvApproved" asp-action="ApprovedDetails">Approved</a></li>
-                   @*  <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Services</a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Web Design</a></li>
-                            <li><a class="dropdown-item" href="#">SEO</a></li>
-                            <li><a class="dropdown-item" href="#">Marketing</a></li>
-                        </ul>
-                    </li> *@
-                       @*  <li class="nav-item">  <img src="~/images/download.png" style="width:30%;margin-left:145%;" /></li>
-                    <li class="nav-item"> <a class="nav-link" href="javascript:void(0);" onclick="confirmLogout()" ><b>Log Out</b></a></li> *@
-                   
-                </ul>
-                <form class="d-flex">
-                   @*  <input class="form-control search-input me-2" type="search" placeholder="Search">
-                    <button class="btn btn-light btn-search" type="submit">Go</button> *@
+                    <form class="d-flex">
                         <div> <img src="~/images/download.png" style="width:45%;margin-left:50%;height:100%;" /></div>
                         <div><a class="nav-link" href="javascript:void(0);" style="white-space:nowrap" onclick="confirmLogout()"><b>Log Out</b></a></div>
-                </form>
+                    </form>
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
     </div>
+
     <div class="container" style="padding-top:1%;">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -142,10 +105,7 @@
 
     <script>
         function confirmLogout() {
-            // Display a confirmation message
             const confirmation = confirm("Are you sure you want to log out?");
-
-            // If the user confirms, redirect to the logout page
             if (confirmation) {
                 window.location.href = "/Login/Login";  // Replace with your desired URL
             }
@@ -154,7 +114,6 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-	<link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

@@ -1,27 +1,24 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ViewEngines;
 using MSI.Models;
-using System.Diagnostics;
-using System.Net;
-using System.Net.Http;
-using System.Net.Sockets;
-
+using System;
 
 namespace MSI.Controllers
 {
     public class LoginController : Controller
     {
         private readonly DataManagementcs _dataAccess;
+
         public LoginController(DataManagementcs dataAccess)
         {
             _dataAccess = dataAccess;
-
         }
+
         public IActionResult Login()
         {
             return View();
         }
 
+        // This is the login validation method
         public JsonResult loginValidation(string userid, string password)
         {
             string res = string.Empty;
@@ -32,27 +29,53 @@ namespace MSI.Controllers
                 {
                     if (result.Rows[0][0].ToString() == userid && result.Rows[0][1].ToString() == password)
                     {
-                        if (result.Rows[0][2].ToString() == "1")
+                        string userType = result.Rows[0][2].ToString(); // 1, 2, or 3
+                        if (userType == "1")
+                        {
                             res = "Prod_Admin";
-                        else if (result.Rows[0][2].ToString()=="2")
+                            ViewData["LayoutType"] = "1"; // Admin layout
+                        }
+                        else if (userType == "2")
+                        {
                             res = "Prod_User";
-                        else if (result.Rows[0][2].ToString() == "3")
+                            ViewData["LayoutType"] = "2"; // User layout
+                        }
+                        else if (userType == "3")
+                        {
                             res = "Doc_Dept";
-                        else 
+                            ViewData["LayoutType"] = "3"; // Document Department layout
+                        }
+                        else
+                        {
                             res = "QA_Dept";
+                            ViewData["LayoutType"] = "4"; // QA Department layout
+                        }
+                        // Store the user type in session for later use in the layout
+                        HttpContext.Session.SetString("UserType", userType);
+
+                        // Store the layout type in session for persistence across views
+                        HttpContext.Session.SetString("LayoutType", ViewData["LayoutType"].ToString());
+
+                        return Json(res); // successful login
                     }
                     else
+                    {
                         res = "invalid";
+                    }
                 }
                 else
-                    res = "invalid";
-
+                {
+                    res = "invalid"; // No rows found
+                }
             }
-            else if (result == null)
-                res = "invalid";
-            // res = "valid"; //Testing
+            else
+            {
+                res = "invalid"; // No result from database
+            }
+
             return Json(res);
         }
+
         [HttpPost]
         public JsonResult UpdatePassword(string userid, string password)
         {
@@ -68,5 +91,3 @@ namespace MSI.Controllers
         }
     }
 }
-
-
