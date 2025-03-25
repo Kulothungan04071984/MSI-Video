@@ -74,11 +74,12 @@ namespace MSI.Controllers
                                 //Directory.CreateDirectory(uploadVideoFile);
                              
                                 var uploadDetails1 = new Fileuploaddetails();
+                                var filename=file.FileName;
                                 //uploadDetails1.empId = string.IsNullOrEmpty(fileuploaddetails.empId.ToString()) ? "0" : fileuploaddetails.empId;
                                 uploadDetails1.empId = "123";
                                 uploadDetails1.empName = "70192";
                                 uploadDetails1.docDateTime = DateTime.Today.ToString();
-                                uploadDetails1.docName = "abc";
+                                uploadDetails1.docName = string.IsNullOrEmpty(filename) ? string.Empty : filename;
                                 uploadDetails1.docType = "Reference copy";
                                 //uploadDetails1.filepath=filePath;
                                 uploadDetails1.filepath = string.Empty;
