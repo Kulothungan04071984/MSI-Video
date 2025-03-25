@@ -6,6 +6,17 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+// Add session services
+builder.Services.AddDistributedMemoryCache();  // In-memory cache to store session data
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);  // Optional: set session timeout duration
+    options.Cookie.HttpOnly = true;  // Ensures cookies can only be accessed by the server
+    options.Cookie.IsEssential = true;  // Ensures cookie is sent to the browser
+});
+
+
+
 builder.Services.AddScoped<MSI.Models.DataManagementcs>();
 builder.WebHost.ConfigureKestrel(options =>
 {
@@ -23,6 +34,8 @@ builder.Services.Configure<FormOptions>(options =>
 //});
 var app = builder.Build();
 //await FFmpegDownloader.GetLatestVersion(FFmpegVersion.Official);
+
+app.UseSession();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
