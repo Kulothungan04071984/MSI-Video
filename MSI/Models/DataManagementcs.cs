@@ -765,7 +765,8 @@ namespace MSI.Models
                             {
                                 docId = Convert.ToInt32(reader["id"]),
                                 empId = Convert.ToInt32(reader["Emp_id"]),
-                                //empName = reader["Emp_name"].ToString(),
+                                customer_name = reader["customer_name"].ToString(),
+                                Fg_Name = reader["Fg_name"].ToString(),
                                 docName = reader["Doc_name"].ToString(),
                                 docDateTime = reader["Upload_time"].ToString(),
                                 docType = reader["Doc_Type"].ToString(),
