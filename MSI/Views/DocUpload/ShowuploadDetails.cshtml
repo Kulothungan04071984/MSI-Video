@@ -143,11 +143,12 @@
     });
 
     $('#ddlcustomid').change(function () {
+
         var customerId = $(this).val();
         var selectedText = $("#ddlcustomid option:selected").text(); // Get the selected text
 
         // Set the selected text into the hidden field bound to the model
-        $("#customername").val(customerId);
+        $("#customername").val(selectedText);
 
         $('#ddlfg').empty();
         $('#ddlfg').append('<option value="">Select an FG Name</option>');
@@ -174,7 +175,7 @@
         var fgtext = $("#ddlfg option:selected").text(); // Get the selected text
 
         // Set the selected text into the hidden field bound to the model
-        $("#fgname").val(fgid);
+        $("#fgname").val(fgtext);
 
 
     });
