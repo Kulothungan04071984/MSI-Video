@@ -103,7 +103,7 @@ namespace MSI.Controllers
                                     writeErrorMessage(result.ToString(), "Document File Upload successfully");
                                     if (filepathUpdate > 0)
                                     {
-                                        ViewBag.Message = "Video uploaded successfully";
+                                        ViewBag.Message = "Document uploaded successfully";
                                         ViewBag.ThumbnailPath = $"/uploads/{Path.GetFileName(pathname)}";
                                         var filePath = Path.Combine(uploadVideoFile, pathname);
                                         using (var filestream = new FileStream(filePath, FileMode.Create))
