@@ -22,6 +22,7 @@
                             <div class="col-md-6">
                                 @Html.DropDownListFor(model => model.approvecustomid, Model.lstapprovecustomers, "Select a Customer", new { @id = "ddlapovcustomer", @class = "form-control", aria_label = "Select Customer" })
                             </div>
+                            @Html.HiddenFor(model => model.approvedcustname, new { id = "custname" })
                         </div>
                         <div class="row align-items-center mb-3">
                             <div class="col-md-6 text-center">
@@ -30,6 +31,7 @@
                             <div class="col-md-6">
                                 @Html.DropDownListFor(model => model.approvefgid, Model.lstapprovefgnames, "Select an FG Name", new { @id = "ddlapovfg", @class = "form-control", aria_label = "Select FG Name" })
                             </div>
+                            @Html.HiddenFor(model => model.approvedfgname, new { id = "Fgname" })
                         </div>
                     </div>
                 </div>
@@ -44,7 +46,7 @@
                     <h3 class="card-title text-center">Approved List</h3>
                     <div class="tab-content" style="height:300px;overflow-y: auto">
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped" style="overflow:scroll">
+                            <table class="table table-bordered table-striped" style="overflow:scroll" id="tblApprovedlist">
                                 <thead>
                                     <tr>
                                         <th class="text-center">Customer Name</th>
@@ -104,7 +106,10 @@
 
 
     $('#ddlapovcustomer').change(function () {
+        
         var customerId = $(this).val();
+        var customeridtext = $("#ddlapovcustomer option:selected").text();
+        $("#custname").val(customeridtext);
 
         $('#ddlapovfg').empty();
         $('#ddlapovfg').append('<option value="">Select an FG Name</option>');
@@ -125,5 +130,56 @@
             });
         }
     });
+    $('#ddlapovfg').change(function (event) {
+        debugger;
+        var fgid = $(this).val();
+        var fgidtext = $("#ddlapovfg option:selected").text();
+        $("#Fgname").val(fgidtext);
+
+        if (fgid === "Select an FG Name" || fgid === "") {
+            alert("Please provide an FG name.");
+            event.preventDefault();
+        } else {
+            var customerId = $("#ddlapovcustomer").val();
+            var customeridtext = $("#ddlapovcustomer option:selected").text();
+
+            $.ajax({
+                url: '/Approved/GetFgNames',
+                type: 'GET',
+                data: { customerId: customeridtext, fgid: fgidtext },
+                success: function (data) {
+                    // Empty the table body before appending new rows
+                    $('#tblApprovedlist tbody').empty();
+
+                    // Check if data is not empty
+                    if (data.length > 0) {
+                        $.each(data, function (index, item) {
+                            // Create a new row and append it to the table
+                            var newRow = '<tr>' +
+                                '<td class="text-center">' + item.customerName + '</td>' + // Assuming 'CustomerName' exists
+                                '<td class="text-center">' + item.fgNo + '</td>' + // Assuming 'FgNo' exists
+                                '<td class="text-center">' + item.documentName + '</td>' + // Assuming 'DocumentName' exists
+                                '<td class="text-center">' + item.documentStatus + '</td>' + // Assuming 'DocumentStatus' exists
+                                '<td class="text-center">' +
+                                '<input type="button" id="btndownload" class="btn btn-primary" value="Download" data-file-name="' + encodeURIComponent(item.fileName) + '" onclick="downloadFile(\'' + encodeURIComponent(item.fileName) + '\')" />' +
+                                '</td>' +
+                                '</tr>';
+
+                            // Append the new row to the table
+                            $('#tblApprovedlist tbody').append(newRow);
+                        });
+                    } else {
+                        // Optionally handle the case where no data is returned
+                        $('#tblApprovedlist tbody').append('<tr><td colspan="5" class="text-center">No data available</td></tr>');
+                    }
+                },
+                error: function () {
+                    alert('Error fetching FG Names.');
+                }
+            });
+        }
+    });
+
+
 </script>
 

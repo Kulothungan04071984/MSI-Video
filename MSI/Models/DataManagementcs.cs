@@ -157,7 +157,7 @@ namespace MSI.Models
             {
                 using (SqlConnection connection = new SqlConnection(ConnectionString))
                 {
-                    using (SqlCommand cmd = new SqlCommand("pro_GetApprovedData", connection))
+                    using (SqlCommand cmd = new SqlCommand("pro_GetApprovedDetails", connection))
                     {
                         cmd.CommandType = System.Data.CommandType.StoredProcedure;
                         connection.Open();
@@ -173,14 +173,53 @@ namespace MSI.Models
                                     DocumentName = reader["Doc_name"].ToString(),
                                     DocumentStatus = reader["Doc_status"].ToString(),
                                     FileName = reader["File_Path"].ToString()
-                                   // CustomerName = reader.GetString(3),
-                                    //FgNo = reader.GetString(2),
-                                   // DocumentName = reader.GetString(0),
-                                   // DocumentStatus = reader.GetString(1),
+                                    
                                 });
                             }
                         }
                         connection.Close();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                writeErrorMessage(ex.Message.ToString(), "ApprovedGetdata");
+            }
+
+            return approvedlist;
+        }
+        public List<DataAprovel> GetApprovedDatabyfg(string customername,string fgname)
+        {
+            var approvedlist = new List<DataAprovel>();
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(ConnectionString))
+                {
+                    using (SqlCommand cmd = new SqlCommand("pro_GetApprovedData", connection))
+                    {
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        // Explicitly defining parameter types and sizes
+                        cmd.Parameters.Add("@Customer_Name", SqlDbType.NVarChar, 255).Value = customername;
+                        cmd.Parameters.Add("@Fg_Name", SqlDbType.NVarChar, 255).Value = fgname;
+
+                        connection.Open();
+
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                approvedlist.Add(new DataAprovel
+                                {
+                                    CustomerName = reader["customer_name"] == DBNull.Value ? null : reader["customer_name"].ToString(),
+                                    FgNo = reader["Fg_name"] == DBNull.Value ? null : reader["Fg_name"].ToString(),
+                                    DocumentName = reader["Doc_name"] == DBNull.Value ? null : reader["Doc_name"].ToString(),
+                                    DocumentStatus = reader["Doc_status"] == DBNull.Value ? null : reader["Doc_status"].ToString(),
+                                    FileName = reader["File_Path"] == DBNull.Value ? null : reader["File_Path"].ToString()
+                                });
+                            }
+                        }
                     }
                 }
             }
@@ -367,6 +406,43 @@ namespace MSI.Models
                 return aproveFglist;
             }
         }
+        //public List<SelectListItem> approvedFgnames(int customerId,int fgid)
+        //{
+        //    var aprovedFg = new List<SelectListItem>();
+        //    try
+        //    {
+        //        DataTable dtFgValue = new DataTable();
+
+        //        using (SqlConnection approveFgValue = new SqlConnection(ConnectionString))
+        //        {
+        //            using (SqlCommand cmdaproveFgValue = new SqlCommand("Get_ApprovedFg_Name", approveFgValue))
+        //            {
+
+        //                using (SqlDataAdapter daGetValue = new SqlDataAdapter(cmdaproveFgValue))
+        //                {
+        //                    cmdaproveFgValue.CommandType = CommandType.StoredProcedure;
+        //                    cmdaproveFgValue.Parameters.AddWithValue("@Customer_id", customerId);
+        //                    cmdaproveFgValue.Parameters.AddWithValue("@FG_id", fgid);
+        //                    daGetValue.Fill(dtFgValue);
+        //                    if (dtFgValue.Rows.Count > 0) 
+        //                    {
+        //                        foreach (DataRow row in dtFgValue.Rows)
+        //                        {
+        //                            aprovedFg.Add(new SelectListItem { Value = row["customer_id"].ToString(), Text = row["customer_name"].ToString() });
+        //                            aprovedFg.Add(new SelectListItem { Value = row["Fg_id"].ToString(), Text = row["Fg_Name"].ToString() });
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        return aprovedFg;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        writeErrorMessage(ex.Message.ToString(), "approvedFg");
+        //        return aprovedFg;
+        //    }
+        //}
 
         public List<FileMappingDetails> getFileMappingDetails()
         {
@@ -412,6 +488,8 @@ namespace MSI.Models
                 return lstFileMapping;
             }
         }
+
+
 
         public List<DocVerified> getFileUploaddetails()
         {

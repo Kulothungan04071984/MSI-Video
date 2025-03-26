@@ -49,8 +49,8 @@ namespace MSI.Controllers
 
             int result = 0;
             Fileuploaddetails objupload1 = new Fileuploaddetails();
-            string Customer_name = fileuploaddetails.customerName;
-            string Fg_Name = fileuploaddetails.FgName;
+            string Customer_name = fileuploaddetails.customid;
+            string Fg_Name = fileuploaddetails.fgid;
             try
             {
                 if (files != null && files.Count > 0)
@@ -78,7 +78,7 @@ namespace MSI.Controllers
                                 //uploadDetails1.empId = string.IsNullOrEmpty(fileuploaddetails.empId.ToString()) ? "0" : fileuploaddetails.empId;
                                 uploadDetails1.empId = TempData["user_id"] as string;
                                 //uploadDetails1.empName = TempData["user_id"] as string;
-                                uploadDetails1.docDateTime = DateTime.Today.ToString();
+                                uploadDetails1.docDateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                                 uploadDetails1.docName = string.IsNullOrEmpty(filename) ? string.Empty : filename;
                                 uploadDetails1.docType = "Reference copy";
                                 //uploadDetails1.filepath=filePath;

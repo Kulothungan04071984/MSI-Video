@@ -19,6 +19,7 @@ namespace MSI.Controllers
 
         public IActionResult ApprovedDetails()
         {
+          
             FileApprovedData objapprove = new FileApprovedData();
             objapprove.lstapprovecustomers = _approvedData.approvedGetCustomer();
             objapprove.lstapprovefgnames = new List<SelectListItem>();
@@ -43,6 +44,23 @@ namespace MSI.Controllers
             }
 
         }
+        [HttpGet]
+        public JsonResult GetFgNames(string customerId,string fgid)
+        {
+            FileApprovedData fileapproveddetails = new FileApprovedData();
+            try 
+            {
+                fileapproveddetails.lstapprovedata = _approvedData.GetApprovedDatabyfg(customerId, fgid);
+                return Json(fileapproveddetails.lstapprovedata);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = ex.Message;
+                return Json(fileapproveddetails.lstapprovedata);
+            }
+
+        }
+
         public ActionResult Download(string fileName)
         {
             string decodedFileName = Uri.UnescapeDataString(fileName);

@@ -8,6 +8,10 @@ namespace MSI.Models
 
         public int approvefgid { get; set; }
 
+        public int approvedcustname { get; set; }
+
+        public int approvedfgname { get; set; }
+
         public string CustomerName { get; set; }
 
         public string FgNo { get; set; }
