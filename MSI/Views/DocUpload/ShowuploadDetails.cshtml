@@ -19,15 +19,17 @@
                             <div class="col-lg-6 p-2">
                                 <label style="padding:1%;">Customer Name</label>
                                 <div>
-                                    @Html.DropDownListFor(model => model.customid, Model.lstcustomers, "Select a Customer", new { @id = "ddlcustomid", @class = "form-control" })
+                                    @Html.DropDownListFor(model => model.customerName, Model.lstcustomers, "Select a Customer", new { @id = "ddlcustomid", @class = "form-control" })
                                 </div>
+                                @Html.HiddenFor(model => model.customid, new { id = "customername" })
                             </div>
 
                             <div class="col-lg-6 p-2">
                             <label style="padding:1%;">Fg Name</label>
                                 <div>
-                                    @Html.DropDownListFor(model => model.fgid, Model.lstfgnames, "Select an FG Name", new { @id = "ddlfg", @class = "form-control" })
+                                    @Html.DropDownListFor(model => model.FgName, Model.lstfgnames, "Select an FG Name", new { @id = "ddlfg", @class = "form-control" })
                                 </div>
+                                @Html.HiddenFor(model => model.fgid, new { id = "fgname" })
                            
                             </div>
                         </div>
@@ -142,6 +144,10 @@
 
     $('#ddlcustomid').change(function () {
         var customerId = $(this).val();
+        var selectedText = $("#ddlcustomid option:selected").text(); // Get the selected text
+
+        // Set the selected text into the hidden field bound to the model
+        $("#customername").val(customerId);
 
         $('#ddlfg').empty();
         $('#ddlfg').append('<option value="">Select an FG Name</option>');
@@ -162,6 +168,18 @@
             });
         }
     });
+
+    $('#ddlfg').change(function () {
+        var fgid = $(this).val();
+        var fgtext = $("#ddlfg option:selected").text(); // Get the selected text
+
+        // Set the selected text into the hidden field bound to the model
+        $("#fgname").val(fgid);
+
+
+    });
+
+
 
     function deleteValue(docId) {
         var conf = confirm("Are you sure you want to delete this file?");
