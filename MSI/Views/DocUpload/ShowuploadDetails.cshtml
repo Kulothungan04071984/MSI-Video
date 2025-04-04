@@ -57,12 +57,14 @@
                     </div>
                 </div>
             </div>
-
+            <div class="search-container" style="margin-bottom: 1%;margin-top:2%">
+                <input type="text" id="searchBar" placeholder="Search" class="form-control" style="width: 300px; display: inline-block;">
+            </div>
             <div class="row">
                 <div class="col-lg-0">
                     <div class="card" style="padding:1%;height:350px;">
                         <div class="tab-content" style="height:320px;overflow:scroll;">
-                            <table class="table table-responsive table-bordered" style="overflow:scroll;">
+                            <table class="table table-responsive table-bordered" style="overflow:scroll;"id="tbldocupload">
                                 <thead class="text-center table-primary">
                                     <tr>
                                         <th>Doc ID</th>
@@ -115,6 +117,35 @@
 </form>
 
 <script>
+    $(document).ready(function () {
+        // Auto-search on keyup event
+        $('#searchBar').on('keyup', function () {
+            var searchQuery = $(this).val().toLowerCase().trim();
+
+            // Hide all rows initially
+            $('#tbldocupload tbody tr').hide();
+
+            // Show rows that match the search query
+            $('#tbldocupload tbody tr').each(function () {
+                var rowText = $(this).text().toLowerCase();
+                if (rowText.includes(searchQuery)) {
+                    $(this).show();
+                }
+            });
+
+            // Display a "No matching data" message if no rows are visible
+            if ($('#tbldocupload tbody tr:visible').length === 0) {
+                $('#tbldocupload tbody').append('<tr><td colspan="10" class="text-center" id="noMatchMsg">No matching data found.</td></tr>');
+            } else {
+                // Remove the "No matching data" message when results are found
+                $('#noMatchMsg').remove();
+            }
+        });
+
+   
+    });
+
+
     $(document).ready(function () {
         $('#ddlcustomid').prop('selectedIndex', 0); // Ensure the first item is selected
         $('#ddlfg').val('');
