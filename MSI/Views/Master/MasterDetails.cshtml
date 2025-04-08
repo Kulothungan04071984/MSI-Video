@@ -30,7 +30,7 @@
                                     <span>File Upload</span>
                                 </div>
                                 <div style="padding:1%">
-                                    <input type="file" class="form-control" id="file" name="file" accept="video/*">
+                                    <input type="file" class="form-control" id="file" name="file" accept="video/*,application/pdf">
                                 </div>
                                 <div style="padding:1%;">
                                     <div class="row">
@@ -92,7 +92,7 @@
                                         </th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody style="white-space:nowrap">
                                     @if (Model != null)
                                     {
                                         @if (Model.lstFileMappings != null && Model.lstFileMappings.Count > 0)
@@ -180,7 +180,7 @@
         $('#ddlsystem').val(sysid);
     }
     function deleteValue(sysid, vdate, ftime, ttime) {
-        debugger;
+        
         $.ajax({
             url: '/Master/deleteFileMapping',
             type: 'POST',

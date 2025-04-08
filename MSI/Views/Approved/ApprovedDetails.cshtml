@@ -105,8 +105,7 @@
     }
 
 
-    $('#ddlapovcustomer').change(function () {
-        
+    $('#ddlapovcustomer').change(function () {        
         var customerId = $(this).val();
         var customeridtext = $("#ddlapovcustomer option:selected").text();
         $("#custname").val(customeridtext);
@@ -131,8 +130,7 @@
         }
     });
     $('#ddlapovfg').change(function (event) {
-        debugger;
-        var fgid = $(this).val();
+            var fgid = $(this).val();
         var fgidtext = $("#ddlapovfg option:selected").text();
         $("#Fgname").val(fgidtext);
 
@@ -179,7 +177,6 @@
             });
         }
     });
-
 
 </script>
 
