@@ -46,10 +46,15 @@ namespace MSI.Controllers
                             res = "Doc_Dept";
                             ViewData["LayoutType"] = "3"; // Document Department layout
                         }
-                        else
+                        else if(userType == "4")
                         {
                             res = "QA_Dept";
                             ViewData["LayoutType"] = "4"; // QA Department layout
+                        }
+                        else 
+                        {
+                            res = "Admin";
+                            ViewData["LayoutType"] = "5"; // Admin
                         }
                         // Store the user type in session for later use in the layout
                         HttpContext.Session.SetString("UserType", userType);
