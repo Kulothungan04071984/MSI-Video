@@ -84,6 +84,7 @@
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">Documnet Verified</h5>
                         <input type="hidden" id="hdndocid" />
+                        <input type="hidden" id="hdnfilepath" />
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -155,7 +156,7 @@
 <script>
         $(document).ready(function () {
               $('#hdndocid').val('');
-      
+      $('#hdnfilepath').val('');
         });
 
          $('.ViewDocument').click(function (){
@@ -164,7 +165,7 @@
                  var did=$(this).closest("tr").attr("docid");
                  var rootPath = "/videos/";
                  $('#hdndocid').val(did);
-               
+                 $('#hdnfilepath').val(path);
                  $.ajax({
                      url:"/DocVerified/getPdfFileName",
                      dataType:'json',
@@ -189,13 +190,13 @@
        
         $('#btnApprove').click(function()
         {
-            
-    var docid=$('#hdndocid').val();
+    var filepath=$('#hdnfilepath').val();
+     var docid=$('#hdndocid').val();
     if(docid != '' && docid != null){
     $.ajax({
         url:'/DocVerified/docStatus',
         dataType:'json',
-        data:{Docid:docid},
+        data:{Docid:docid,filePath:filepath},
         catch:false,
         async:false,
         success: function(result){
@@ -224,6 +225,7 @@
           debugger;
           var rejectReason = $('#txtRejectReason').val();
            var docid=$('#hdndocid').val();
+             var filepath=$('#hdnfilepath').val();
           if(rejectReason != '' && rejectReason != null)
           {
               if(rejectReason.length >= 3){
@@ -231,7 +233,7 @@
               $.ajax({
                   url:'/DocVerified/docRejectStatusUpdate',
                   dataType:'json',
-                  data:{Docid :docid,RejectReason:rejectReason  },
+                  data:{Docid :docid,RejectReason:rejectReason,filePath:filepath },
                   catch:false,
                   async:false,
                   success:function(result){

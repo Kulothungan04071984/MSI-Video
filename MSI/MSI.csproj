@@ -26,6 +26,7 @@
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
     <PackageReference Include="NuGet.Protocol" Version="6.12.1" />
+    <PackageReference Include="PDFsharp" Version="6.1.1" />
     <PackageReference Include="System.DirectoryServices" Version="9.0.0" />
     <PackageReference Include="System.DirectoryServices.AccountManagement" Version="9.0.0" />
   </ItemGroup>
