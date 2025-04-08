@@ -2,11 +2,17 @@
 using System.Data;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
+using System.Drawing;
+using System.Reflection.PortableExecutable;
 using System.Security.Principal;
 using System.Xml.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Microsoft.Data.SqlClient;
+using PdfSharp.Drawing;
+using PdfSharp.Pdf;
+using PdfSharp.Pdf.IO;
+using static System.Net.Mime.MediaTypeNames;
 namespace MSI.Models
 {
 
@@ -116,39 +122,39 @@ namespace MSI.Models
             }
         }
 
-        public List<string> GetAllConnectedSystemNames()
-        {
-            var computerNames = new List<string>();
+        //public List<string> GetAllConnectedSystemNames()
+        //{
+        //    var computerNames = new List<string>();
 
-            try
-            {
-                // Get the domain context
-                using (var context = new PrincipalContext(ContextType.Domain))
-                {
-                    using (var searcher = new PrincipalSearcher(new ComputerPrincipal(context)))
-                    {
-                        foreach (var result in searcher.FindAll())
-                        {
-                            using (var directoryEntry = result.GetUnderlyingObject() as DirectoryEntry)
-                            {
-                                if (directoryEntry != null)
-                                {
-                                    computerNames.Add(directoryEntry.Properties["name"].Value.ToString());
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                // Handle exceptions as needed
-                //computerNames.Add($"An error occurred: {ex.Message}");
-                writeErrorMessage(ex.Message.ToString(), "GetAllConnectedSystemNames");
-            }
+        //    try
+        //    {
+        //        // Get the domain context
+        //        using (var context = new PrincipalContext(ContextType.Domain))
+        //        {
+        //            using (var searcher = new PrincipalSearcher(new ComputerPrincipal(context)))
+        //            {
+        //                foreach (var result in searcher.FindAll())
+        //                {
+        //                    using (var directoryEntry = result.GetUnderlyingObject() as DirectoryEntry)
+        //                    {
+        //                        if (directoryEntry != null)
+        //                        {
+        //                            computerNames.Add(directoryEntry.Properties["name"].Value.ToString());
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Handle exceptions as needed
+        //        //computerNames.Add($"An error occurred: {ex.Message}");
+        //        writeErrorMessage(ex.Message.ToString(), "GetAllConnectedSystemNames");
+        //    }
 
-            return computerNames;
-        }
+        //    return computerNames;
+        //}
         public List<DataAprovel> GetApprovedData()
         {
             var approvedlist = new List<DataAprovel>();
@@ -867,9 +873,10 @@ namespace MSI.Models
             return lstDocVerified;
         }
 
-        public int updateDocStatus(int docId)
+        public int updateDocStatus(int docId,string path)
         {
             int updateStatus = 0;
+            string watermark = string.Empty;
             try
             {
                 using (var conn = new SqlConnection(ConnectionString))
@@ -880,7 +887,7 @@ namespace MSI.Models
                     conn.Open();
                     updateStatus = cmd.ExecuteNonQuery();
                     conn.Close();
-
+                    watermark = AddWatermarkcaption(path,path,"APPROVED");
                 }
             }
             catch (Exception ex) {
@@ -890,9 +897,10 @@ namespace MSI.Models
             return updateStatus;
         }
 
-        public int updateDocRejectDetails(int docId, string rejectReason)
+        public int updateDocRejectDetails(int docId, string rejectReason,string path)
         {
             int updateResult = 0;
+            string watermark = string.Empty;
             try
             {
                 using (SqlConnection con = new SqlConnection(ConnectionString))
@@ -904,6 +912,7 @@ namespace MSI.Models
                     con.Open();
                     updateResult = cmd.ExecuteNonQuery();
                     con.Close();
+                    watermark = AddWatermarkcaption(path, path, "REJECT");
                 }
             }
             catch (Exception ex)
@@ -912,6 +921,48 @@ namespace MSI.Models
                 return updateResult;
             }
             return updateResult;
+        }
+
+        public string AddWatermarkcaption(string path, string outpath, string waterMark)
+        {
+            string result = string.Empty;
+            try
+            {
+                string inputFile = path;
+                string outputFile = outpath;
+                string watermarkText = waterMark;
+                
+
+                // Open the file
+                PdfDocument document = PdfReader.Open(inputFile, PdfDocumentOpenMode.Modify);
+
+                foreach (PdfPage page in document.Pages)
+                {
+                    //XGraphics gfx = XGraphics.FromPdfPage(page, XGraphicsPdfPageOptions.Prepend);
+                    var gfx = XGraphics.FromPdfPage(page, XGraphicsPdfPageOptions.Append);
+                    XFont font = new XFont("Arial", 60, XFontStyleEx.Bold);
+                    XSize size = gfx.MeasureString(watermarkText, font);
+
+                    // Center coordinates and angle
+                    double x = (page.Width - size.Width) / 2;
+                    double y = (page.Height - size.Height) / 2;
+
+                    gfx.TranslateTransform(x + size.Width / 2, y + size.Height / 2);
+                    gfx.RotateTransform(-45);
+                    gfx.TranslateTransform(-(x + size.Width / 2), -(y + size.Height / 2));
+
+                    gfx.DrawString(watermarkText, font, new XSolidBrush(XColor.FromArgb(128, 200, 200, 200)), x, y);
+
+                    gfx.Dispose();
+                }
+
+                // Save the document
+                document.Save(outputFile);
+               return result = "Success";
+            }
+            catch (Exception ex) {
+                return result = ex.Message.ToString();
+            }
         }
         public int updateFilePath(int docid, string filepath)
         {

@@ -16,15 +16,15 @@ namespace MSI.Controllers
             return View(resultDocDetails);
         }
 
-        public JsonResult docStatus(string Docid)
+        public JsonResult docStatus(string Docid,string filePath)
         {
-            var resultUpdateStatus = _dataManagementcs.updateDocStatus(Convert.ToInt32(Docid));
+            var resultUpdateStatus = _dataManagementcs.updateDocStatus(Convert.ToInt32(Docid),filePath);
             return Json(resultUpdateStatus);
         }
 
-        public JsonResult docRejectStatusUpdate(string Docid, string RejectReason)
+        public JsonResult docRejectStatusUpdate(string Docid, string RejectReason,string filePath)
         {
-            var result = _dataManagementcs.updateDocRejectDetails(Convert.ToInt32(Docid), RejectReason);
+            var result = _dataManagementcs.updateDocRejectDetails(Convert.ToInt32(Docid), RejectReason, filePath);
             return Json(result);
         }
 
