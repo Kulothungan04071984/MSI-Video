@@ -41,7 +41,7 @@
                                             {
                                                 @foreach (var item in Model)
                                                 {
-                                                    <tr file_path="@item.filepath" docid="@item.docId">
+                                                    <tr file_path="@item.filepath" docid="@item.docId" doc_status="@item.docStatus">
                                                         <td>@item.docId</td>
                                                         <td>@item.empId</td>
                                                         <td>@item.customer_name</td>
@@ -191,9 +191,22 @@
           
                  var path= $(this).closest("tr").attr("file_path");
                  var did=$(this).closest("tr").attr("docid");
+                 var doc_status = $(this).closest("tr").attr("doc_status");
+
                  var rootPath = "/videos/";
                  $('#hdndocid').val(did);
                  $('#hdnfilepath').val(path);
+                 if (doc_status == "Approve" || doc_status == "Reject") {
+
+                     $('#btnApprove').hide();
+                     $('#btnReject').hide();
+                 } else {
+                     $('#btnApprove').show();
+                     $('#btnReject').show();
+
+                 }
+
+
                  $.ajax({
                      url:"/DocVerified/getPdfFileName",
                      dataType:'json',
