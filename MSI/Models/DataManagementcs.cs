@@ -887,7 +887,7 @@ namespace MSI.Models
                     conn.Open();
                     updateStatus = cmd.ExecuteNonQuery();
                     conn.Close();
-                    watermark = AddWatermarkcaption(path,path,"APPROVED");
+                   // watermark = AddWatermarkcaption(path,path,"APPROVED");
                 }
             }
             catch (Exception ex) {
@@ -912,7 +912,7 @@ namespace MSI.Models
                     con.Open();
                     updateResult = cmd.ExecuteNonQuery();
                     con.Close();
-                    watermark = AddWatermarkcaption(path, path, "REJECT");
+                    //watermark = AddWatermarkcaption(path, path, "REJECT");
                 }
             }
             catch (Exception ex)
