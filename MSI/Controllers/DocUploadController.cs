@@ -77,6 +77,7 @@ namespace MSI.Controllers
                                 var filename=file.FileName;
                                 //uploadDetails1.empId = string.IsNullOrEmpty(fileuploaddetails.empId.ToString()) ? "0" : fileuploaddetails.empId;
                                 uploadDetails1.empId = TempData["user_id"] as string;
+                                TempData.Keep("user_id");
                                 //uploadDetails1.empName = TempData["user_id"] as string;
                                 uploadDetails1.docDateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                                 uploadDetails1.docName = string.IsNullOrEmpty(filename) ? string.Empty : filename;
