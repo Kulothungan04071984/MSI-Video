@@ -5,6 +5,8 @@
 <head>
 	<script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </head>
 <div class="search-container" style="margin-bottom: 10px;margin-left:1%">
     <input type="text" id="searchBar" placeholder="Search" class="form-control" style="width: 300px; display: inline-block;">
@@ -156,6 +158,16 @@
 </style>
 
 <script>
+ 
+
+    $(document).ready(function () {
+        var showModal = '@TempData["ShowCustomModal"]';
+        if (showModal === 'True') {
+            $('#customModal').modal('show');
+        }
+    });
+
+
     $(document).ready(function () {
         // Auto-search on keyup event
         $('#searchBar').on('keyup', function () {

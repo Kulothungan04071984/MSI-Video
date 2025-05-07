@@ -4,6 +4,7 @@
 }
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <form asp-action="ShowuploadDetails" method="post" enctype="multipart/form-data">
     <div class="container">
@@ -50,11 +51,11 @@
 
                      
                     </div>
-                    <div class="row">
+                   @*  <div class="row">
                         <div class="col-lg-0" style="color:green;">
                             @ViewBag.Message
                         </div>
-                    </div>
+                    </div> *@
                 </div>
             </div>
             <div class="search-container" style="margin-bottom: 1%;margin-top:2%">
@@ -114,6 +115,24 @@
             </div>
         </section>
     </div>
+    <!-- Modal HTML -->
+    <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="messageModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="messageModalLabel">Notification</h5>                 
+                </div>
+                <div class="modal-body">
+                    Document uploaded successfully.                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">OK</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
 </form>
 
 <script>
@@ -144,6 +163,7 @@
 
    
     });
+   
 
 
     $(document).ready(function () {
@@ -210,7 +230,14 @@
 
 
     });
-
+  
+    $(document).ready(function () {
+        var message = '@ViewBag.Message';
+        if (message && message.trim().length > 0) {
+            $('#popupText').text(message);
+            $('#popupMessage').fadeIn(500).delay(3000).fadeOut(500);
+        }
+    });
 
 
     function deleteValue(docId) {
@@ -235,7 +262,16 @@
         }
     }
 </script>
-
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var message = '@ViewBag.Message';
+            if (message) {
+                $('#messageModal').modal('show');
+            }
+        });
+    </script>
+}
 <style>
     .btn {
         height: 2em;
