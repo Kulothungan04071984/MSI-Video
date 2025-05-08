@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "ShowuploadDetails";
 }
+@using System.Text.Encodings.Web
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -116,25 +117,28 @@
         </section>
     </div>
     <!-- Modal HTML -->
-    <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="messageModalLabel" aria-hidden="true">
+    <div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-success text-white">
                     <h5 class="modal-title" id="messageModalLabel">Notification</h5>                 
                 </div>
-                <div class="modal-body">
-                    Document uploaded successfully.                    
+                <div class="modal-body" id="messageContent">
+                    
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-success" data-bs-dismiss="modal">OK</button>
-
                 </div>
             </div>
         </div>
     </div>
-
+    
 </form>
-
+<style>
+  .custom-position {
+    margin-top: 50px; /* Pushes modal down */
+  }
+</style>
 <script>
     $(document).ready(function () {
         // Auto-search on keyup event
@@ -229,17 +233,7 @@
         $("#fgname").val(fgtext);
 
 
-    });
-  
-    $(document).ready(function () {
-        var message = '@ViewBag.Message';
-        if (message && message.trim().length > 0) {
-            $('#popupText').text(message);
-            $('#popupMessage').fadeIn(500).delay(3000).fadeOut(500);
-        }
-    });
-
-
+    })
     function deleteValue(docId) {
         var conf = confirm("Are you sure you want to delete this file?");
         if (conf == true) {
@@ -265,13 +259,16 @@
 @section Scripts {
     <script type="text/javascript">
         $(document).ready(function () {
-            var message = '@ViewBag.Message';
+            var message = '@Html.Raw(JavaScriptEncoder.Default.Encode(ViewBag.Message ?? ""))';
             if (message) {
-                $('#messageModal').modal('show');
+                $('#messageContent').text(message);
+                var modal = new bootstrap.Modal(document.getElementById('messageModal'));
+                modal.show();
             }
         });
     </script>
 }
+
 <style>
     .btn {
         height: 2em;
