@@ -887,7 +887,7 @@ namespace MSI.Models
                     conn.Open();
                     updateStatus = cmd.ExecuteNonQuery();
                     conn.Close();
-                   // watermark = AddWatermarkcaption(path,path,"APPROVED");
+                    watermark = AddWatermarkcaption(path,path,"APPROVED");
                 }
             }
             catch (Exception ex) {
@@ -939,19 +939,36 @@ namespace MSI.Models
                 foreach (PdfPage page in document.Pages)
                 {
                     //XGraphics gfx = XGraphics.FromPdfPage(page, XGraphicsPdfPageOptions.Prepend);
+                    //Indise page water mark
+                    //var gfx = XGraphics.FromPdfPage(page, XGraphicsPdfPageOptions.Append);
+                    //XFont font = new XFont("Arial", 60, XFontStyleEx.Bold);
+                    //XSize size = gfx.MeasureString(watermarkText, font);
+
+                    //// Center coordinates and angle
+                    //double x = (page.Width - size.Width) / 2;
+                    //double y = (page.Height - size.Height) / 2;
+
+                    //gfx.TranslateTransform(x + size.Width / 2, y + size.Height / 2);
+                    //gfx.RotateTransform(-45);
+                    //gfx.TranslateTransform(-(x + size.Width / 2), -(y + size.Height / 2));
+
+                    //gfx.DrawString(watermarkText, font, new XSolidBrush(XColor.FromArgb(128, 200, 200, 200)), x, y);
+
+                    //gfx.Dispose();
+
                     var gfx = XGraphics.FromPdfPage(page, XGraphicsPdfPageOptions.Append);
-                    XFont font = new XFont("Arial", 60, XFontStyleEx.Bold);
+                    XFont font = new XFont("Arial", 20, XFontStyleEx.Bold); // Smaller font for stamp-style
                     XSize size = gfx.MeasureString(watermarkText, font);
 
-                    // Center coordinates and angle
-                    double x = (page.Width - size.Width) / 2;
-                    double y = (page.Height - size.Height) / 2;
+                    // Margin from the edge
+                    double marginX = 20; // distance from the right edge
+                    double marginY = 20; // distance from the top edge
 
-                    gfx.TranslateTransform(x + size.Width / 2, y + size.Height / 2);
-                    gfx.RotateTransform(-45);
-                    gfx.TranslateTransform(-(x + size.Width / 2), -(y + size.Height / 2));
+                    // Top-right position
+                    double x = page.Width - size.Width - marginX;
+                    double y = marginY;
 
-                    gfx.DrawString(watermarkText, font, new XSolidBrush(XColor.FromArgb(128, 200, 200, 200)), x, y);
+                    gfx.DrawString(watermarkText, font, new XSolidBrush(XColor.FromArgb(180, 200, 0, 0)), x, y);
 
                     gfx.Dispose();
                 }
