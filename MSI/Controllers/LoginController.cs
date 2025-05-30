@@ -26,6 +26,7 @@ namespace MSI.Controllers
             if (result != null)
             {
                 TempData["user_id"] = userid;
+                TempData.Keep("user_id");
                 if (result.Rows.Count > 0)
                 {
                     if (result.Rows[0][0].ToString() == userid && result.Rows[0][1].ToString() == password)
