@@ -22,6 +22,7 @@
                             <div class="col-lg-6" style="padding:1.6%;">
                                 <div style="padding:2%;">Stage Name</div>
                                 <div>
+                                    @Html.LabelFor(model=>model.systemid)
                                     @Html.DropDownListFor(model => model.systemid, Model.lstSystem, "Select an Stage Name", new { @id = "ddlsystem", @class = "form-control" })
                                 </div>
                             </div>

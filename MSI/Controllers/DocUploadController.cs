@@ -65,7 +65,8 @@ namespace MSI.Controllers
                         }
                         else
                         {
-                            var path = "\\\\192.168.1.188\\MSI_Videos";
+                            //var path = "\\\\192.168.1.188\\MSI_Videos";
+                            var path = "\\\\10.10.120.234\\MSI_Videos";
                             //var uploadVideoFile = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
                             var uploadVideoFile = Path.Combine(path, "uploads");
                             writeErrorMessage(uploadVideoFile.ToString(), "File path combine successfully");

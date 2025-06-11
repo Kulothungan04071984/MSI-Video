@@ -79,7 +79,7 @@ namespace MSI.Controllers
             }
         }
             [HttpPost]
-            public JsonResult Updatedata(string SystemId, string Usertype,string StageName, string Updatesystemid,string Updateusertype,string UpdateStageName)
+            public JsonResult Updatedata(string SystemDetailsid, string SystemId, string Usertype,string StageName, string Updatesystemid,string Updateusertype,string UpdateStageName)
             {
             
                 try
@@ -92,11 +92,12 @@ namespace MSI.Controllers
                      Updateusertype = "1";                                
                    else           
                     Updateusertype = "2";
-                
-                    var updateresult = _ipAddress.UpdateDataToDatabase(SystemId, Usertype, StageName, Updatesystemid, Updateusertype, UpdateStageName);
+
+                //var updateresult = _ipAddress.UpdateDataToDatabase(SystemId, Usertype, StageName, Updatesystemid, Updateusertype, UpdateStageName);
+                var updateresult = _ipAddress.UpdateDataToDatabase(SystemDetailsid, Updatesystemid, Updateusertype, UpdateStageName);
 
 
-                    if (updateresult == 1)
+                if (updateresult == 1)
                     {
                         Index();
                         return Json(new { success = true, Message = "System Updated successfully" });

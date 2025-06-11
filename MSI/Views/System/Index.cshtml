@@ -31,6 +31,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <input type="text" id="txtsystemid" name="systemid"placeholder="Enter the System Id" class="form-control">
+                                    <input type="hidden" id="hdnsystemdetailsid" />
                                 </div>                              
                             </div>
                               <div class="row align-items-center">
@@ -78,9 +79,9 @@
                                     <tbody>
                                         @foreach (var item in Model ?? new List<MSI.Models.Systemid>())
                                         {
-                                            <tr>
+                                            <tr sysid="@item.Id">
                                                 <td class="text-center">@item.SystemId</td>
-                                                <td class="text-center">@item.Usertype</td>
+                                                <td class="text-center">@(item.Usertype == "1" ? "Admin" : "User")</td>
                                                 <td class="text-center">@item.StageName</td>                                           
                                                 <td class="text-center">
                                                     <input type="button" class="btn btn-outline-secondary "id="btnedit" name="Edit" value="Edit" data-txtsystemid="@item.SystemId"data-ddlusertype="@item.Usertype" data-txtstageid="@item.StageName"/>
@@ -102,7 +103,7 @@
 <script>
     function deletesystemvalue(sysid) 
     {
-
+       
         $.ajax({
             url: '/System/Delete',
             type: 'POST',
@@ -130,10 +131,12 @@
    
     $(document).on('click', '.btn-danger', function () 
     {
+        debugger;
         var SystemId = $(this).data('txtsystemid');
         if (SystemId)
         {
-            deletesystemvalue(SystemId);
+            var sysid=$(this).closest('tr').attr('sysid');
+            deletesystemvalue(sysid);
         }
         else
         {
@@ -156,7 +159,8 @@
                 data: { SystemId: systemID, UserType: userType,StageName:stageName},
                 success: function (response)
                 {
-                    console.log(response);
+                    debugger;
+                    //console.log(response);
                     if (response.success) 
                     {
                         alert('System Ip Added Successfully');
@@ -206,25 +210,29 @@
     }
     $(document).on('click', '.btn-outline-secondary', function ()
     {
+        debugger;
         var SystemId = $(this).data('txtsystemid');
         var Usertype = $(this).data('ddlusertype');
-        var StageName = $(this).data('txtstageid');     
-        if (SystemId && Usertype && StageName) 
+       var UType =(Usertype =="1") ? "Admin" : "User";
+        var StageName = $(this).data('txtstageid');  
+        var sysid=$(this).closest('tr').attr('sysid');
+        if (SystemId && UType && StageName)
         {
-            editvalue(SystemId,Usertype,StageName);
+            editvalue(SystemId,UType,StageName,sysid);
         }
         else
         {
             console.log("SystemId is missing!");
         }
     }); 
-    function editvalue(sysid, usrtyp,stgname)
+    function editvalue(sysid, usrtyp,stgname,sysdetid)
     {
        
         $('#txtsystemid').val(sysid);
         $('#ddlusertype').val(usrtyp);
         $('#txtstageid').val(stgname);
         $('#btnadd').hide();
+        $('#hdnsystemdetailsid').val(sysdetid);
         $('#btnupdate').show();
         $('#btnupdate').data('systemid', sysid);  
         $('#btnupdate').data('usertype', usrtyp);
@@ -232,10 +240,11 @@
     }
     function updatevalue() 
     {
-      
+      debugger;
          var systemID = $('#txtsystemid').val().trim();
          var userType = $('#ddlusertype').val();
          var stageName = $('#txtstageid').val();
+         var sysdetailID=$('#hdnsystemdetailsid').val();
         if (systemID !== "" && userType !== "" && stageName != "") {
             var oldSystemID = $('#btnupdate').data('systemid');
             var oldUserType = $('#btnupdate').data('usertype');
@@ -247,6 +256,7 @@
                 async: false,
                 data:
                 {  
+                    SystemDetailsid:sysdetailID,
                     SystemId: oldSystemID,       
                     UserType: oldUserType,
                     StageName: oldStageName,

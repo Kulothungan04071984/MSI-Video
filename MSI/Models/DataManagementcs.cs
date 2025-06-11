@@ -23,7 +23,7 @@ namespace MSI.Models
 
         public DataManagementcs(IConfiguration configuration)
         {
-            ConnectionString = configuration.GetConnectionString("conn");
+            ConnectionString = configuration.GetConnectionString("conn1");
             ConnectionString1 = configuration.GetConnectionString("conn2");
         }
         public int uploaddatainserted(UploadFileDetails objFileDetails)
@@ -744,7 +744,7 @@ namespace MSI.Models
             }
             return insertlist;
         }
-         public int UpdateDataToDatabase(string SystemId, string Usertype,string StageName, string Updateystemid,string Updateusertype,string UpdateStageName)
+         public int UpdateDataToDatabase(string SystemDetailsid, string Updateystemid,string Updateusertype,string UpdateStageName)
         {
             // var dt = DateTime.Today;
             var upresult = 0;
@@ -754,9 +754,9 @@ namespace MSI.Models
                 using (SqlCommand cmd = new SqlCommand("pro_Update_SystemId", connection))
                 {
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@SystemId", SystemId);
-                    cmd.Parameters.AddWithValue("@Usertype", Usertype);                  
-                    cmd.Parameters.AddWithValue("@StageName", StageName);                  
+                    cmd.Parameters.AddWithValue("@SystemId", SystemDetailsid);
+                    //cmd.Parameters.AddWithValue("@Usertype", Usertype);                  
+                    //cmd.Parameters.AddWithValue("@StageName", StageName);                  
                     cmd.Parameters.AddWithValue("@UpdateSystemId", Updateystemid);                  
                     cmd.Parameters.AddWithValue("@UpdateUserType", Updateusertype);                  
                     cmd.Parameters.AddWithValue("@UpdateStageName", UpdateStageName);                  
@@ -785,10 +785,10 @@ namespace MSI.Models
                                 {
                                     dataList.Add(new Systemid
                                     {
-
-                                        SystemId = reader.GetString(1),
-                                        Usertype = reader.GetString(0),
-                                        StageName = reader.GetString(2),
+                                        Id=Convert.ToString(reader.GetInt32("systemid")),
+                                        SystemId = reader.GetString("systemIP"),
+                                        Usertype = reader.GetString("usertype"),
+                                        StageName = reader.GetString("stagename"),
                                     });
                                 }
                             }
