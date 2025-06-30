@@ -3,399 +3,276 @@
     ViewData["Title"] = "MasterDetails";
 }
 
-@* <p>@ViewBag.DomainSid</p> *@
-
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
 <form asp-action="MasterDetails" method="post" enctype="multipart/form-data">
     <div class="container">
         <section>
+            <!-- Card Start -->
             <div class="card">
-                <div class="card-title">
+                <div class="card-header">
+                    <span>File Mapping</span>
+                </div>
 
-                    <div class="card-body">
-                        <div class="card-header">
-                            <span>File Mapping</span>
+                <div class="card-body">
+                    <!-- Customer & FG Info -->
+                    @* <h3 class="text-center">Customer Details</h3> *@
+
+<!-- Row 1: Customer + FG -->
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Customer Name:</label>
+                        @Html.DropDownListFor(model => model.approvecustomid, Model.lstapprovecustomers, "Select a Customer", new { @id = "ddlapovcustomer", @class = "form-control" })
+                        @Html.HiddenFor(model => model.approvedcustname, new { id = "custname" })
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">FG No:</label>
+                        @Html.DropDownListFor(model => model.approvefgid, Model.lstapprovefgnames, "Select an FG Name", new { @id = "ddlapovfg", @class = "form-control" })
+                        @Html.HiddenFor(model => model.approvedfgname, new { id = "Fgname" })
+                    </div>
+                </div>
+
+                <!-- Row 2: File + View -->
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Filename:</label>
+                        @Html.DropDownListFor(model => model.approvefileid, Model.lstFile, "Select File", new { @id = "ddlfile", @class = "form-control" })
+                        @Html.HiddenFor(model => model.approvefileid, new { id = "Filename" })
+                    </div>
+                    <div class="col-md-6 d-flex align-items-end">
+                        <button id="btnview" class="btn btn-primary ViewDocument">View</button>
+                    </div>
+                </div>
+
+
+                    <!-- Stage -->
+                    <div class="row">
+                        <div class="col-lg-6 mb-3">
+                            <label class="form-label fw-bold">Stage Name</label>
+                            @Html.DropDownListFor(model => model.systemid, Model.lstSystem, "Select Stage", new { @id = "ddlsystem", @class = "form-control" })
                         </div>
+                    </div>
 
-                        <div class="card-body">
-                            <h3 class="card-title text-center">Customer Details</h3>
-                            <div class="row align-items-center mb-3">
-                                <div class="col-md-6 text-center">
-                                    <label for="lblcustomerid" class="form-label fw-bold" style="font-size:120%;">Customer Name :</label>
+                    <!-- Modal to View PDF -->
+                    <div class="modal fade" id="myModalDocView" tabindex="-1">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Document Verified</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                                <div class="col-md-6">
-                                    @Html.DropDownListFor(model => model.approvecustomid, Model.lstapprovecustomers, "Select a Customer", new { @id = "ddlapovcustomer", @class = "form-control", aria_label = "Select Customer" })
+                                <div class="modal-body">
+                                    <iframe id="pdfViewer" width="100%" height="500px"></iframe>
                                 </div>
-                                @Html.HiddenFor(model => model.approvedcustname, new { id = "custname" })
-                            </div>
-                            <div class="row align-items-center mb-3">
-                                <div class="col-md-6 text-center">
-                                    <label for="lblfgid" class="form-label fw-bold" style="font-size:120%;">FG.No:</label>
-                                </div>
-                                <div class="col-md-6">
-                                    @Html.DropDownListFor(model => model.approvefgid, Model.lstapprovefgnames, "Select an FG Name", new { @id = "ddlapovfg", @class = "form-control", aria_label = "Select FG Name" })
-                                </div>
-                                @Html.HiddenFor(model => model.approvedfgname, new { id = "Fgname" })
-                            </div>
-                        </div>
-
-                        <div class="row align-items-center mb-3">
-                            <div class="col-md-6 text-center">
-                                <label for="lblfileid" class="form-label fw-bold" style="font-size:120%;">Filename:</label>
-                            </div>
-                            <div class="col-md-6">
-                                @Html.DropDownListFor(model => model.approvefileid, Model.lstFile, "Select an File Name", new { @id = "ddlfile", @class = "form-control", aria_label = "Select File Name" })
-                            </div>
-                            @Html.HiddenFor(model => model.approvefileid, new { id = "Filename" })
-                        </div>
-                                                             
-                        <div class="col-3">
-                                            
-                            <button id="btnview" class="btn btn-primary ViewDocument" style="margin-top:22%;margin-left:30%;" name="View" >View</button>
-                            
-                        </div>
-
-
-                        <div class="row">
-                            <div class="col-lg-6" style="padding:1.6%;">
-                                <div style="padding:2%;">Stage Name</div>
-                                <div>
-                                    @Html.LabelFor(model=>model.systemid)
-                                    @Html.DropDownListFor(model => model.systemid, Model.lstSystem, "Select an Stage Name", new { @id = "ddlsystem", @class = "form-control" })
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="modal fade" id="myModalReject" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Reject Details</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <textarea style="width:100%;height:100px;" id="txtRejectReason" ></textarea>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" id="btnSave" class="btn btn-primary">Save</button>
-                                        <button type="button" id="btnClear" class="btn btn-danger">Clear</button>
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                 </div>
                             </div>
                         </div>
-                                                     
+                    </div>
 
-                            
-                            <div class="col-lg-6" style="padding:1.8%;">
-                                <div style="padding:1%">
-                                    <span>File Upload</span>
+                    <!-- Upload Section -->
+                    <div class="row mt-4">
+                        <div class="col-lg-6">
+@*                             <h5>File Upload</h5>
+
+                            <div class="mb-3">
+                                <input type="file" class="form-control" id="file" name="file" accept="video/*,application/pdf">
+                            </div> *@
+
+                            <div class="row g-2">
+                                <div class="col-md-3">
+                                    <label>Video Date</label>
+                                    <input type="date" id="dtVideoDate" asp-for="VideoDate" class="form-control" />
                                 </div>
-                                <div style="padding:1%">
-                                    <input type="file" class="form-control" id="file" name="file" accept="video/*,application/pdf">
+                                <div class="col-md-3">
+                                    <label>From Time</label>
+                                    <input type="time" id="dtFromTime" asp-for="VideoFromTime" class="form-control" />
                                 </div>
-                                <div style="padding:1%;">
-                                    <div class="row">
-                                        <div class="col-3">
-                                            <span>Video Date </span>
-                                            <input type="date" id="dtVideoDate" asp-for="VideoDate" name="Videodate" class="form-control" style="width:120%;" />
-                                        </div>
-                                        <div class="col-3">
-                                            <span>From Time </span>
-                                            <input type="time" id="dtFromTime" asp-for="VideoFromTime" name="VideoFromTime" class="form-control" style="width:120%;" />
-                                        </div>
-                                        <div class="col-3">
-                                            <span>To Time </span>
-                                            <input type="time" id="dtToTime" asp-for="VideoToTime" name="VideoToTime" class="form-control" style="width:120%;" />
-                                        </div>
-                                        <div class="col-3">
-                                            <button id="btnUpload" class="btn btn-primary" style="margin-top:22%;margin-left:30%;">Upload</button>
-                                        </div>
-                                    </div>
+                                <div class="col-md-3">
+                                    <label>To Time</label>
+                                    <input type="time" id="dtToTime" asp-for="VideoToTime" class="form-control" />
+                                </div>
+                                <div class="col-md-3 d-flex align-items-end">
+                                    <button id="btnUpload" class="btn btn-primary">Upload</button>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-lg-0" style="color:green;">
-                                @ViewBag.Message
-                            </div>
+                    </div>
+
+                    <!-- ViewBag Message -->
+                    <div class="row mt-3">
+                        <div class="col-lg-12 text-success">
+                            @ViewBag.Message
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-lg-0">
-                    <div class="card" style="padding:1%;height:350px;">
-                        <div class="tab-content" style="height:320px;overflow:scroll;">
-                            <table class="table table-responsive table-bordered" style="overflow:scroll;">
-                                <thead class="text-center">
-                                    <tr>
-                                        <th>
-                                            System ID
-                                        </th>
-                                        <th>
-                                            System Name
-                                        </th>
-                                        <th>
-                                            File Path
-                                        </th>
-                                        <th>
-                                            Date
-                                        </th>
-                                        <th>
-                                            From Time
-                                        </th>
-                                        <th>
-                                            To Time
-                                        </th>
+            <!-- Card End -->
 
-                                        <th>
-                                            Action
-                                        </th>
+            <!-- File Mapping Table -->
+            <div class="card mt-3" style="height:350px;">
+                <div class="tab-content" style="height:320px;overflow:auto;">
+                    <table class="table table-bordered table-responsive">
+                        <thead class="text-center">
+                            <tr>
+                                <th>System ID</th>
+                                <th>System Name</th>
+                                <th>File Path</th>
+                                <th>Date</th>
+                                <th>From Time</th>
+                                <th>To Time</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody style="white-space:nowrap;">
+                            @if (Model?.lstFileMappings != null && Model.lstFileMappings.Any())
+                            {
+                                foreach (var item in Model.lstFileMappings)
+                                {
+                                    <tr>
+                                        <td>@item.systemid</td>
+                                        <td>@item.systemname</td>
+                                        <td>@item.filepath</td>
+                                        <td>@item.videoDate</td>
+                                        <td>@item.fromtime</td>
+                                        <td>@item.totime</td>
+                                        <td>
+                                            <button class="btn btn-outline-secondary" onclick="updateValue(@item.systemid)">Edit</button>
+                                            <button class="btn btn-danger" onclick="deleteValue(@item.systemid, '@item.videoDate', '@item.fromtime', '@item.totime')">Delete</button>
+                                        </td>
                                     </tr>
-                                </thead>
-                                <tbody style="white-space:nowrap">
-                                    @if (Model != null)
-                                    {
-                                        @if (Model.lstFileMappings != null && Model.lstFileMappings.Count > 0)
-                                        {
-                                            @foreach (var item in Model.lstFileMappings)
-                                            {
-                                                <tr>
-                                                    <td>
-                                                        @item.systemid
-                                                    </td>
-                                                    <td>
-                                                        @item.systemname
-                                                    </td>
-                                                    <td>
-                                                        @item.filepath
-                                                    </td>
-                                                    <td>
-                                                        @item.videoDate
-                                                    </td>
-                                                    <td>
-                                                        @item.fromtime
-                                                    </td>
-                                                    <td>
-                                                        @item.totime
-                                                    </td>
-                                                    <td>
-                                                        <input type="button" class="btn btn-outline-secondary" style="width:40%;" name="Edit" value="Edit" onclick="updateValue(@item.systemid)" />
-                                                        <input type="button" class="btn btn-danger" name="Delete" value="Delete" onclick="deleteValue(@item.systemid,'@item.videoDate','@item.fromtime','@item.totime')" />
-                                                    </td>
-                                                </tr>
-                                            }
-                                        }
-                                        else
-                                        {
-                                            <tr>
-                                                <td colspan="12" style="text-align:center;"><span>No Data Found</span></td>
-                                            </tr>
-                                        }
-                                    }
-                                    else
-                                    {
-                                        <tr>
-                                            <td colspan="12" style="text-align:center;"><span>No Data Found</span></td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="7" class="text-center">No Data Found</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </section>
     </div>
 
+    <!-- Status Modal -->
     <div class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
-        <div class="modal-dialog  custom-position">
-            <div class="modal-content"style="margin-left:35%">
+        <div class="modal-dialog custom-position">
+            <div class="modal-content" style="margin-left:35%">
                 <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title" id="statusModalLabel">Status</h5>             
+                    <h5 class="modal-title">Status</h5>
                 </div>
-                <div class="modal-body" id="statusModalBody">               
-                </div>
+                <div class="modal-body" id="statusModalBody"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
                 </div>
             </div>
         </div>
     </div>
-
 </form>
+
+<!-- JS Section -->
+@section Scripts {
 <script>
-    $(document).ready(function () {
-        $('#ddlsystem').val('');
-        var today = new Date();
-        $('#dtVideodate').val(today);
-        var day = ("0" + today.getDate()).slice(-2);
-        var month = ("0" + (today.getMonth() + 1)).slice(-2); // January is 0!
-        var year = today.getFullYear();
+    $(function () {
+        // Set default video date to today
+        const today = new Date().toISOString().split("T")[0];
+        $('#dtVideoDate').val(today).attr('min', today);
 
-        // Format the date as YYYY-MM-DD
-        var minDate = year + "-" + month + "-" + day;
-        $('#dtVideoDate').attr('min', minDate);
-
-        // Handle customer dropdown change
-        
+        // Populate FG list based on customer
         $('#ddlapovcustomer').change(function () {
-            var customerId = $(this).val();
-            var customeridtext = $("#ddlapovcustomer option:selected").text();
-            $("#custname").val(customeridtext);
+            const customerId = $(this).val();
+            const customerText = $("#ddlapovcustomer option:selected").text();
+            $("#custname").val(customerText);
 
-            $('#ddlapovfg').empty();
-            $('#ddlapovfg').append('<option value="">Select an FG Name</option>');
+            $('#ddlapovfg').empty().append('<option value="">Select an FG Name</option>');
 
             if (customerId) {
-                $.ajax({
-                    url: '/Master/GetFgNamesByCustomer',
-                    type: 'GET',
-                    data: { customerId: customerId },
-                    success: function (data) {
-                        $.each(data, function (index, item) {
-                            $('#ddlapovfg').append('<option value="' + item.value + '">' + item.text + '</option>');
-                        });
-                    },
-                    error: function () {
-                        alert('Error fetching FG Names.');
-                    }
-                });
-            }
-        });
-
-        debugger;
-        $('#ddlapovfg').change(function () {
-            var fgid = $(this).val();
-            var fgidtext = $("#ddlapovfg option:selected").text();
-            $("#Fgname").val(fgidtext);
-
-           
-            $('#ddlapovfg').append('<option value="">Select an FG Name</option>');
-            if (fgid === "Select an FG Name" || fgid === "") {
-            alert("Please provide an FG name.");
-            event.preventDefault();
-            } else {
-            var customerId = $("#ddlapovcustomer").val();
-            var customeridtext = $("#ddlapovcustomer option:selected").text();
-
-            
-            $.ajax({
-                url: '/Master/GetFgNames',
-                type: 'GET',
-                data: { customerId: customeridtext, fgid: fgidtext },
-                success: function (data) {
+                $.get('/Master/GetFgNamesByCustomer', { customerId }, function (data) {
                     $.each(data, function (index, item) {
-                        $('#ddlfile').append('<option value="' + item.value + '">' + item.text + '</option>');
+                        $('#ddlapovfg').append(`<option value="${item.value}">${item.text}</option>`);
                     });
-                },
-                error: function () {
-                    alert('Error fetching File Names.');
-                }
-            });
-            
-            }
-
-        }); 
-
-
-         debugger;
-         $('.ViewDocument').click(function () {
-
-            
-            var fileidtext = $("#ddlfile option:selected").val();
-            $("#Filename").val(fileidtext);
-            // var did = $(this).closest("tr").attr("docid");
-            // var doc_status = $(this).closest("tr").attr("doc_status");
-            var rootPath = "/videos/";
-
-            // $('#hdndocid').val(did);
-            // $('#hdnfilepath').val(path);
-
-            // if (doc_status === "Approve" || doc_status === "Reject") {
-            //     $('#btnApprove').hide();
-            //     $('#btnReject').hide();
-            // } else {
-            //     $('#btnApprove').show();
-            //     $('#btnReject').show();
-            // }
-
-            $.ajax({
-                url: "/Master/getPdfFileName",
-                dataType: 'json',
-                data: { fileid: fileidtext },
-                async: false,
-                cache: false,
-                success: function (filename) {
-                    if (filename === "File Not Found") {
-                        alert("File Not Found");
-                    } else {
-                        $("#pdfViewer").attr("src", rootPath + filename);
-                        $("#myModalDocView").modal("show");
-                    }
-                },
-                error: function (xhr) {
-                    alert('Error - ' + xhr.statusText);
-                }
-            });
-        });
-
-
-
-
-        // Handle Upload button click
-        $('#btnUpload').on('click', function (event) {
-            var systemname = $('#ddlsystem').val();
-            var uploadfile = $('#file').val();
-            var vdate = $('#dtVideoDate').val();
-            var ftime = $('#dtFromTime').val();
-            var ttime = $('#dtToTime').val();
-
-            if (systemname == "" || uploadfile == "" || vdate == "" || ftime == "00:00:00" || ttime == "00:00:00" || vdate == "0001-01-01") {
-                alert("Please Give Valid Input");
-                event.preventDefault();
+                }).fail(() => alert('Error fetching FG Names.'));
             }
         });
 
-        // Function to update system value
-        function updateValue(sysid) {
-            $('#ddlsystem').val(sysid);
-        }
+        // Load files based on FG
+        $('#ddlapovfg').change(function () {
+            const fgid = $(this).val();
+            const fgidText = $("#ddlapovfg option:selected").text();
+            $("#Fgname").val(fgidText);
 
-        // Function to delete a file mapping
-        function deleteValue(sysid, vdate, ftime, ttime) {
-            $.ajax({
-                url: '/Master/deleteFileMapping',
-                type: 'POST',
-                data: {
-                    systemid: sysid,
-                    videoDate: vdate,
-                    fromtime: ftime,
-                    totime: ttime
-                },
-                cache: false, // Fixed typo 'catch' → 'cache'
-                async: false,
-                success: function (result) {
-                    if (result > 0) {
-                        alert('Delete Successfully');
-                        window.location.href = '/Master/MasterDetails';
-                    } else {
-                        alert("Not Deleted");
-                    }
-                },
-                error: function (result) { // Fixed 'Error' → 'error'
-                    alert(result);
+            $('#ddlfile').empty().append('<option value="">Select a File Name</option>');
+
+            if (!fgid) {
+                alert("Please provide an FG name.");
+                return;
+            }
+
+            const customerText = $("#ddlapovcustomer option:selected").text();
+            $.get('/Master/GetFgNames', { customerId: customerText, fgid: fgidText }, function (data) {
+                $.each(data, function (index, item) {
+                    $('#ddlfile').append(`<option value="${item.value}">${item.text}</option>`);
+                });
+            }).fail(() => alert('Error fetching File Names.'));
+        });
+
+        // View document
+        $('.ViewDocument').click(function (e) {
+            e.preventDefault();
+
+            const fileid = $("#ddlfile").val();
+            $("#Filename").val(fileid);
+            const rootPath = "/videos/";
+
+            $.getJSON("/Master/getPdfFileName", { fileid }, function (filename) {
+                if (filename === "File Not Found") {
+                    alert("File Not Found");
+                } else {
+                    $("#pdfViewer").attr("src", rootPath + filename);
+                    $("#myModalDocView").modal("show");
                 }
-            });
-        }
+            }).fail(xhr => alert('Error - ' + xhr.statusText));
+        });
 
-        // Make the functions accessible globally (optional)
-        window.updateValue = updateValue;
-        window.deleteValue = deleteValue;
+        // Validate before upload
+        $('#btnUpload').click(function (e) {
+            const system = $('#ddlsystem').val();
+            const file = $('#ddlfile').val();
+            const date = $('#dtVideoDate').val();
+            const from = $('#dtFromTime').val();
+            const to = $('#dtToTime').val();
+
+            if (!system || !file || !date || !from || !to) {
+                alert("Please fill all fields before upload.");
+                e.preventDefault();
+            }
+        });
     });
+
+    function updateValue(sysid) {
+        $('#ddlsystem').val(sysid);
+    }
+
+    function deleteValue(systemid, date, from, to) {
+        $.post('/Master/deleteFileMapping', {
+            systemid,
+            videoDate: date,
+            fromtime: from,
+            totime: to
+        }, function (result) {
+            if (result > 0) {
+                alert('Deleted successfully');
+                location.reload();
+            } else {
+                alert("Not Deleted");
+            }
+        }).fail(xhr => alert('Error: ' + xhr.responseText));
+    }
 </script>
+}
 
 <style>
     .btn {
