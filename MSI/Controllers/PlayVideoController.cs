@@ -93,7 +93,7 @@ namespace MSI.Controllers
                 // Use file I/O to copy the file
                 //if (Directory.Exists(videoFilePath))
                 //{
-                string npath = string.IsNullOrEmpty(networkPath) ? "\\\\192.168.1.188\\MSI_Videos\\uploads\\FileNotFound.mp4" : networkPath;
+                string npath = string.IsNullOrEmpty(networkPath) ? "\\\\192.168.1.121\\MSI_Applications\\upload\\FileNotFound.mp4" : networkPath;
                 writeErrorMessage(networkPath, "Strat Copy the video File");
                 await Task.Run(() => System.IO.File.Copy(npath, videoFilePath, true));
                 //}

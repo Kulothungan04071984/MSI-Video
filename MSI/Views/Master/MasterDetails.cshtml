@@ -18,6 +18,45 @@
                             <span>File Mapping</span>
                         </div>
 
+                        <div class="card-body">
+                            <h3 class="card-title text-center">Customer Details</h3>
+                            <div class="row align-items-center mb-3">
+                                <div class="col-md-6 text-center">
+                                    <label for="lblcustomerid" class="form-label fw-bold" style="font-size:120%;">Customer Name :</label>
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.DropDownListFor(model => model.approvecustomid, Model.lstapprovecustomers, "Select a Customer", new { @id = "ddlapovcustomer", @class = "form-control", aria_label = "Select Customer" })
+                                </div>
+                                @Html.HiddenFor(model => model.approvedcustname, new { id = "custname" })
+                            </div>
+                            <div class="row align-items-center mb-3">
+                                <div class="col-md-6 text-center">
+                                    <label for="lblfgid" class="form-label fw-bold" style="font-size:120%;">FG.No:</label>
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.DropDownListFor(model => model.approvefgid, Model.lstapprovefgnames, "Select an FG Name", new { @id = "ddlapovfg", @class = "form-control", aria_label = "Select FG Name" })
+                                </div>
+                                @Html.HiddenFor(model => model.approvedfgname, new { id = "Fgname" })
+                            </div>
+                        </div>
+
+                        <div class="row align-items-center mb-3">
+                            <div class="col-md-6 text-center">
+                                <label for="lblfileid" class="form-label fw-bold" style="font-size:120%;">Filename:</label>
+                            </div>
+                            <div class="col-md-6">
+                                @Html.DropDownListFor(model => model.approvefileid, Model.lstFile, "Select an File Name", new { @id = "ddlfile", @class = "form-control", aria_label = "Select File Name" })
+                            </div>
+                            @Html.HiddenFor(model => model.approvefileid, new { id = "Filename" })
+                        </div>
+                                                             
+                        <div class="col-3">
+                                            
+                            <button id="btnview" class="btn btn-primary ViewDocument" style="margin-top:22%;margin-left:30%;" name="View" >View</button>
+                            
+                        </div>
+
+
                         <div class="row">
                             <div class="col-lg-6" style="padding:1.6%;">
                                 <div style="padding:2%;">Stage Name</div>
@@ -26,6 +65,29 @@
                                     @Html.DropDownListFor(model => model.systemid, Model.lstSystem, "Select an Stage Name", new { @id = "ddlsystem", @class = "form-control" })
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="modal fade" id="myModalReject" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Reject Details</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <textarea style="width:100%;height:100px;" id="txtRejectReason" ></textarea>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" id="btnSave" class="btn btn-primary">Save</button>
+                                        <button type="button" id="btnClear" class="btn btn-danger">Clear</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                                                     
+
+                            
                             <div class="col-lg-6" style="padding:1.8%;">
                                 <div style="padding:1%">
                                     <span>File Upload</span>
@@ -147,6 +209,22 @@
             </div>
         </section>
     </div>
+
+    <div class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
+        <div class="modal-dialog  custom-position">
+            <div class="modal-content"style="margin-left:35%">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="statusModalLabel">Status</h5>             
+                </div>
+                <div class="modal-body" id="statusModalBody">               
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </form>
 <script>
     $(document).ready(function () {
@@ -160,50 +238,165 @@
         // Format the date as YYYY-MM-DD
         var minDate = year + "-" + month + "-" + day;
         $('#dtVideoDate').attr('min', minDate);
-    });
-    $('#btnUpload').on('click', function (event) {
 
-        var systemname = $('#ddlsystem').val();
-        var uploadfile = $('#file').val();
-        var vdate = $('#dtVideoDate').val();
-        var ftime = $('#dtFromTime').val();
-        var ttime = $('#dtToTime').val();
-        if (systemname == "" || uploadfile == "" || vdate == "" || ftime == "00:00:00" || ttime == "00:00:00" || vdate == "0001-01-01") {
-            alert("Please Give Valid Input");
-            event.preventDefault();
-        }
-    });
-
-    function updateValue(sysid) {
-        $('#ddlsystem').val(sysid);
-    }
-    function updateValue(sysid) {
-        $('#ddlsystem').val(sysid);
-    }
-    function deleteValue(sysid, vdate, ftime, ttime) {
+        // Handle customer dropdown change
         
-        $.ajax({
-            url: '/Master/deleteFileMapping',
-            type: 'POST',
-            data: { systemid: sysid, videoDate: vdate, fromtime: ftime, totime: ttime },
-            catch: false,
-            async: false,
-            success: function (result) {
-                if (result > 0) {
-                    alert('Delete Successfully');
-                    window.location.href = '/Master/MasterDetails';
-                }
-                else {
-                    alert("Not Deleted");
-                }
-            },
-            Error: function (result) {
-                alert(result);
-            },
+        $('#ddlapovcustomer').change(function () {
+            var customerId = $(this).val();
+            var customeridtext = $("#ddlapovcustomer option:selected").text();
+            $("#custname").val(customeridtext);
 
+            $('#ddlapovfg').empty();
+            $('#ddlapovfg').append('<option value="">Select an FG Name</option>');
+
+            if (customerId) {
+                $.ajax({
+                    url: '/Master/GetFgNamesByCustomer',
+                    type: 'GET',
+                    data: { customerId: customerId },
+                    success: function (data) {
+                        $.each(data, function (index, item) {
+                            $('#ddlapovfg').append('<option value="' + item.value + '">' + item.text + '</option>');
+                        });
+                    },
+                    error: function () {
+                        alert('Error fetching FG Names.');
+                    }
+                });
+            }
         });
-    }
+
+        debugger;
+        $('#ddlapovfg').change(function () {
+            var fgid = $(this).val();
+            var fgidtext = $("#ddlapovfg option:selected").text();
+            $("#Fgname").val(fgidtext);
+
+           
+            $('#ddlapovfg').append('<option value="">Select an FG Name</option>');
+            if (fgid === "Select an FG Name" || fgid === "") {
+            alert("Please provide an FG name.");
+            event.preventDefault();
+            } else {
+            var customerId = $("#ddlapovcustomer").val();
+            var customeridtext = $("#ddlapovcustomer option:selected").text();
+
+            
+            $.ajax({
+                url: '/Master/GetFgNames',
+                type: 'GET',
+                data: { customerId: customeridtext, fgid: fgidtext },
+                success: function (data) {
+                    $.each(data, function (index, item) {
+                        $('#ddlfile').append('<option value="' + item.value + '">' + item.text + '</option>');
+                    });
+                },
+                error: function () {
+                    alert('Error fetching File Names.');
+                }
+            });
+            
+            }
+
+        }); 
+
+
+         debugger;
+         $('.ViewDocument').click(function () {
+
+            
+            var fileidtext = $("#ddlfile option:selected").val();
+            $("#Filename").val(fileidtext);
+            // var did = $(this).closest("tr").attr("docid");
+            // var doc_status = $(this).closest("tr").attr("doc_status");
+            var rootPath = "/videos/";
+
+            // $('#hdndocid').val(did);
+            // $('#hdnfilepath').val(path);
+
+            // if (doc_status === "Approve" || doc_status === "Reject") {
+            //     $('#btnApprove').hide();
+            //     $('#btnReject').hide();
+            // } else {
+            //     $('#btnApprove').show();
+            //     $('#btnReject').show();
+            // }
+
+            $.ajax({
+                url: "/Master/getPdfFileName",
+                dataType: 'json',
+                data: { fileid: fileidtext },
+                async: false,
+                cache: false,
+                success: function (filename) {
+                    if (filename === "File Not Found") {
+                        alert("File Not Found");
+                    } else {
+                        $("#pdfViewer").attr("src", rootPath + filename);
+                        $("#myModalDocView").modal("show");
+                    }
+                },
+                error: function (xhr) {
+                    alert('Error - ' + xhr.statusText);
+                }
+            });
+        });
+
+
+
+
+        // Handle Upload button click
+        $('#btnUpload').on('click', function (event) {
+            var systemname = $('#ddlsystem').val();
+            var uploadfile = $('#file').val();
+            var vdate = $('#dtVideoDate').val();
+            var ftime = $('#dtFromTime').val();
+            var ttime = $('#dtToTime').val();
+
+            if (systemname == "" || uploadfile == "" || vdate == "" || ftime == "00:00:00" || ttime == "00:00:00" || vdate == "0001-01-01") {
+                alert("Please Give Valid Input");
+                event.preventDefault();
+            }
+        });
+
+        // Function to update system value
+        function updateValue(sysid) {
+            $('#ddlsystem').val(sysid);
+        }
+
+        // Function to delete a file mapping
+        function deleteValue(sysid, vdate, ftime, ttime) {
+            $.ajax({
+                url: '/Master/deleteFileMapping',
+                type: 'POST',
+                data: {
+                    systemid: sysid,
+                    videoDate: vdate,
+                    fromtime: ftime,
+                    totime: ttime
+                },
+                cache: false, // Fixed typo 'catch' → 'cache'
+                async: false,
+                success: function (result) {
+                    if (result > 0) {
+                        alert('Delete Successfully');
+                        window.location.href = '/Master/MasterDetails';
+                    } else {
+                        alert("Not Deleted");
+                    }
+                },
+                error: function (result) { // Fixed 'Error' → 'error'
+                    alert(result);
+                }
+            });
+        }
+
+        // Make the functions accessible globally (optional)
+        window.updateValue = updateValue;
+        window.deleteValue = deleteValue;
+    });
 </script>
+
 <style>
     .btn {
         height: 2em;

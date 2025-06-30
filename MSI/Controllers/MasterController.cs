@@ -20,13 +20,65 @@ namespace MSI.Controllers
 		{
             UploadFileDetails uploadFileDetails = new UploadFileDetails();
 			var domainSid = _domainServices.GetDomainSid();
+            
 			//var systemName=_domainServices.GetAllConnectedSystemNames();
 			ViewBag.DomainSid = domainSid;
             //ViewBag.computerName = systemName;
+
+            uploadFileDetails.lstapprovecustomers = _domainServices.approvedGetCustomer();
+            uploadFileDetails.lstapprovefgnames = new List<SelectListItem>();
+            uploadFileDetails.lstFile = new List<SelectListItem>();
             uploadFileDetails.lstSystem = _domainServices.getSystemNames();
+            //uploadFileDetails.lstFile= _domainServices.GetfileName();
             uploadFileDetails.lstFileMappings = _domainServices.getFileMappingDetails();
             return View(uploadFileDetails);
 		}
+
+
+        [HttpGet]
+        public JsonResult GetFgNamesByCustomer(int customerId)
+        {
+            try
+            {
+                // Get the list of FG Names for the selected customer
+                var approvefgNames = _domainServices.approveGetFgnames(customerId);
+
+                // Return the list of FG Names as JSON
+                return Json(approvefgNames);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+
+        }
+        [HttpGet]
+        public JsonResult GetFgNames(string customerId, string fgid)
+        {
+            UploadFileDetails uploadFileDetails = new UploadFileDetails();
+            try
+            {
+                uploadFileDetails.lstFile = _domainServices.GetfileName(customerId, fgid);
+                return Json(uploadFileDetails.lstFile);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = ex.Message;
+                return Json(uploadFileDetails.lstFile); // or return Json(null);
+            }
+        }
+
+        public JsonResult getPdfFileName(string fileid)
+        {
+            var resultfilename = _domainServices.pdfFileCopyfromServerview(fileid);
+            if (string.IsNullOrEmpty(resultfilename))
+            {
+                ViewBag.ErrorMessage = "File Not Found";
+                return Json("File Not Found");
+            }
+            return Json(resultfilename);
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> MasterDetails(IFormFile file,UploadFileDetails uploadFileDetails)
@@ -47,9 +99,9 @@ namespace MSI.Controllers
                     else
                     {
                         //var path = "\\\\192.168.1.188\\MSI_Videos";
-                        var path = "\\\\10.10.120.234\\MSI_Videos";
+                        var path = "\\\\192.168.1.121\\MSI_Applications";
                         //var uploadVideoFile = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
-                        var uploadVideoFile = Path.Combine(path, "uploads");
+                        var uploadVideoFile = Path.Combine(path, "upload");
                         writeErrorMessage(uploadVideoFile.ToString(), "File path combine successfully");
                         if (Directory.Exists(path))
                         {
@@ -78,7 +130,7 @@ namespace MSI.Controllers
                             if (result > 0)
                             {
                                 ViewBag.Message = "Video uploaded successfully";
-                                ViewBag.ThumbnailPath = $"/uploads/{Path.GetFileName(thumbnailPath)}";
+                                ViewBag.ThumbnailPath = $"/upload/{Path.GetFileName(thumbnailPath)}";
                                 uploadFileDetails.lstSystem = _domainServices.getSystemNames();
                                 uploadFileDetails.lstFileMappings = _domainServices.getFileMappingDetails();
                                 objupload = uploadFileDetails;

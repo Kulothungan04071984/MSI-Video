@@ -55,7 +55,7 @@
     <div class="container">
         <nav class="navbar navbar-expand-lg navbar-dark">
             <div class="container">
-                <a class="navbar-brand" style="white-space:nowrap" href="#">MSI - Stage WI Mapping To System</a>
+                <a class="navbar-brand" style="white-space:nowrap" href="#">SOP Digitalization</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -67,10 +67,19 @@
                             <li class="nav-item">
                                 <a class="nav-link" style="white-space:nowrap" asp-area="" asp-controller="System" id="dvNewSystem" asp-action="Index">Add New System</a>
                             </li>
+@*                            <li class="nav-item">
+                                <a class="nav-link" style="white-space:nowrap" asp-area="" asp-controller="Approved" id="dvApproved" asp-action="ApprovedDetails">Approved</a>
+                            </li>  *@
+                        }
+
+                        @if (Context.Session.GetString("UserType") == "3")
+                        {
+
                             <li class="nav-item">
                                 <a class="nav-link" style="white-space:nowrap" asp-area="" asp-controller="Approved" id="dvApproved" asp-action="ApprovedDetails">Approved</a>
                             </li>
                         }
+
 
                         @* Display the "Document Details" button only for User (UserType 2) *@
                         @if (Context.Session.GetString("UserType") == "2")

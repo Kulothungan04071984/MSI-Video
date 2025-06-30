@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Reflection.PortableExecutable;
 using System.Security.Principal;
 using System.Xml.Linq;
+using Humanizer;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Microsoft.Data.SqlClient;
@@ -23,7 +24,7 @@ namespace MSI.Models
 
         public DataManagementcs(IConfiguration configuration)
         {
-            ConnectionString = configuration.GetConnectionString("conn1");
+            ConnectionString = configuration.GetConnectionString("conn");
             ConnectionString1 = configuration.GetConnectionString("conn2");
         }
         public int uploaddatainserted(UploadFileDetails objFileDetails)
@@ -122,6 +123,8 @@ namespace MSI.Models
             }
         }
 
+
+
         //public List<string> GetAllConnectedSystemNames()
         //{
         //    var computerNames = new List<string>();
@@ -161,7 +164,7 @@ namespace MSI.Models
 
             try
             {
-                using (SqlConnection connection = new SqlConnection(ConnectionString))
+                using (SqlConnection connection = new SqlConnection(ConnectionString1))
                 {
                     using (SqlCommand cmd = new SqlCommand("pro_GetApprovedDetails", connection))
                     {
@@ -278,7 +281,7 @@ namespace MSI.Models
             {
                 DataTable dtaprcustomValue = new DataTable();
 
-                using (SqlConnection customValue = new SqlConnection(ConnectionString))
+                using (SqlConnection customValue = new SqlConnection(ConnectionString1))
                 {
                     using (SqlCommand cmdSetValue = new SqlCommand("Get_customer_Name", customValue))
                     {
@@ -383,7 +386,7 @@ namespace MSI.Models
             {
                 DataTable dtFgValue = new DataTable();
 
-                using (SqlConnection approveFgValue = new SqlConnection(ConnectionString))
+                using (SqlConnection approveFgValue = new SqlConnection(ConnectionString1))
                 {
                     using (SqlCommand cmdaproveFgValue = new SqlCommand("Get_Fg_Name", approveFgValue))
                     {
@@ -492,6 +495,42 @@ namespace MSI.Models
             {
                 writeErrorMessage(ex.Message.ToString(), "getFileMappingDetails");
                 return lstFileMapping;
+            }
+        }
+
+        public List<SelectListItem> GetfileName(string customername, string fgname)
+        {
+            var filelist = new List<SelectListItem>();
+            try
+            {
+                DataTable dtGetValue = new DataTable();
+
+                using (SqlConnection conGetValue = new SqlConnection(ConnectionString))
+                {
+                    using (SqlCommand cmdSetValue = new SqlCommand("pro_GetfileName", conGetValue))
+                    {
+                        cmdSetValue.CommandType = CommandType.StoredProcedure;
+                        cmdSetValue.Parameters.AddWithValue("@Customer_name", customername);
+                        cmdSetValue.Parameters.AddWithValue("@fg_name", fgname);
+                        using (SqlDataAdapter daGetValue = new SqlDataAdapter(cmdSetValue))
+                        {
+                            daGetValue.Fill(dtGetValue);
+                            if (dtGetValue.Rows.Count > 0)
+                            {
+                                foreach (DataRow row in dtGetValue.Rows)
+                                {
+                                    filelist.Add(new SelectListItem { Value = row["File_id"].ToString(), Text = row["File_Name"].ToString() });
+                                }
+                            }
+                        }
+                    }
+                }
+                return filelist;
+            }
+            catch (Exception ex)
+            {
+                writeErrorMessage(ex.Message.ToString(), "GetfileNames");
+                return filelist;
             }
         }
 
@@ -1031,5 +1070,59 @@ namespace MSI.Models
 
             return resultfilename;
         }
+
+
+        public string pdfFileCopyfromServerview(string fileid)
+        {
+            var resultfilename = string.Empty;
+            try
+            {
+                var Fileid = int.Parse(fileid);
+                string sourcePath = getfilepathforview(Fileid); // Network path or local server path
+                string wwwrootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "videos");
+
+                if (!Directory.Exists(wwwrootPath))
+                {
+                    Directory.CreateDirectory(wwwrootPath);
+                }
+                string fileName = Path.GetFileName(sourcePath);
+                string destinationPath = Path.Combine(wwwrootPath, fileName);
+
+                File.Copy(sourcePath, destinationPath, true); // Overwrite if exists
+                resultfilename = fileName;
+            }
+            catch (Exception ex)
+            {
+                return resultfilename;
+            }
+
+            return resultfilename;
+        }
+
+        public string getfilepathforview(int fileid)
+        {
+            string filepath = null; // changed type from SqlDataReader to string
+            try
+            {
+                using (SqlConnection con = new SqlConnection(ConnectionString))
+                using (var cmd = new SqlCommand("pro_getfilePathforview", con))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@docid", fileid);
+
+                    con.Open();
+                    var result = cmd.ExecuteScalar(); // returns object
+                    filepath = result != null ? result.ToString() : null;
+                }
+            }
+            catch (Exception ex)
+            {
+                writeErrorMessage(ex.Message.ToString(), "FileViewforProdAdmin");
+                return filepath;
+            }
+
+            return filepath;
+        }
+
     }
 }

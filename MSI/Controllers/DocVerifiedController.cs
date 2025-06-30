@@ -31,6 +31,11 @@ namespace MSI.Controllers
         public JsonResult getPdfFileName(string filepath)
         {
             var resultfilename=_dataManagementcs.pdfFileCopyfromServer(filepath);
+            if( string.IsNullOrEmpty(resultfilename))
+            {
+                ViewBag.ErrorMessage = "File Not Found";
+                return Json("File Not Found");
+            }
             return Json(resultfilename);
         }
     }

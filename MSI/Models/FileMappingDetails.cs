@@ -14,6 +14,8 @@
         public string fromtime { get; set; }
 
         public string totime { get; set; }
+
+
     }
 
 }

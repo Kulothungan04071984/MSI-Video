@@ -235,8 +235,12 @@
                 async: false,
                 cache: false,
                 success: function (filename) {
-                    $("#pdfViewer").attr("src", rootPath + filename);
-                    $("#myModalDocView").modal("show");
+                    if (filename === "File Not Found") {
+                        alert("File Not Found");
+                    } else {
+                        $("#pdfViewer").attr("src", rootPath + filename);
+                        $("#myModalDocView").modal("show");
+                    }
                 },
                 error: function (xhr) {
                     alert('Error - ' + xhr.statusText);
