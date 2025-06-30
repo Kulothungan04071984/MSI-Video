@@ -105,6 +105,12 @@
             }
         });
     });
+
+    document.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+            document.getElementById("userlogin").click();
+        }
+    });
     $('#btnClose').on('click', function () {
         $('#myModal').modal('hide');
     });
