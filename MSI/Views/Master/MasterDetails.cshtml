@@ -238,18 +238,25 @@
         });
 
         // Validate before upload
-        $('#btnUpload').click(function (e) {
-            const system = $('#ddlsystem').val();
-            const file = $('#ddlfile').val();
-            const date = $('#dtVideoDate').val();
-            const from = $('#dtFromTime').val();
-            const to = $('#dtToTime').val();
+            $('#btnUpload').click(function (e) {
+                debugger;
 
-            if (!system || !file || !date || !from || !to) {
-                alert("Please fill all fields before upload.");
-                e.preventDefault();
-            }
-        });
+                var custname = $('#ddlapovcustomer option:selected').text();
+                console.log(); // <-- this is broken! should be console.log(custname)
+
+                var fgname = $('#ddlapovfg option:selected').text();
+                const system = $('#ddlsystem').val();
+                const file = $('#ddlfile').val();
+                const date = $('#dtVideoDate').val();
+                const from = $('#dtFromTime').val();
+                const to = $('#dtToTime').val();
+
+                if (!custname || !fgname || !system || !file || !date || !from || !to) {
+                    alert("Please fill all fields before upload.");
+                    e.preventDefault();
+                }
+            });
+
     });
 
     function updateValue(sysid) {

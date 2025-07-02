@@ -38,15 +38,29 @@
 
 
 
+
                         <div class="row">
-                            <div class="col-lg-12 p-2">
-                                <label style="padding:1%">File Upload</label>
-                                <div >
+                            <!-- Document ID -->
+                            <div class="col-lg-6 p-2">
+                                <label style="padding:1%;">Document ID</label>
+                                <div>
+                                    <input type="text" id="Filenameid" name="Filenameid" class="form-control" placeholder="Provide Document ID" />
+                                </div>
+                            </div>
+
+                            <!-- File Upload -->
+                            <div class="col-lg-6 p-2">
+                                <label style="padding:1%;">File Upload</label>
+                                <div>
                                     <input type="file" class="form-control" id="files" name="files" accept="application/pdf, video/*" multiple>
                                 </div>
-                                <div>
-                                    <button id="btnUpload" class="btn btn-primary" style="margin-top:1%;margin-left:94%;">Upload</button>
-                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Upload Button Positioned to the Right -->
+                        <div class="row">
+                            <div class="col-lg-12 d-flex justify-content-end p-2">
+                                <button id="btnUpload" class="btn btn-primary">Upload</button>
                             </div>
                         </div>
 
@@ -188,9 +202,10 @@
         var customer_Name = $('#ddlcustomid option:selected').text(); // Get customer name
         var Fg_Name = $('#ddlfg option:selected').text();
         var folderName = $('#foldername').val();
+        var fileidname = $('#Filenameid').val();
         var files = $('#files')[0].files;
 
-        if (customer_Name === "Select a Customer" || Fg_Name === "Select an FG Name" || files.length === 0) {
+        if (customer_Name === "Select a Customer" || Fg_Name === "Select an FG Name" || files.length === 0 || fileidname==="")  {
             alert("Please provide a Fg_name and select at least one file ");
             event.preventDefault();
         }

@@ -33,6 +33,7 @@ namespace MSI.Models
         public int approvefileid { get; set; }
 
         public int approvedcustname { get; set; }
+        
 
         public int approvedfgname { get; set; }
 

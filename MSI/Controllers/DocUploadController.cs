@@ -51,6 +51,7 @@ namespace MSI.Controllers
             Fileuploaddetails objupload1 = new Fileuploaddetails();
             string Customer_name = fileuploaddetails.customid;
             string Fg_Name = fileuploaddetails.fgid;
+            string filenameid = fileuploaddetails.Filenameid;
             try
             {
                 if (files != null && files.Count > 0)
@@ -84,9 +85,11 @@ namespace MSI.Controllers
                                 uploadDetails1.docName = string.IsNullOrEmpty(filename) ? string.Empty : filename;
                                 uploadDetails1.docType = "Reference copy";
                                 //uploadDetails1.filepath=filePath;
+                                
                                 uploadDetails1.filepath = string.Empty;
                                 uploadDetails1.customerName = Customer_name;
                                 uploadDetails1.FgName = Fg_Name;
+                                uploadDetails1.Filenameid = filenameid; 
 
                                 //Fileuploaddetails.systemname = Fileuploaddetails.lstSystem.Where(a => a.Value == Fileuploaddetails.systemid.ToString()).Select(a => a.Text.ToString()).FirstOrDefault();
                                 //Fileuploaddetails.systemname = "";
