@@ -3,7 +3,7 @@
 }
 *@
 
-
+@model MSI.Models.Systemid
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
@@ -15,8 +15,29 @@
                 <div class="card shadow-lg">
                     <div class="card-body">
                         <h4 class="card-title text-center">Enter System details</h4>
-                            
+                         
                             <div class="row align-items-center">
+                                <div class="col-md-6 text-center">
+                                    <lable for="lblcustomerid" class="form-label fw-bold"style="font-size:100%;">Customer Name :</lable>
+                                </div>
+                                 <div class="col-md-6 text-center">
+                                   @Html.DropDownListFor(model => model.addsystemustomid, Model.lstcustomname, "Select a Customer", new { @id = "ddladdsytem", @class = "form-control", aria_label = "Select Customer" })
+
+                                </div>
+                                @Html.HiddenFor(model => model.addsystemcustname, new { id = "custname" })
+                            </div>
+                        <div class="row align-items-center" style="margin-top:2%">
+                            <div class="col-md-6 text-center">
+                                <lable for="lblfgnoid" class="form-label fw-bold" style="font-size:100%;">FG.NO :</lable>
+                            </div>
+                            <div class="col-md-6 text-center">
+                                @Html.DropDownListFor(model => model.addsystemfgid, Model.lstfgno, "Select an FG.NO", new { @id = "ddladdfg", @class = "form-control", aria_label = "Select FG.NO" })
+
+                            </div>
+                            @Html.HiddenFor(model => model.addsystemfgname, new { id = "custname" })
+                        </div>
+                            
+                        <div class="row align-items-center"style="margin-top:2%">
 
                                 <div class="col-md-6 text-center">
                                     <label for="lblstageid" class="form-label fw-bold"style="font-size:100%;">Stage Name :</label>
@@ -71,16 +92,20 @@
                                     <thead>
                                         <tr>
                                             <th class="text-center">System ID</th>
+                                            <th class="text-center">Customer Name</th>
+                                            <th class="text-center">FG.NO</th>
                                             <th class="text-center">Usertype</th>
                                             <th class="text-center">Stage Name</th>                                            
                                             <th class="text-center">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach (var item in Model ?? new List<MSI.Models.Systemid>())
+                                        @foreach (var item in Model.lstaddsystem)
                                         {
                                             <tr sysid="@item.Id">
                                                 <td class="text-center">@item.SystemId</td>
+                                                <td class="text-center">@item.cutomerName</td>
+                                                <td class="text-center">@item.fgNo</td>
                                                 <td class="text-center">@(item.Usertype == "1" ? "Admin" : "User")</td>
                                                 <td class="text-center">@item.StageName</td>                                           
                                                 <td class="text-center">
@@ -128,10 +153,36 @@
 
         });
     }
-   
+    $('#ddladdsytem').change(function () {
+
+        var customerId = $(this).val();
+        var selectedText = $("#ddladdsytem option:selected").text(); // Get the selected text
+
+        // Set the selected text into the hidden field bound to the model
+        $("#custname").val(selectedText);
+
+        $('#ddladdfg').empty();
+        $('#ddladdfg').append('<option value="">Select an FG Name</option>');
+
+        if (customerId) {
+            $.ajax({
+                url: '/System/GetFgNamesByCustomer',
+                type: 'GET',
+                data: { customerId: customerId },
+                success: function (data) {
+                    $.each(data, function (index, item) {
+                        $('#ddladdfg').append('<option value="' + item.value + '">' + item.text + '</option>');
+                    });
+                },
+                error: function () {
+                    alert('Error fetching FG Names.');
+                }
+            });
+        }
+    });
     $(document).on('click', '.btn-danger', function () 
     {
-        debugger;
+      
         var SystemId = $(this).data('txtsystemid');
         if (SystemId)
         {
@@ -144,11 +195,13 @@
         }
     });                                                  
     function addvalue() {
-    
+   
         var systemID = $('#txtsystemid',).val().trim();
         var userType = $('#ddlusertype').val();
         var stageName =$('#txtstageid').val().trim();
-        if (systemID !== "" && userType !=="" && stageName !=="")
+        var customerName = $('#ddladdsytem option:selected').text();
+        var fgNo = $('#ddladdfg option:selected').text();
+        if (systemID !== "" && userType !=="" && stageName !=="" && customerName!="" && fgNo!="")
         {
             $.ajax
             ({
@@ -156,10 +209,9 @@
                 type: 'POST',
                 cache: false,
                 async: false,
-                data: { SystemId: systemID, UserType: userType,StageName:stageName},
+                data: { SystemId: systemID, UserType: userType,StageName:stageName,Customername:customerName,Fgno:fgNo},
                 success: function (response)
-                {
-                    debugger;
+                {                  
                     //console.log(response);
                     if (response.success) 
                     {
@@ -207,10 +259,13 @@
         $('#txtsystemid').val('');
         $('#ddlusertype').prop('selectedIndex', 0);
         $('#txtstageid').val('');
+        $('#ddladdsystem').prop('selectedIndex',0);
+        $('#ddladdfg').prop('selectedIndex',0);
+     
     }
     $(document).on('click', '.btn-outline-secondary', function ()
     {
-        debugger;
+     
         var SystemId = $(this).data('txtsystemid');
         var Usertype = $(this).data('ddlusertype');
        var UType =(Usertype =="1") ? "Admin" : "User";
@@ -240,7 +295,7 @@
     }
     function updatevalue() 
     {
-      debugger;
+ 
          var systemID = $('#txtsystemid').val().trim();
          var userType = $('#ddlusertype').val();
          var stageName = $('#txtstageid').val();

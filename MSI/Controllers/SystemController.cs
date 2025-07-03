@@ -2,6 +2,7 @@
 
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
@@ -25,8 +26,39 @@ namespace MSI.Controllers
 
         public IActionResult Index()
         {
-           var datalist = _ipAddress.GetData() ?? new List<Systemid>();
-            return View(datalist);
+            var datalist = _ipAddress.GetData() ?? new List<Systemid>();
+
+
+            var objSystem = new Systemid
+            {
+                lstcustomname = _ipAddress.getcustomernames(),
+                lstaddsystem = datalist,              
+                lstfgno = new List<SelectListItem>()
+            };
+
+            return View(objSystem);      
+            // var datalist = _ipAddress.GetData() ?? new List<Systemid>();
+            // var model = new Systemid
+            // {
+            //     lstaddsystem = datalist
+            // };
+            // return View(datalist);
+        }
+        [HttpGet]
+        public JsonResult GetFgNamesByCustomer(int customerId)
+        {
+            try
+            {
+                // Get the list of FG Names for the selected customer
+                var fgNames = _ipAddress.getfgnames(customerId);
+
+                // Return the list of FG Names as JSON
+                return Json(fgNames);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
         }
         [HttpPost]
         public JsonResult Delete(string SystemId)
@@ -44,7 +76,7 @@ namespace MSI.Controllers
             return Json(resultdel);
         }
         [HttpPost]
-        public JsonResult Savedata(string SystemId, string Usertype,string StageName)
+        public JsonResult Savedata(string SystemId, string Usertype,string StageName,string customername,string fgno)
         {
             try
             {
@@ -53,7 +85,7 @@ namespace MSI.Controllers
                 else                           
                     Usertype = "2";
                 
-                    var insertlist = _ipAddress.SaveDataToDatabase(SystemId,Usertype,StageName);
+                    var insertlist = _ipAddress.SaveDataToDatabase(SystemId,Usertype,StageName,customername,fgno);
 
                 if (insertlist == 1)
                 {

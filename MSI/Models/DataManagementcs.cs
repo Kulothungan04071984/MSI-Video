@@ -1,19 +1,11 @@
 ﻿
 using System.Data;
-using System.DirectoryServices;
-using System.DirectoryServices.AccountManagement;
-using System.Drawing;
-using System.Reflection.PortableExecutable;
 using System.Security.Principal;
-using System.Xml.Linq;
-using Humanizer;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Microsoft.Data.SqlClient;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 using PdfSharp.Pdf.IO;
-using static System.Net.Mime.MediaTypeNames;
 namespace MSI.Models
 {
 
@@ -762,7 +754,7 @@ namespace MSI.Models
                 errLogs.Close();
             }
         }
-        public int SaveDataToDatabase(string SystemId, string Usertype,string StageName)
+        public int SaveDataToDatabase(string SystemId, string Usertype,string StageName,string Customername,string Fgno)
         {
             // var dt = DateTime.Today;
             var insertlist = 0;
@@ -775,6 +767,8 @@ namespace MSI.Models
                     cmd.Parameters.AddWithValue("@SystemId", SystemId);
                     cmd.Parameters.AddWithValue("@Usertype", Usertype);
                     cmd.Parameters.AddWithValue("@StageName", StageName);            
+                    cmd.Parameters.AddWithValue("@customername", Customername);            
+                    cmd.Parameters.AddWithValue("@fgname", Fgno);            
                     connection.Open();
                     insertlist = cmd.ExecuteNonQuery();
                     connection.Close();
@@ -824,10 +818,12 @@ namespace MSI.Models
                                 {
                                     dataList.Add(new Systemid
                                     {
-                                        Id=Convert.ToString(reader.GetInt32("systemid")),
-                                        SystemId = reader.GetString("systemIP"),
-                                        Usertype = reader.GetString("usertype"),
-                                        StageName = reader.GetString("stagename"),
+                                        Id = reader.IsDBNull(reader.GetOrdinal("systemid")) ? null : Convert.ToString(reader.GetInt32(reader.GetOrdinal("systemid"))),
+                                        SystemId = reader.IsDBNull(reader.GetOrdinal("systemIP")) ? null : reader.GetString(reader.GetOrdinal("systemIP")),
+                                        Usertype = reader.IsDBNull(reader.GetOrdinal("usertype")) ? null : reader.GetString(reader.GetOrdinal("usertype")),
+                                        StageName = reader.IsDBNull(reader.GetOrdinal("stagename")) ? null : reader.GetString(reader.GetOrdinal("stagename")),
+                                        cutomerName = reader.IsDBNull(reader.GetOrdinal("customer_name")) ? null : reader.GetString(reader.GetOrdinal("customer_name")),
+                                        fgNo = reader.IsDBNull(reader.GetOrdinal("fg_name")) ? null : reader.GetString(reader.GetOrdinal("fg_name")),
                                     });
                                 }
                             }

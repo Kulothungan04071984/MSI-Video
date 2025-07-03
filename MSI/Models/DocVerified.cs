@@ -14,6 +14,8 @@
         public bool isActive { get; set; }
         public string Reject_reason { get; set; }
 
+        public string fileId { get; set; }
+
 
     }
 }
