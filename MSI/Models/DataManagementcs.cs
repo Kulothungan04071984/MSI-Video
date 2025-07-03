@@ -64,6 +64,7 @@ namespace MSI.Models
                         cmd.CommandType = System.Data.CommandType.StoredProcedure;
                         cmd.Parameters.AddWithValue("@empid", objFileDetails1.empId);
                         //cmd.Parameters.AddWithValue("@empName", objFileDetails1.empName);
+                        cmd.Parameters.AddWithValue("@filenameid",objFileDetails1.Filenameid);
                         cmd.Parameters.AddWithValue("@docDateTime", objFileDetails1.docDateTime);
                         cmd.Parameters.AddWithValue("@docname", objFileDetails1.docName);
                         cmd.Parameters.AddWithValue("@doctype", objFileDetails1.docType);

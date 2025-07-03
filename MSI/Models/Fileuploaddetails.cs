@@ -8,6 +8,7 @@ namespace MSI.Models
         public string customerName { get; set; }
         public string FgName {  get; set; }
         public string fgid { get; set; }
+        public string Filenameid { get; set; }
         public int docId { get; set; }
         public string empId { get; set; }
         public string filepath { get; set; }
