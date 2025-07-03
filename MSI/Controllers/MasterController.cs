@@ -79,17 +79,17 @@ namespace MSI.Controllers
             return Json(resultfilename);
         }
 
-
         [HttpPost]
-        public async Task<IActionResult> MasterDetails(IFormFile file,UploadFileDetails uploadFileDetails)
+        public IActionResult MasterDetails(UploadFileDetails uploadFileDetails)
         {
-
+            UploadFileDetails objupload = new UploadFileDetails();
             int result = 0;
-            UploadFileDetails objupload =new UploadFileDetails();
+
             try
             {
-                if (file != null && file.Length > 0)
+                if (uploadFileDetails.approvefileid == 0 || uploadFileDetails.systemid == 0)
                 {
+<<<<<<< HEAD
          
                     if (file.Length > _fileSizeLimit)
                     {
@@ -142,27 +142,60 @@ namespace MSI.Controllers
                                 ViewBag.Message = "Video Not uploaded ";
                                 ViewBag.ThumbnailPath = "";
                             }
+=======
+                    ViewBag.Message = "Please select System and File.";
+                    return View(uploadFileDetails);
+                }
+>>>>>>> c30aeb2a736deb0cd54ced57cd6ec012b9b55840
 
-                        }
-                    }
+                // Resolve file path from file ID
+                string filePath = _domainServices.getfilepathforview(uploadFileDetails.approvefileid); // This must be implemented in your domain service
 
+                if (string.IsNullOrEmpty(filePath))
+                {
+                    ViewBag.Message = "File not found for the selected file ID.";
+                    return View(uploadFileDetails);
+                }
+
+                var uploadDetails = new UploadFileDetails
+                {
+                    systemid = uploadFileDetails.systemid,
+                    filepath = filePath,
+                    uploaddatetime = DateTime.Now.ToString(),
+                    uploadEmployee = "70192",
+                    VideoDate = uploadFileDetails.VideoDate,
+                    VideoFromTime = uploadFileDetails.VideoFromTime,
+                    VideoToTime = uploadFileDetails.VideoToTime
+                };
+
+                result = _domainServices.uploaddatainserted(uploadDetails);
+                writeErrorMessage(result.ToString(), "Video File Mapping inserted");
+
+                if (result > 0)
+                {
+                    ViewBag.Message = "Video mapping saved successfully.";
                 }
                 else
                 {
-                    ViewBag.Message = "Please Give Proper Input";                
+                    ViewBag.Message = "Failed to save video mapping.";
                 }
-
-                return View(objupload);
-               
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                writeErrorMessage(ex.Message.ToString(), "MasterDetails Control Issue");
+                writeErrorMessage(ex.Message, "MasterDetails POST");
                 ViewBag.Message = ex.Message;
-                return View(objupload);
             }
-           
+
+            // Reload dropdowns and mappings
+            objupload.lstapprovecustomers = _domainServices.approvedGetCustomer();
+            objupload.lstapprovefgnames = new List<SelectListItem>();
+            objupload.lstFile = new List<SelectListItem>();
+            objupload.lstSystem = _domainServices.getSystemNames();
+            objupload.lstFileMappings = _domainServices.getFileMappingDetails();
+
+            return View(objupload);
         }
+
         private void ExtractThumbnail(string videoPath, string thumbnailPath)
         {
             try
