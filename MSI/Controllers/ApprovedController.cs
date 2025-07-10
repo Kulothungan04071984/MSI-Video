@@ -45,7 +45,7 @@ namespace MSI.Controllers
 
         }
         [HttpGet]
-        public JsonResult GetFgNames(string customerId,string fgid)
+        public JsonResult Getfiledetails(string customerId,string fgid)
         {
             FileApprovedData fileapproveddetails = new FileApprovedData();
             try 
@@ -61,25 +61,9 @@ namespace MSI.Controllers
 
         }
 
-        public ActionResult Download(string fileName)
-        {
-            string decodedFileName = Uri.UnescapeDataString(fileName);
-            // Assuming the files are stored in a folder on the server
-            string fileDirectory = @"\\192.168.1.188\MSI_Videos\uploads"; // Change this to the actual folder where your files are stored
-            string filePath = Path.Combine(fileDirectory, decodedFileName);
+  
 
-            if (!System.IO.File.Exists(filePath))
-            {
-                return NotFound("File not found.");
-            }
 
-            // Get the file data
-            byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
-            string fileExtension = Path.GetExtension(filePath);
-
-            // Return the file as a download
-            return File(fileBytes, "application/octet-stream", decodedFileName);
-        }
 
 
     }

@@ -4,6 +4,15 @@
 }
 @using System.Text.Encodings.Web
 
+@using System.Collections.Generic
+@{
+    var docTypeOptions = new List<SelectListItem>
+    {
+        new SelectListItem { Text = "Reference", Value = "Reference" },
+        new SelectListItem { Text = "Controlled", Value = "Controlled" }
+    };
+}
+
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -59,7 +68,17 @@
 
                         <!-- Upload Button Positioned to the Right -->
                         <div class="row">
-                            <div class="col-lg-12 d-flex justify-content-end p-2">
+                            <!-- Dropdown Column -->
+                            <div class="col-lg-6 p-2">
+                                <label style="padding:1%;">Document Type</label>
+                                <div>
+                                    @Html.DropDownListFor(model => model.docType, docTypeOptions, new { @id = "ddldocType", @class = "form-control" })
+                                </div>
+                                @Html.HiddenFor(model => model.docType, new { id = "docType" })
+                            </div>
+
+                            <!-- Button Column -->
+                            <div class="col-lg-6 p-2 d-flex align-items-end">
                                 <button id="btnUpload" class="btn btn-primary">Upload</button>
                             </div>
                         </div>
@@ -77,57 +96,60 @@
                 <input type="text" id="searchBar" placeholder="Search" class="form-control" style="width: 300px; display: inline-block;">
             </div>
             <div class="row">
-                <div class="col-lg-0">
+                <div class="col-lg-12">
                     <div class="card" style="padding:1%;height:350px;">
-                        <div class="tab-content" style="height:320px;overflow:scroll;">
-                            <table class="table table-responsive table-bordered" style="overflow:scroll;"id="tbldocupload">
-                                <thead class="text-center table-primary">
-                                    <tr>
-                                        <th>Doc ID</th>
-                                        <th>Emp ID</th>
-                                        <th>Customer Name</th>
-                                        <th>Fg Name</th>
-                                        <th>Doc Name</th>
-                                        <th>Doc Upload Time</th>
-                                        <th>Doc Type</th>
-                                        <th>Doc Status</th>
-                                        <th>Reason</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if (Model?.lstdocVerifieds?.Count > 0)
-                                    {
-                                        @foreach (var item in Model.lstdocVerifieds)
+                        <div style="height:320px; overflow-y:auto;">
+                            <div style="overflow-x:auto;">
+                                <table class="table table-bordered w-100" id="tbldocupload">
+                                    <thead class="text-center table-primary">
+                                        <tr>
+                                            <th>Emp ID</th>
+                                            <th>Customer Name</th>
+                                            <th>Fg Name</th>
+                                            <th>Document id</th>
+                                            <th>Doc Name</th>
+                                            <th>UploadDate</th>
+                                            <th>Doc Type</th>
+                                            <th>DocStatus</th>
+                                            <th>Rejectreason</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model?.lstdocVerifieds?.Count > 0)
+                                        {
+                                            @foreach (var item in Model.lstdocVerifieds)
+                                            {
+                                                <tr>
+                                                    <td>@item.empId</td>
+                                                    <td>@item.customer_name</td>
+                                                    <td>@item.Fg_Name</td>
+                                                    <td>@item.Filenameid</td>
+                                                    <td>@item.docName</td>
+                                                    <td>@item.docDateTime</td>
+                                                    <td>@item.docType</td>
+                                                    <td>@item.docStatus</td>
+                                                    <td>@item.Reject_reason</td>
+                                                    <td>
+                                                        <input type="button" class="btn btn-danger" name="Delete" value="Delete" onclick="deleteValue(@item.docId)" />
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
                                         {
                                             <tr>
-                                                <td>@item.docId</td>
-                                                <td>@item.empId</td>
-                                                <td>@item.customer_name</td>
-                                                <td>@item.Fg_Name</td>
-                                                <td>@item.docName</td>
-                                                <td>@item.docDateTime</td>
-                                                <td>@item.docType</td>
-                                                <td>@item.docStatus</td>
-                                                <td>@item.Reject_reason</td>
-                                                <td>
-                                                    <input type="button" class="btn btn-danger" name="Delete" value="Delete" onclick="deleteValue(@item.docId)" />
-                                                </td>
+                                                <td colspan="10" style="text-align:center;">No Data Found</td>
                                             </tr>
                                         }
-                                    }
-                                    else
-                                    {
-                                        <tr>
-                                            <td colspan="9" style="text-align:center;">No Data Found</td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+
         </section>
     </div>
     <!-- Modal HTML -->
@@ -203,9 +225,10 @@
         var Fg_Name = $('#ddlfg option:selected').text();
         var folderName = $('#foldername').val();
         var fileidname = $('#Filenameid').val();
+        var docType = $('#ddldocType').val();
         var files = $('#files')[0].files;
 
-        if (customer_Name === "Select a Customer" || Fg_Name === "Select an FG Name" || files.length === 0 || fileidname==="")  {
+        if (customer_Name === "Select a Customer" || Fg_Name === "Select an FG Name" || files.length === 0 || fileidname === "" || docType=== "") {
             alert("Please provide a Fg_name and select at least one file ");
             event.preventDefault();
         }

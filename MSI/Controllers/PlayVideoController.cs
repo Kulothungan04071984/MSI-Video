@@ -49,16 +49,19 @@ namespace MSI.Controllers
             string networkPath = $@"{filePath1}";
 
             string wwwrootPath = _webHostEnvironment.WebRootPath;
-            writeErrorMessage(wwwrootPath, "WWW root path Enter");
+           // string wwwrootPath = "\\\\192.168.1.121\\MSI_Applications";
+            writeErrorMessage(networkPath, " path Enter");
             string videoFolderPath = Path.Combine(wwwrootPath, "videos");
             string dname = deviceName.Replace(".", "");
-            writeErrorMessage(dname, "DeviceName");
+            // string dname = "10.10.121.128";
+             writeErrorMessage(dname, "DeviceName");
+           
             string fileExtension = Path.GetExtension(networkPath).ToLower();
             string videoFilePath;
             //  string videoFilePath = Path.Combine(videoFolderPath, dname + ".mp4");
             // string fileName = dname + Path.GetExtension(networkPath);
             // string localFilePath = Path.Combine(videoFilePath, fileName);   
-            //  writeErrorMessage(videoFilePath, "VideoFilePath Enter");
+              writeErrorMessage(videoFolderPath, "VideoFilePath Enter");
             if (string.IsNullOrEmpty(fileExtension))
             {
                 fileExtension = ".mp4";
@@ -67,14 +70,17 @@ namespace MSI.Controllers
             if (fileExtension == ".mp4")
             {
                 videoFilePath = Path.Combine(videoFolderPath, dname + ".mp4");
+               
             }
             else if (fileExtension == ".html")
             {
                 videoFilePath = Path.Combine(videoFolderPath, dname + ".html");
+               
             }
             else if (fileExtension == ".pdf")
             {
                 videoFilePath = Path.Combine(videoFolderPath, dname + ".pdf");
+               
             }
             else
             {
@@ -98,7 +104,7 @@ namespace MSI.Controllers
                 await Task.Run(() => System.IO.File.Copy(npath, videoFilePath, true));
                 //}
 
-                writeErrorMessage(videoFilePath + '-' + dname, "End Copy the video File");
+                //writeErrorMessage(videoFilePath + '-' + dname, "End Copy the video File");
 
 
                 ViewBag.FilePath = dname + fileExtension;

@@ -3,58 +3,79 @@
 }
 *@
 
-
+@model MSI.Models.Systemid
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
 <form asp-action="index" method="post">
-   
+
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <div class="card shadow-lg">
                     <div class="card-body">
                         <h4 class="card-title text-center">Enter System details</h4>
-                            
-                            <div class="row align-items-center">
 
-                                <div class="col-md-6 text-center">
-                                    <label for="lblstageid" class="form-label fw-bold"style="font-size:100%;">Stage Name :</label>
-                                </div>
-                                <div class="col-md-6"style="margin-bottom:1%">
-                                    <input type="text" id="txtstageid" name="stageid"placeholder="Enter the Stage Name" class="form-control">
-                                </div>                              
+                        <div class="row align-items-center">
+                            <div class="col-md-6 text-center">
+                                <lable for="lblcustomerid" class="form-label fw-bold" style="font-size:100%;">Customer Name :</lable>
                             </div>
-                            <div class="row align-items-center">
-                                <div class="col-md-6 text-center">
-                                    <label for="lblsystemid" class="form-label fw-bold"style="font-size:100%;">System Ip:</label>
-                                </div>
-                                <div class="col-md-6">
-                                    <input type="text" id="txtsystemid" name="systemid"placeholder="Enter the System Id" class="form-control">
-                                    <input type="hidden" id="hdnsystemdetailsid" />
-                                </div>                              
+                            <div class="col-md-6 text-center">
+                                @Html.DropDownListFor(model => model.addsystemustomid, Model.lstcustomname, "Select a Customer", new { @id = "ddladdsytem", @class = "form-control", aria_label = "Select Customer" })
+
                             </div>
-                              <div class="row align-items-center">
-                                <div class="col-md-6 text-center"style="font-size:100%;margin-top:1%">
-                                    <label for="userType" class="form-label fw-bold">User Type:</label>
-                                </div>
+                            @Html.HiddenFor(model => model.addsystemcustname, new { id = "custname" })
+                        </div>
+                        <div class="row align-items-center" style="margin-top:2%">
+                            <div class="col-md-6 text-center">
+                                <lable for="lblfgnoid" class="form-label fw-bold" style="font-size:100%;">FG.NO :</lable>
+                            </div>
+                            <div class="col-md-6 text-center">
+                                @Html.DropDownListFor(model => model.addsystemfgid, Model.lstfgno, "Select an FG.NO", new { @id = "ddladdfg", @class = "form-control", aria_label = "Select FG.NO" })
+
+                            </div>
+                            @Html.HiddenFor(model => model.addsystemfgname, new { id = "custname" })
+                        </div>
+
+                        <div class="row align-items-center" style="margin-top:2%">
+
+                            <div class="col-md-6 text-center">
+                                <label for="lblstageid" class="form-label fw-bold" style="font-size:100%;">Stage Name :</label>
+                            </div>
+                            <div class="col-md-6" style="margin-bottom:1%">
+                                <input type="text" id="txtstageid" name="stageid" placeholder="Enter the Stage Name" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row align-items-center">
+                            <div class="col-md-6 text-center">
+                                <label for="lblsystemid" class="form-label fw-bold" style="font-size:100%;">System Ip:</label>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" id="txtsystemid" name="systemid" placeholder="Enter the System Id" class="form-control">
+                                <input type="hidden" id="hdnsystemdetailsid" />
+                            </div>
+                        </div>
+                        <div class="row align-items-center">
+                            <div class="col-md-6 text-center" style="font-size:100%;margin-top:1%">
+                                <label for="userType" class="form-label fw-bold">User Type:</label>
+                            </div>
                             <div class="col-md-6" style="margin-top:1%">
-                                    <select id="ddlusertype" name="userType" class="form-select">
-                                        <option value="">Select</option>
-                                        <option value="Admin">Admin</option>
-                                        <option value="User">User</option>
-                                    </select>
-                                </div>
+                                <select id="ddlusertype" name="userType" class="form-select">
+                                    <option value="">Select</option>
+                                    <option value="Admin">Admin</option>
+                                    <option value="User">User</option>
+                                </select>
                             </div>
-                            <div class="row">
-                                  <div class="col-0"style="margin-left:58%;margin-top:3%">
-                                    <button class="btn btn-success  text-light" id="btnadd" onclick="addvalue()"style="margin-right:1%">Add</button>                                    
-                                    <button class="btn btn-success  text-light" id="btnupdate" onclick="updatevalue()"style="display:none">Update</button>
-                                    <button class="btn btn-outline-secondary"onclick="clear()">Clear</button>
-                                    <input type="button" onclick="back()" name="Back" value="Back" class="btn btn-primary" />                               
-                                  </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-0" style="margin-left:58%;margin-top:3%">
+                                <button class="btn btn-success  text-light" id="btnadd" onclick="addvalue()" style="margin-right:1%">Add</button>
+                                <button class="btn btn-success  text-light" id="btnupdate" onclick="updatevalue()" style="display:none">Update</button>
+                                <button class="btn btn-outline-secondary" onclick="clear()">Clear</button>
+                                <input type="button" onclick="back()" name="Back" value="Back" class="btn btn-primary" />
                             </div>
-                    </div>                   
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -71,21 +92,25 @@
                                     <thead>
                                         <tr>
                                             <th class="text-center">System ID</th>
+                                            <th class="text-center">Customer Name</th>
+                                            <th class="text-center">FG.NO</th>
                                             <th class="text-center">Usertype</th>
-                                            <th class="text-center">Stage Name</th>                                            
+                                            <th class="text-center">Stage Name</th>
                                             <th class="text-center">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach (var item in Model ?? new List<MSI.Models.Systemid>())
+                                        @foreach (var item in Model.lstaddsystem)
                                         {
                                             <tr sysid="@item.Id">
                                                 <td class="text-center">@item.SystemId</td>
+                                                <td class="text-center">@item.cutomerName</td>
+                                                <td class="text-center">@item.fgNo</td>
                                                 <td class="text-center">@(item.Usertype == "1" ? "Admin" : "User")</td>
-                                                <td class="text-center">@item.StageName</td>                                           
+                                                <td class="text-center">@item.StageName</td>
                                                 <td class="text-center">
-                                                    <input type="button" class="btn btn-outline-secondary "id="btnedit" name="Edit" value="Edit" data-txtsystemid="@item.SystemId"data-ddlusertype="@item.Usertype" data-txtstageid="@item.StageName"/>
-                                                    <input type="button" class="btn btn-danger" name="Delete" value="Delete" data-txtsystemid="@item.SystemId"data-ddlusertype="@item.Usertype"data-txtstageid="@item.StageName"/>
+                                                    <input type="button" class="btn btn-outline-secondary " id="btnedit" name="Edit" value="Edit" data-txtsystemid="@item.SystemId" data-ddlusertype="@item.Usertype" data-txtstageid="@item.StageName" />
+                                                    <input type="button" class="btn btn-danger" name="Delete" value="Delete" data-txtsystemid="@item.SystemId" data-ddlusertype="@item.Usertype" data-txtstageid="@item.StageName" />
                                                 </td>
                                             </tr>
                                         }
@@ -101,24 +126,20 @@
     </div>
 </form>
 <script>
-    function deletesystemvalue(sysid) 
-    {
-       
+    function deletesystemvalue(sysid) {
+
         $.ajax({
             url: '/System/Delete',
             type: 'POST',
-            data: { SystemId:sysid},
+            data: { SystemId: sysid },
             catch: false,
             async: false,
-            success: function (resultdel)
-            {
-                if (resultdel >= 0) 
-                {
+            success: function (resultdel) {
+                if (resultdel >= 0) {
                     alert('Delete Successfully');
                     window.location.href = '/System/Index';
                 }
-                else
-                {
+                else {
                     alert("Not Deleted");
                 }
             },
@@ -128,123 +149,134 @@
 
         });
     }
-   
-    $(document).on('click', '.btn-danger', function () 
-    {
-        debugger;
-        var SystemId = $(this).data('txtsystemid');
-        if (SystemId)
-        {
-            var sysid=$(this).closest('tr').attr('sysid');
-            deletesystemvalue(sysid);
-        }
-        else
-        {
-            console.log("SystemId is missing!");
-        }
-    });                                                  
-    function addvalue() {
-    
-        var systemID = $('#txtsystemid',).val().trim();
-        var userType = $('#ddlusertype').val();
-        var stageName =$('#txtstageid').val().trim();
-        if (systemID !== "" && userType !=="" && stageName !=="")
-        {
-            $.ajax
-            ({
-                url: '/System/Savedata',
-                type: 'POST',
-                cache: false,
-                async: false,
-                data: { SystemId: systemID, UserType: userType,StageName:stageName},
-                success: function (response)
-                {
-                    debugger;
-                    //console.log(response);
-                    if (response.success) 
-                    {
-                        alert('System Ip Added Successfully');
-                        window.location.reload
-                    }
-                    else 
-                    {
-                        alert('The System Ip is Already Added');
-                        window.location.reload;
-                    }
+    $('#ddladdsytem').change(function () {
+
+        var customerId = $(this).val();
+        var selectedText = $("#ddladdsytem option:selected").text(); // Get the selected text
+
+        // Set the selected text into the hidden field bound to the model
+        $("#custname").val(selectedText);
+
+        $('#ddladdfg').empty();
+        $('#ddladdfg').append('<option value="">Select an FG Name</option>');
+
+        if (customerId) {
+            $.ajax({
+                url: '/System/GetFgNamesByCustomer',
+                type: 'GET',
+                data: { customerId: customerId },
+                success: function (data) {
+                    $.each(data, function (index, item) {
+                        $('#ddladdfg').append('<option value="' + item.value + '">' + item.text + '</option>');
+                    });
                 },
-                error: function (xhr, status, error)
-                {
-                    alert('Error while adding data: ' + error);
+                error: function () {
+                    alert('Error fetching FG Names.');
                 }
             });
         }
-        else
-        {
+    });
+    $(document).on('click', '.btn-danger', function () {
+
+        var SystemId = $(this).data('txtsystemid');
+        if (SystemId) {
+            var sysid = $(this).closest('tr').attr('sysid');
+            deletesystemvalue(sysid);
+        }
+        else {
+            console.log("SystemId is missing!");
+        }
+    });
+    function addvalue() {
+
+        var systemID = $('#txtsystemid',).val().trim();
+        var userType = $('#ddlusertype').val();
+        var stageName = $('#txtstageid').val().trim();
+        var customerName = $('#ddladdsytem option:selected').text();
+        var fgNo = $('#ddladdfg option:selected').text();
+        if (systemID !== "" && userType !== "" && stageName !== "" && customerName != "" && fgNo != "") {
+            $.ajax
+                ({
+                    url: '/System/Savedata',
+                    type: 'POST',
+                    cache: false,
+                    async: false,
+                    data: { SystemId: systemID, UserType: userType, StageName: stageName, Customername: customerName, Fgno: fgNo },
+                    success: function (response) {
+                        //console.log(response);
+                        if (response.success) {
+                            alert('System Ip Added Successfully');
+                            window.location.reload
+                        }
+                        else {
+                            alert('The System Ip is Already Added');
+                            window.location.reload;
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert('Error while adding data: ' + error);
+                    }
+                });
+        }
+        else {
             alert('Please Enter All Details');
         }
     }
-    $(document).on('click', '.btn-success', function () 
-    {
+    $(document).on('click', '.btn-success', function () {
         var SystemId = $(this).data('txtsystemid');
         var Usertype = $(this).data('ddlusertype');
-        var StageName = $(this).data('txtstageid');      
-        if (SystemId && Usertype && StageName)
-        {
-            addvalue(SystemId,Usertype,StageName);
+        var StageName = $(this).data('txtstageid');
+        if (SystemId && Usertype && StageName) {
+            addvalue(SystemId, Usertype, StageName);
         }
-        else
-        {
+        else {
             console.log("SystemId is missing!");
         }
-    }); 
-    function back()
-    {
+    });
+    function back() {
         window.location.href = '/Master/MasterDetails';
     }
-    function clear()
-    {
+    function clear() {
 
         $('#txtsystemid').val('');
         $('#ddlusertype').prop('selectedIndex', 0);
         $('#txtstageid').val('');
+        $('#ddladdsystem').prop('selectedIndex', 0);
+        $('#ddladdfg').prop('selectedIndex', 0);
+
     }
-    $(document).on('click', '.btn-outline-secondary', function ()
-    {
-        debugger;
+    $(document).on('click', '.btn-outline-secondary', function () {
+
         var SystemId = $(this).data('txtsystemid');
         var Usertype = $(this).data('ddlusertype');
-       var UType =(Usertype =="1") ? "Admin" : "User";
-        var StageName = $(this).data('txtstageid');  
-        var sysid=$(this).closest('tr').attr('sysid');
-        if (SystemId && UType && StageName)
-        {
-            editvalue(SystemId,UType,StageName,sysid);
+        var UType = (Usertype == "1") ? "Admin" : "User";
+        var StageName = $(this).data('txtstageid');
+        var sysid = $(this).closest('tr').attr('sysid');
+        if (SystemId && UType && StageName) {
+            editvalue(SystemId, UType, StageName, sysid);
         }
-        else
-        {
+        else {
             console.log("SystemId is missing!");
         }
-    }); 
-    function editvalue(sysid, usrtyp,stgname,sysdetid)
-    {
-       
+    });
+    function editvalue(sysid, usrtyp, stgname, sysdetid) {
+
         $('#txtsystemid').val(sysid);
         $('#ddlusertype').val(usrtyp);
         $('#txtstageid').val(stgname);
         $('#btnadd').hide();
         $('#hdnsystemdetailsid').val(sysdetid);
         $('#btnupdate').show();
-        $('#btnupdate').data('systemid', sysid);  
+        $('#btnupdate').data('systemid', sysid);
         $('#btnupdate').data('usertype', usrtyp);
         $('#btnupdate').data('stagename', stgname);
     }
-    function updatevalue() 
-    {
-      debugger;
-         var systemID = $('#txtsystemid').val().trim();
-         var userType = $('#ddlusertype').val();
-         var stageName = $('#txtstageid').val();
-         var sysdetailID=$('#hdnsystemdetailsid').val();
+    function updatevalue() {
+
+        var systemID = $('#txtsystemid').val().trim();
+        var userType = $('#ddlusertype').val();
+        var stageName = $('#txtstageid').val();
+        var sysdetailID = $('#hdnsystemdetailsid').val();
         if (systemID !== "" && userType !== "" && stageName != "") {
             var oldSystemID = $('#btnupdate').data('systemid');
             var oldUserType = $('#btnupdate').data('usertype');
@@ -255,25 +287,22 @@
                 cache: false,
                 async: false,
                 data:
-                {  
-                    SystemDetailsid:sysdetailID,
-                    SystemId: oldSystemID,       
+                {
+                    SystemDetailsid: sysdetailID,
+                    SystemId: oldSystemID,
                     UserType: oldUserType,
                     StageName: oldStageName,
-                    Updatesystemid: systemID,    
+                    Updatesystemid: systemID,
                     Updateusertype: userType,
-                    UpdateStageName : stageName
+                    UpdateStageName: stageName
                 },
-                success: function (response) 
-                {
+                success: function (response) {
                     console.log(response);
-                    if (response.success) 
-                    {
+                    if (response.success) {
                         alert('System Ip Updated Successfully');
                         window.location.reload
                     }
-                    else 
-                    {
+                    else {
                         alert('The System Ip is Already Added');
                         window.location.reload;
                     }
@@ -283,8 +312,7 @@
                 }
             });
         }
-        else 
-        {
+        else {
             alert('Please Enter All Details');
         }
     }
