@@ -11,15 +11,15 @@
             <!-- Card Start -->
             <div class="card">
                 <div class="card-header">
-                    <span>File Mapping</span>
+                    <h4>File Mapping</h4>
                 </div>
 
                 <div class="card-body">
                     <!-- Customer & FG Info -->
                     @* <h3 class="text-center">Customer Details</h3> *@
 
-<!-- Row 1: Customer + FG -->
-                <div class="row mb-3">
+                 <!-- Row 1: Customer + FG -->
+                  <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label fw-bold">Customer Name:</label>
                         @Html.DropDownListFor(model => model.approvecustomid, Model.lstapprovecustomers, "Select a Customer", new { @id = "ddlapovcustomer", @class = "form-control" })
@@ -33,17 +33,16 @@
                 </div>
 
                 <!-- Row 2: File + View -->
-                <div class="row mb-3">
+            @*<div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label fw-bold">Filename:</label>
                         @Html.DropDownListFor(model => model.approvefileid, Model.lstFile, "Select File", new { @id = "ddlfile", @class = "form-control" })
                         @Html.HiddenFor(model => model.approvefileid, new { id = "Filename" })
                     </div>
                     <div class="col-md-6 d-flex align-items-end">
-                        <button id="btnview" class="btn btn-primary ViewDocument">View</button>
+                            <button id="btnview" class="btn btn-primary ViewDocument" style="height:auto;width: 75px;">View</button>
                     </div>
-                </div>
-
+                </div>*@
 
                     <!-- Stage -->
                     <div class="row">
@@ -72,33 +71,36 @@
                     </div>
 
                     <!-- Upload Section -->
-                    <div class="row mt-4">
-                        <div class="col-lg-6">
-@*                             <h5>File Upload</h5>
+                    <div class="row mt-4">                     
+                            <h5>File Upload</h5>
 
                             <div class="mb-3">
-                                <input type="file" class="form-control" id="file" name="file" accept="video/*,application/pdf">
-                            </div> *@
+                            <input type="file" class="form-control" id="file" name="file" accept="video/*,application/pdf">
+                            </div>
 
+                        <div class="col-lg-6">
                             <div class="row g-2">
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <label>Video Date</label>
                                     <input type="date" id="dtVideoDate" asp-for="VideoDate" class="form-control" />
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <label>From Time</label>
                                     <input type="time" id="dtFromTime" asp-for="VideoFromTime" class="form-control" />
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <label>To Time</label>
                                     <input type="time" id="dtToTime" asp-for="VideoToTime" class="form-control" />
                                 </div>
-                                <div class="col-md-3 d-flex align-items-end">
-                                    <button id="btnUpload" class="btn btn-primary">Upload</button>
-                                </div>
                             </div>
                         </div>
+
+                       
+                        <div class="col-lg-6 d-flex align-items-end justify-content-start">
+                            <button id="btnUpload" class="btn btn-primary" style="width: 75px; height: 38px;">Upload</button>
+                        </div>
                     </div>
+
 
                     <!-- ViewBag Message -->
                     <div class="row mt-3">
@@ -238,6 +240,14 @@
         });
 
         // Validate before upload
+<<<<<<< HEAD
+        $('#btnUpload').click(function (e) {
+            const system = $('#ddlsystem').val();
+            const file = $('#file').val();
+            const date = $('#dtVideoDate').val();
+            const from = $('#dtFromTime').val();
+            const to = $('#dtToTime').val();
+=======
             $('#btnUpload').click(function (e) {
                 debugger;
 
@@ -256,6 +266,7 @@
                     e.preventDefault();
                 }
             });
+>>>>>>> c30aeb2a736deb0cd54ced57cd6ec012b9b55840
 
     });
 
