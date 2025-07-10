@@ -52,6 +52,7 @@ namespace MSI.Controllers
             writeErrorMessage(wwwrootPath, "WWW root path Enter");
             string videoFolderPath = Path.Combine(wwwrootPath, "videos");
             string dname = deviceName.Replace(".", "");
+         //   string dname = "10.10.121.128";
             writeErrorMessage(dname, "DeviceName");
             string fileExtension = Path.GetExtension(networkPath).ToLower();
             string videoFilePath;

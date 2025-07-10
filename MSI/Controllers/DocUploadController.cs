@@ -23,11 +23,11 @@ namespace MSI.Controllers
     {
         private DataManagementcs _domainServices;
         private readonly long _fileSizeLimit = 10L * 1024L * 1024L * 1024L;
-        // private readonly IWebHostEnvironment _webHostEnvironment;, IWebHostEnvironment webHostEnvironment
+        private readonly IWebHostEnvironment _webHostEnvironment; IWebHostEnvironment webHostEnvironment;
         public DocUploadController(DataManagementcs domainServices)
         {
             _domainServices = domainServices;
-            //_webHostEnvironment = webHostEnvironment;
+            _webHostEnvironment = webHostEnvironment;
             // _iinsertDetails = iinsertDetails;
         }
         public IActionResult ShowuploadDetails()
@@ -52,6 +52,7 @@ namespace MSI.Controllers
             string Customer_name = fileuploaddetails.customid;
             string Fg_Name = fileuploaddetails.fgid;
             string filenameid = fileuploaddetails.Filenameid;
+            string docType = fileuploaddetails.docType;
             try
             {
                 if (files != null && files.Count > 0)
@@ -68,8 +69,8 @@ namespace MSI.Controllers
                         {
                             //var path = "\\\\192.168.1.188\\MSI_Videos";
                             var path = "\\\\192.168.1.121\\MSI_Applications";
-                            //var uploadVideoFile = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
-                            var uploadVideoFile = Path.Combine(path, "uploads");
+                            var uploadVideoFile = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
+                            //var uploadVideoFile = Path.Combine(path, "uploads");
                             writeErrorMessage(uploadVideoFile.ToString(), "File path combine successfully");
                             if (Directory.Exists(path))
                             {
@@ -83,7 +84,7 @@ namespace MSI.Controllers
                                 //uploadDetails1.empName = TempData["user_id"] as string;
                                 uploadDetails1.docDateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                                 uploadDetails1.docName = string.IsNullOrEmpty(filename) ? string.Empty : filename;
-                                uploadDetails1.docType = "Reference copy";
+                                uploadDetails1.docType = docType;
                                 //uploadDetails1.filepath=filePath;
                                 
                                 uploadDetails1.filepath = string.Empty;
