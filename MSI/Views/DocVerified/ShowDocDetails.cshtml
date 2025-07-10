@@ -27,8 +27,7 @@
                                         <tr>
                                             @* <th>ID</th> *@
                                             <th>Emp ID</th>
-                                            <th>Documentid</th>
-                                            <th>Customer Name</th>
+                                            <th>Customer Name</th> 
                                             <th>Fg Name</th>
                                             <th>Doc Name</th>
                                             <th>DocDateTime</th>
@@ -55,16 +54,9 @@
                                                         <td>@item.docDateTime</td>
                                                         <td>@item.docType</td>
                                                         <td>@item.docStatus</td>
-                                                        <td style="display:none;">
-                                                            @item.filepath
-                                                        </td>
-                                                        <td style="white-space:nowrap">
-                                                            <input type="button" class="btn btn-primary ViewDocument" name="View" value="View" id="btnView" />
-                                                           @*  <input type="button" class="btn btn-success" name="Download" value="Download" id="btndownload" /> *@
-                                                            <input type="button" id="btndownload" class="btn btn-success" value="Download" data-file-name="@Html.Raw(Uri.EscapeDataString(item.filepath))" onclick="downloadFile('@Html.Raw(Uri.EscapeDataString(item.filepath))')"  />
-                                                            <input type="button" class="btn btn-danger" name="Delete" value="Delete" onclick="deleteValue(@item.docId)" />
-                                                        </td>
-
+                                                        <td style ="display:none;">
+                                                            @item.filepath</td>
+                                                        <td><input type="button" class="btn btn-primary ViewDocument" name="View" value="View"  id="btnView" /></td>
                                                     </tr>
                                                 }
 
@@ -133,8 +125,8 @@
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
+</div>
 
 
 <!-- Status Message Modal -->
@@ -263,9 +255,6 @@
                 $('#noMatchMsg').remove();
             }
         });
-
-
-
 
         // View Document button click
         $('.ViewDocument').click(function () {

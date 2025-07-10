@@ -89,9 +89,64 @@ namespace MSI.Controllers
             {
                 if (uploadFileDetails.approvefileid == 0 || uploadFileDetails.systemid == 0)
                 {
+<<<<<<< HEAD
+         
+                    if (file.Length > _fileSizeLimit)
+                    {
+                        ViewBag.Message = "File size exceeds the limit.";
+                        ViewBag.ThumbnailPath = "";
+                    }
+                    else
+                    {
+                        //var path = "\\\\192.168.1.188\\MSI_Videos";
+                       // var path = "\\\\192.168.1.121\\MSI_Applications";
+                       //Test
+                        var path = "D:\\SerialGeneration Macrofile\\MSI";
+                        //var uploadVideoFile = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
+                        var uploadVideoFile = Path.Combine(path, "upload");
+                        writeErrorMessage(uploadVideoFile.ToString(), "File path combine successfully");
+                        if (Directory.Exists(path))
+                        {
+                            //Directory.CreateDirectory(uploadVideoFile);
+                            var filePath = Path.Combine(uploadVideoFile, file.FileName);
+                            using (var filestream = new FileStream(filePath, FileMode.Create))
+                            {
+                                await file.CopyToAsync(filestream);
+                                writeErrorMessage(filePath.ToString(), "File Copy successfully");
+                            }
+                            var thumbnailPath = Path.Combine(uploadVideoFile, $"{Path.GetFileNameWithoutExtension(file.FileName)}.jpg");
+                            ExtractThumbnail(filePath, thumbnailPath);
+                            var uploadDetails = new UploadFileDetails();
+                            uploadDetails.systemid = string.IsNullOrEmpty(uploadFileDetails.systemid.ToString()) ? 0 : uploadFileDetails.systemid;
+                            uploadDetails.filepath = filePath;
+                            uploadDetails.uploaddatetime = DateTime.Today.ToString();
+                            uploadDetails.uploadEmployee = "70192";
+                            uploadDetails.VideoFromTime= uploadFileDetails.VideoFromTime;
+                            uploadDetails.VideoToTime = uploadFileDetails.VideoToTime;
+                            uploadDetails.VideoDate = uploadFileDetails.VideoDate;
+                            //uploadFileDetails.systemname = uploadFileDetails.lstSystem.Where(a => a.Value == uploadFileDetails.systemid.ToString()).Select(a => a.Text.ToString()).FirstOrDefault();
+                            //uploadFileDetails.systemname = "";
+                            result = _domainServices.uploaddatainserted(uploadDetails);
+                            writeErrorMessage(result.ToString(),
+                                "Video File Upload successfully");
+                            if (result > 0)
+                            {
+                                ViewBag.Message = "Video uploaded successfully";
+                                ViewBag.ThumbnailPath = $"/upload/{Path.GetFileName(thumbnailPath)}";
+                                uploadFileDetails.lstSystem = _domainServices.getSystemNames();
+                                uploadFileDetails.lstFileMappings = _domainServices.getFileMappingDetails();
+                                objupload = uploadFileDetails;
+                            }
+                            else
+                            {
+                                ViewBag.Message = "Video Not uploaded ";
+                                ViewBag.ThumbnailPath = "";
+                            }
+=======
                     ViewBag.Message = "Please select System and File.";
                     return View(uploadFileDetails);
                 }
+>>>>>>> c30aeb2a736deb0cd54ced57cd6ec012b9b55840
 
                 // Resolve file path from file ID
                 string filePath = _domainServices.getfilepathforview(uploadFileDetails.approvefileid); // This must be implemented in your domain service
