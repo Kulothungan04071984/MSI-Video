@@ -2,8 +2,9 @@
 {
     public class DocVerified
     {
-        public int docId {  get; set; }
+        public int docId { get; set; }
         public string filepath { get; set; }
+        public string Filenameid { get; set; }
         public int empId { get; set; }
         public string customer_name { get; set; }
         public string Fg_Name { get; set; }
@@ -14,6 +15,6 @@
         public bool isActive { get; set; }
         public string Reject_reason { get; set; }
 
-
+        public string fileId { get; set; }
     }
 }

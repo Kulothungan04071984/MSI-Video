@@ -11,5 +11,7 @@
         public string DocumentStatus { get; set; }
 
         public string FileName { get; set; }
+
+        public string Document_id { get; set; }
     }
 }

@@ -51,9 +51,10 @@
                                     <tr>
                                         <th class="text-center">Customer Name</th>
                                         <th class="text-center">FG.No</th>
+                                        <th class="text-center">Document Id</th>
                                         <th class="text-center">Document Name</th>
                                         <th class="text-center">Document Status</th>
-
+                                                             
                                         <th class="text-center">Download</th>
                                     </tr>
                                 </thead>
@@ -64,6 +65,7 @@
                                         <tr>
                                             <td class="text-center">@item.CustomerName</td>
                                             <td class="text-center">@item.FgNo</td>
+                                            <td class="text-center">@item.Document_id</td>
                                             <td class="text-center">@item.DocumentName</td>
                                             <td class="text-center">@item.DocumentStatus</td>
 
@@ -142,7 +144,7 @@
             var customeridtext = $("#ddlapovcustomer option:selected").text();
 
             $.ajax({
-                url: '/Approved/GetFgNames',
+                url: '/Approved/Getfiledetails',
                 type: 'GET',
                 data: { customerId: customeridtext, fgid: fgidtext },
                 success: function (data) {
@@ -155,9 +157,11 @@
                             // Create a new row and append it to the table
                             var newRow = '<tr>' +
                                 '<td class="text-center">' + item.customerName + '</td>' + // Assuming 'CustomerName' exists
-                                '<td class="text-center">' + item.fgNo + '</td>' + // Assuming 'FgNo' exists
+                                '<td class="text-center">' + item.fgNo + '</td>' + // Assuming 'FgNo' exists Document_id
+                                '<td class="text-center">' + item.Document_id + '</td>' + 
                                 '<td class="text-center">' + item.documentName + '</td>' + // Assuming 'DocumentName' exists
                                 '<td class="text-center">' + item.documentStatus + '</td>' + // Assuming 'DocumentStatus' exists
+                                
                                 '<td class="text-center">' +
                                 '<input type="button" id="btndownload" class="btn btn-primary" value="Download" data-file-name="' + encodeURIComponent(item.fileName) + '" onclick="downloadFile(\'' + encodeURIComponent(item.fileName) + '\')" />' +
                                 '</td>' +
