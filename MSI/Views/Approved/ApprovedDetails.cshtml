@@ -93,7 +93,7 @@
         console.log("File to download: " + fileName);
 
         // Find the button element that was clicked
-        var button = event.target;  // `event` will be passed to the function when clicked
+        var button = event.target;  
 
         // Disable the button to prevent multiple clicks
         button.disabled = false;
@@ -102,7 +102,7 @@
         var encodedFileName = encodeURIComponent(fileName);
 
         // Redirect to the download route
-        window.location.href = '/Approved/Download?fileName=' + encodedFileName;
+        window.location.href = '/DocVerified/Download?fileName=' + encodedFileName;
        
     }
 
