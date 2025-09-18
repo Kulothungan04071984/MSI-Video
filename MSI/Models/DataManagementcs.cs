@@ -1127,29 +1127,29 @@ namespace MSI.Models
 
             return filepath;
         }
-        public int SaveDataToDatabase(string SystemId, string Usertype, string StageName, string Customername, string Fgno)
-        {
-            // var dt = DateTime.Today;
-            var insertlist = 0;
+        //public int SaveDataToDatabase(string SystemId, string Usertype, string StageName, string Customername, string Fgno)
+        //{
+        //    // var dt = DateTime.Today;
+        //    var insertlist = 0;
 
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
-            {
-                using (SqlCommand cmd = new SqlCommand("pro_Insert_SystemId", connection))
-                {
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@SystemId", SystemId);
-                    cmd.Parameters.AddWithValue("@Usertype", Usertype);
-                    cmd.Parameters.AddWithValue("@StageName", StageName);
-                    cmd.Parameters.AddWithValue("@customername", Customername);
-                    cmd.Parameters.AddWithValue("@fgname", Fgno);
-                    connection.Open();
-                    insertlist = cmd.ExecuteNonQuery();
-                    connection.Close();
-                }
+        //    using (SqlConnection connection = new SqlConnection(ConnectionString))
+        //    {
+        //        using (SqlCommand cmd = new SqlCommand("pro_Insert_SystemId", connection))
+        //        {
+        //            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+        //            cmd.Parameters.AddWithValue("@SystemId", SystemId);
+        //            cmd.Parameters.AddWithValue("@Usertype", Usertype);
+        //            cmd.Parameters.AddWithValue("@StageName", StageName);
+        //            cmd.Parameters.AddWithValue("@customername", Customername);
+        //            cmd.Parameters.AddWithValue("@fgname", Fgno);
+        //            connection.Open();
+        //            insertlist = cmd.ExecuteNonQuery();
+        //            connection.Close();
+        //        }
 
-            }
-            return insertlist;
-        }
+        //    }
+        //    return insertlist;
+        //}
 
     }
 }

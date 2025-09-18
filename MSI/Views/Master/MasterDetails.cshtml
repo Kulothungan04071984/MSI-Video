@@ -1,6 +1,7 @@
 ﻿@model MSI.Models.UploadFileDetails
 @{
     ViewData["Title"] = "MasterDetails";
+
 }
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -33,7 +34,7 @@
                 </div>
 
                 <!-- Row 2: File + View -->
-            @*<div class="row mb-3">
+            <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label fw-bold">Filename:</label>
                         @Html.DropDownListFor(model => model.approvefileid, Model.lstFile, "Select File", new { @id = "ddlfile", @class = "form-control" })
@@ -42,7 +43,7 @@
                     <div class="col-md-6 d-flex align-items-end">
                             <button id="btnview" class="btn btn-primary ViewDocument" style="height:auto;width: 75px;">View</button>
                     </div>
-                </div>*@
+                </div>
 
                     <!-- Stage -->
                     <div class="row">
@@ -72,11 +73,11 @@
 
                     <!-- Upload Section -->
                     <div class="row mt-4">                     
-                            <h5>File Upload</h5>
+@*                             <h5>File Upload</h5>
 
                             <div class="mb-3">
                             <input type="file" class="form-control" id="file" name="file" accept="video/*,application/pdf">
-                            </div>
+                            </div> *@
 
                         <div class="col-lg-6">
                             <div class="row g-2">
@@ -140,7 +141,7 @@
                                         <td>@item.fromtime</td>
                                         <td>@item.totime</td>
                                         <td>
-                                            <button class="btn btn-outline-secondary" onclick="updateValue(@item.systemid)">Edit</button>
+                                           @*  <button class="btn btn-outline-secondary" onclick="updateValue(@item.systemid)">Edit</button> *@
                                             <button class="btn btn-danger" onclick="deleteValue(@item.systemid, '@item.videoDate', '@item.fromtime', '@item.totime')">Delete</button>
                                         </td>
                                     </tr>
@@ -173,6 +174,7 @@
             </div>
         </div>
     </div>
+
 </form>
 
 <!-- JS Section -->
@@ -240,33 +242,32 @@
         });
 
         // Validate before upload
-<<<<<<< HEAD
+        // <<<<<<< HEAD
+        //         $('#btnUpload').click(function (e) {
+        //             const system = $('#ddlsystem').val();
+        //             const file = $('#file').val();
+        //             const date = $('#dtVideoDate').val();
+        //             const from = $('#dtFromTime').val();
+        //             const to = $('#dtToTime').val();
+        // =======
         $('#btnUpload').click(function (e) {
+           
+
+            var custname = $('#ddlapovcustomer option:selected').text();
+            console.log(); // <-- this is broken! should be console.log(custname)
+
+            var fgname = $('#ddlapovfg option:selected').text();
             const system = $('#ddlsystem').val();
-            const file = $('#file').val();
+            const file = $('#ddlfile').val();
             const date = $('#dtVideoDate').val();
             const from = $('#dtFromTime').val();
             const to = $('#dtToTime').val();
-=======
-            $('#btnUpload').click(function (e) {
-                debugger;
 
-                var custname = $('#ddlapovcustomer option:selected').text();
-                console.log(); // <-- this is broken! should be console.log(custname)
-
-                var fgname = $('#ddlapovfg option:selected').text();
-                const system = $('#ddlsystem').val();
-                const file = $('#ddlfile').val();
-                const date = $('#dtVideoDate').val();
-                const from = $('#dtFromTime').val();
-                const to = $('#dtToTime').val();
-
-                if (!custname || !fgname || !system || !file || !date || !from || !to) {
-                    alert("Please fill all fields before upload.");
-                    e.preventDefault();
-                }
-            });
->>>>>>> c30aeb2a736deb0cd54ced57cd6ec012b9b55840
+            if (!custname || !fgname || !system || !file || !date || !from || !to) {
+                alert("Please fill all fields before upload.");
+                e.preventDefault();
+            }
+        });
 
     });
 
@@ -282,8 +283,9 @@
             totime: to
         }, function (result) {
             if (result > 0) {
-                alert('Deleted successfully');
-                location.reload();
+                alert('Deleted successfully'); 
+                 window.location.href = "/Master/MasterDetails";
+               // location.reload();
             } else {
                 alert("Not Deleted");
             }

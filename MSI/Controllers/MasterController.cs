@@ -18,21 +18,25 @@ namespace MSI.Controllers
         }
         public IActionResult MasterDetails()
 		{
-            UploadFileDetails uploadFileDetails = new UploadFileDetails();
+           // UploadFileDetails uploadFileDetails = new UploadFileDetails();
 			var domainSid = _domainServices.GetDomainSid();
             
 			//var systemName=_domainServices.GetAllConnectedSystemNames();
 			ViewBag.DomainSid = domainSid;
             //ViewBag.computerName = systemName;
 
-            uploadFileDetails.lstapprovecustomers = _domainServices.approvedGetCustomer();
-            uploadFileDetails.lstapprovefgnames = new List<SelectListItem>();
-            uploadFileDetails.lstFile = new List<SelectListItem>();
-            uploadFileDetails.lstSystem = _domainServices.getSystemNames();
-            //uploadFileDetails.lstFile= _domainServices.GetfileName();
-            uploadFileDetails.lstFileMappings = _domainServices.getFileMappingDetails();
-            return View(uploadFileDetails);
-		}
+            //  uploadFileDetails.lstapprovecustomers = _domainServices.approvedGetCustomer();
+            //  uploadFileDetails.lstapprovefgnames = new List<SelectListItem>();
+            // uploadFileDetails.lstFile = new List<SelectListItem>();
+            // uploadFileDetails.lstSystem = _domainServices.getSystemNames();
+            //  //uploadFileDetails.lstFile= _domainServices.GetfileName();
+            // uploadFileDetails.lstFileMappings = _domainServices.getFileMappingDetails();
+            // return View(uploadFileDetails);                  
+               var model = new UploadFileDetails();
+               PopulateDropdowns(model);
+               return View(model);
+            
+        }
 
 
         [HttpGet]
@@ -89,111 +93,120 @@ namespace MSI.Controllers
             {
                 if (uploadFileDetails.approvefileid == 0 || uploadFileDetails.systemid == 0)
                 {
-<<<<<<< HEAD
-         
-                    if (file.Length > _fileSizeLimit)
+                    ViewBag.Message = "Please select System and File.";
+                    PopulateDropdowns(uploadFileDetails);
+
+                    return View(uploadFileDetails);
+                }
+                    //    if (file.Length > _fileSizeLimit)
+                    //    {
+                    //        ViewBag.Message = "File size exceeds the limit.";
+                    //        ViewBag.ThumbnailPath = "";
+                    //    }
+                    //    else
+                    //    {
+                    //        //var path = "\\\\192.168.1.188\\MSI_Videos";
+                    //       // var path = "\\\\192.168.1.121\\MSI_Applications";
+                    //       //Test
+                    //        var path = "D:\\SerialGeneration Macrofile\\MSI";
+                    //        //var uploadVideoFile = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
+                    //        var uploadVideoFile = Path.Combine(path, "upload");
+                    //        writeErrorMessage(uploadVideoFile.ToString(), "File path combine successfully");
+                    //        if (Directory.Exists(path))
+                    //        {
+                    //            //Directory.CreateDirectory(uploadVideoFile);
+                    //            var filePath = Path.Combine(uploadVideoFile, file.FileName);
+                    //            using (var filestream = new FileStream(filePath, FileMode.Create))
+                    //            {
+                    //                await file.CopyToAsync(filestream);
+                    //                writeErrorMessage(filePath.ToString(), "File Copy successfully");
+                    //            }
+                    //            var thumbnailPath = Path.Combine(uploadVideoFile, $"{Path.GetFileNameWithoutExtension(file.FileName)}.jpg");
+                    //            ExtractThumbnail(filePath, thumbnailPath);
+                    //            var uploadDetails = new UploadFileDetails();
+                    //            uploadDetails.systemid = string.IsNullOrEmpty(uploadFileDetails.systemid.ToString()) ? 0 : uploadFileDetails.systemid;
+                    //            uploadDetails.filepath = filePath;
+                    //            uploadDetails.uploaddatetime = DateTime.Today.ToString();
+                    //            uploadDetails.uploadEmployee = "70192";
+                    //            uploadDetails.VideoFromTime= uploadFileDetails.VideoFromTime;
+                    //            uploadDetails.VideoToTime = uploadFileDetails.VideoToTime;
+                    //            uploadDetails.VideoDate = uploadFileDetails.VideoDate;
+                    //            //uploadFileDetails.systemname = uploadFileDetails.lstSystem.Where(a => a.Value == uploadFileDetails.systemid.ToString()).Select(a => a.Text.ToString()).FirstOrDefault();
+                    //            //uploadFileDetails.systemname = "";
+                    //            result = _domainServices.uploaddatainserted(uploadDetails);
+                    //            writeErrorMessage(result.ToString(),
+                    //                "Video File Upload successfully");
+                    //            if (result > 0)
+                    //            {
+                    //                ViewBag.Message = "Video uploaded successfully";
+                    //                ViewBag.ThumbnailPath = $"/upload/{Path.GetFileName(thumbnailPath)}";
+                    //                uploadFileDetails.lstSystem = _domainServices.getSystemNames();
+                    //                uploadFileDetails.lstFileMappings = _domainServices.getFileMappingDetails();
+                    //                objupload = uploadFileDetails;
+                    //            }
+                    //            else
+                    //            {
+                    //                ViewBag.Message = "Video Not uploaded ";
+                    //                ViewBag.ThumbnailPath = "";
+                    //            }
+
+                    //    ViewBag.Message = "Please select System and File.";
+                    //    return View(uploadFileDetails);
+                    //}
+
+
+                    // Resolve file path from file ID
+                    string filePath = _domainServices.getfilepathforview(uploadFileDetails.approvefileid); // This must be implemented in your domain service
+
+                    if (string.IsNullOrEmpty(filePath))
                     {
-                        ViewBag.Message = "File size exceeds the limit.";
-                        ViewBag.ThumbnailPath = "";
+                        ViewBag.Message = "File not found for the selected file ID.";
+                        return View(uploadFileDetails);
+                    }
+
+                    var uploadDetails = new UploadFileDetails
+                    {
+                        systemid = uploadFileDetails.systemid,
+                        filepath = filePath,
+                        uploaddatetime = DateTime.Now.ToString(),
+                        uploadEmployee = HttpContext.Session.GetString("UserId") ?? "Unknown",
+                        //uploadEmployee = "70192",
+                        VideoDate = uploadFileDetails.VideoDate,
+                        VideoFromTime = uploadFileDetails.VideoFromTime,
+                        VideoToTime = uploadFileDetails.VideoToTime
+                    };
+
+                    result = _domainServices.uploaddatainserted(uploadDetails);
+                    writeErrorMessage(result.ToString(), "Video File Mapping inserted");
+
+                    if (result > 0)
+                    {
+                        ViewBag.Message = "Video mapping saved successfully.";
                     }
                     else
                     {
-                        //var path = "\\\\192.168.1.188\\MSI_Videos";
-                       // var path = "\\\\192.168.1.121\\MSI_Applications";
-                       //Test
-                        var path = "D:\\SerialGeneration Macrofile\\MSI";
-                        //var uploadVideoFile = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
-                        var uploadVideoFile = Path.Combine(path, "upload");
-                        writeErrorMessage(uploadVideoFile.ToString(), "File path combine successfully");
-                        if (Directory.Exists(path))
-                        {
-                            //Directory.CreateDirectory(uploadVideoFile);
-                            var filePath = Path.Combine(uploadVideoFile, file.FileName);
-                            using (var filestream = new FileStream(filePath, FileMode.Create))
-                            {
-                                await file.CopyToAsync(filestream);
-                                writeErrorMessage(filePath.ToString(), "File Copy successfully");
-                            }
-                            var thumbnailPath = Path.Combine(uploadVideoFile, $"{Path.GetFileNameWithoutExtension(file.FileName)}.jpg");
-                            ExtractThumbnail(filePath, thumbnailPath);
-                            var uploadDetails = new UploadFileDetails();
-                            uploadDetails.systemid = string.IsNullOrEmpty(uploadFileDetails.systemid.ToString()) ? 0 : uploadFileDetails.systemid;
-                            uploadDetails.filepath = filePath;
-                            uploadDetails.uploaddatetime = DateTime.Today.ToString();
-                            uploadDetails.uploadEmployee = "70192";
-                            uploadDetails.VideoFromTime= uploadFileDetails.VideoFromTime;
-                            uploadDetails.VideoToTime = uploadFileDetails.VideoToTime;
-                            uploadDetails.VideoDate = uploadFileDetails.VideoDate;
-                            //uploadFileDetails.systemname = uploadFileDetails.lstSystem.Where(a => a.Value == uploadFileDetails.systemid.ToString()).Select(a => a.Text.ToString()).FirstOrDefault();
-                            //uploadFileDetails.systemname = "";
-                            result = _domainServices.uploaddatainserted(uploadDetails);
-                            writeErrorMessage(result.ToString(),
-                                "Video File Upload successfully");
-                            if (result > 0)
-                            {
-                                ViewBag.Message = "Video uploaded successfully";
-                                ViewBag.ThumbnailPath = $"/upload/{Path.GetFileName(thumbnailPath)}";
-                                uploadFileDetails.lstSystem = _domainServices.getSystemNames();
-                                uploadFileDetails.lstFileMappings = _domainServices.getFileMappingDetails();
-                                objupload = uploadFileDetails;
-                            }
-                            else
-                            {
-                                ViewBag.Message = "Video Not uploaded ";
-                                ViewBag.ThumbnailPath = "";
-                            }
-=======
-                    ViewBag.Message = "Please select System and File.";
-                    return View(uploadFileDetails);
-                }
->>>>>>> c30aeb2a736deb0cd54ced57cd6ec012b9b55840
-
-                // Resolve file path from file ID
-                string filePath = _domainServices.getfilepathforview(uploadFileDetails.approvefileid); // This must be implemented in your domain service
-
-                if (string.IsNullOrEmpty(filePath))
-                {
-                    ViewBag.Message = "File not found for the selected file ID.";
-                    return View(uploadFileDetails);
-                }
-
-                var uploadDetails = new UploadFileDetails
-                {
-                    systemid = uploadFileDetails.systemid,
-                    filepath = filePath,
-                    uploaddatetime = DateTime.Now.ToString(),
-                    uploadEmployee = "70192",
-                    VideoDate = uploadFileDetails.VideoDate,
-                    VideoFromTime = uploadFileDetails.VideoFromTime,
-                    VideoToTime = uploadFileDetails.VideoToTime
-                };
-
-                result = _domainServices.uploaddatainserted(uploadDetails);
-                writeErrorMessage(result.ToString(), "Video File Mapping inserted");
-
-                if (result > 0)
-                {
-                    ViewBag.Message = "Video mapping saved successfully.";
-                }
-                else
-                {
-                    ViewBag.Message = "Failed to save video mapping.";
-                }
+                        ViewBag.Message = "Failed to save video mapping.";
+                    }
+                
             }
             catch (Exception ex)
             {
                 writeErrorMessage(ex.Message, "MasterDetails POST");
                 ViewBag.Message = ex.Message;
+                PopulateDropdowns(uploadFileDetails);
+                return View(uploadFileDetails);
             }
 
-            // Reload dropdowns and mappings
-            objupload.lstapprovecustomers = _domainServices.approvedGetCustomer();
-            objupload.lstapprovefgnames = new List<SelectListItem>();
-            objupload.lstFile = new List<SelectListItem>();
-            objupload.lstSystem = _domainServices.getSystemNames();
-            objupload.lstFileMappings = _domainServices.getFileMappingDetails();
+            //// Reload dropdowns and mappings
+            //objupload.lstapprovecustomers = _domainServices.approvedGetCustomer();
+            //objupload.lstapprovefgnames = new List<SelectListItem>();
+            //objupload.lstFile = new List<SelectListItem>();
+            //objupload.lstSystem = _domainServices.getSystemNames();
+            //objupload.lstFileMappings = _domainServices.getFileMappingDetails();
 
-            return View(objupload);
+            PopulateDropdowns(uploadFileDetails);
+            return View(uploadFileDetails);
+            // return View(objupload);
         }
 
         private void ExtractThumbnail(string videoPath, string thumbnailPath)
@@ -249,6 +262,15 @@ namespace MSI.Controllers
                 errLogs.Close();
             }
         }
+        private void PopulateDropdowns(UploadFileDetails upload)
+        {
+            upload.lstapprovecustomers = _domainServices.approvedGetCustomer();
+            upload.lstapprovefgnames = new List<SelectListItem>();
+            upload.lstFile = new List<SelectListItem>();
+            upload.lstSystem = _domainServices.getSystemNames();
+            upload.lstFileMappings = _domainServices.getFileMappingDetails();
+        }
+
     }
 }
 

@@ -34,7 +34,7 @@ namespace MSI.Controllers
             //  string deviceName = "10.10.120.218"; // Testing
 
              string deviceName =await Process_systemname();
-           //string deviceName = "10.10.120.83"; // Testing
+            // string deviceName = "10.10.120.83"; // Testing
 
             DateOnly currentDate1 = DateOnly.FromDateTime(DateTime.Now);
             string currentDate2 = currentDate1.ToString("yyyy-MM-dd");

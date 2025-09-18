@@ -59,11 +59,7 @@ namespace MSI.Controllers
                 return Json(fileapproveddetails.lstapprovedata);
             }
 
-        }
-
-  
-
-
+        } 
 
 
     }
