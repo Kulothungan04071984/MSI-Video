@@ -130,6 +130,7 @@
 
     $(document).ready(function () {
         var path = '@ViewBag.FilePath'.trim();
+        console.log(path);
         var fileType = path.split('.').pop().toLowerCase();
         var videoElement = $("#videoPlayer");
 
@@ -168,18 +169,62 @@
             $("#loading").hide();
 
             var loadingTask = pdfjsLib.getDocument(pdfSrc);
-            loadingTask.promise.then(function (pdfDoc_) {
+          
+            loadingTask.promise.then(async function (pdfDoc_) {
+                
                 var pdfDoc = pdfDoc_;
+                var canvases = [];
 
-                function renderPage(pageNum) {
-                    pdfDoc.getPage(pageNum).then(function (page) {
+            //     async function renderPage(pageNum) {
+            //         pdfDoc.getPage(pageNum).then(async function (page) {
+            //             var canvas = document.createElement('canvas');
+            //             var ctx = canvas.getContext('2d');
+
+            //             var unscaledViewport = page.getViewport({ scale: 1 });
+            //             var containerWidth = pdfContainer.clientWidth;
+            //             var scale = containerWidth / unscaledViewport.width;
+            //             var viewport = page.getViewport({ scale: scale });
+
+            //             canvas.height = viewport.height;
+            //             canvas.width = viewport.width;
+
+            //             var renderContext = {
+            //                 canvasContext: ctx,
+            //                 viewport: viewport
+            //             };
+
+            //             await page.render(renderContext).promise.then(function () {
+            //                 pdfContainer.appendChild(canvas);
+            //             });
+            //         });
+            //     }
+
+            //     for (let page = 1; page <= pdfDoc.numPages; page++) {
+            //         debugger;
+            //         await renderPage(page);
+            //     }
+
+            //     pdfContainer.style.display = "block";
+            //     enterFullscreen(pdfContainer);
+            //     startSmoothAutoScroll(pdfContainer);
+            // });
+                async function renderAllPages() {
+                    for (let page = 1; page <= pdfDoc.numPages; page++) {
+                        const p = await pdfDoc.getPage(page);
+
                         var canvas = document.createElement('canvas');
+                        canvases.push(canvas);
                         var ctx = canvas.getContext('2d');
 
-                        var unscaledViewport = page.getViewport({ scale: 1 });
+                        // Get unscaled viewport
+                        var unscaledViewport = p.getViewport({ scale: 1 });
+
+                        // Fit to container width
                         var containerWidth = pdfContainer.clientWidth;
                         var scale = containerWidth / unscaledViewport.width;
-                        var viewport = page.getViewport({ scale: scale });
+
+                        // Get scaled viewport
+                        var viewport = p.getViewport({ scale: scale });
 
                         canvas.height = viewport.height;
                         canvas.width = viewport.width;
@@ -189,20 +234,22 @@
                             viewport: viewport
                         };
 
-                        page.render(renderContext).promise.then(function () {
-                            pdfContainer.appendChild(canvas);
-                        });
-                    });
+                        await p.render(renderContext).promise;
+
+                        pdfContainer.append(canvas);
+                    }
+
+                    // Auto scroll if you need
+                   // startAutoScrollForPdf(pdfDoc.numPages);
                 }
 
-                for (let page = 1; page <= pdfDoc.numPages; page++) {
-                    renderPage(page);
-                }
-
-                pdfContainer.style.display = "block";
-                enterFullscreen(pdfContainer);
-                startSmoothAutoScroll(pdfContainer);
+                renderAllPages();
             });
+
+            pdfContainer.style.display = "block";
+            enterFullscreen(pdfContainer);
+            startSmoothAutoScroll(pdfContainer);
+
 
         } else {
             $("#loading").text("Invalid file type.");

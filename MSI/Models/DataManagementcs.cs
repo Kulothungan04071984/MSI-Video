@@ -930,7 +930,7 @@ namespace MSI.Models
                     conn.Open();
                     updateStatus = cmd.ExecuteNonQuery();
                     conn.Close();
-                    watermark = AddWatermarkcaption(path,path,"APPROVED");
+                   // watermark = AddWatermarkcaption(path,path,"APPROVED");
                 }
             }
             catch (Exception ex) {
