@@ -34,8 +34,8 @@ namespace MSI.Controllers
             //  string deviceName = "10.10.120.218"; // Testing
 
 
-              string deviceName =await Process_systemname();
-             //string deviceName = "10.10.120.83"; // Testing
+           // string deviceName =await Process_systemname();
+               string deviceName = "10.10.120.83"; // Testing
 
             // string deviceName =await Process_systemname();
             // string deviceName = "10.10.120.252"; // Testing
@@ -48,13 +48,14 @@ namespace MSI.Controllers
             string currentTime = currentDateTime.ToString("HH:mm:ss");
 
             // Fetch file path using DataAccess
-            string filePath1 = _domainServices.getfilepath(deviceName, currentTime, currentDate);
+             string filePath1 = string.Empty;    
+             filePath1 = _domainServices.getfilepath(deviceName, currentTime, currentDate);
             // string filePath = $@"{filePath1}";
 
             string networkPath = $@"{filePath1}";
 
             string wwwrootPath = _webHostEnvironment.WebRootPath;
-           // string wwwrootPath = "\\\\192.168.1.121\\MSI_Applications";
+          //  string wwwrootPath = "\\\\192.168.1.121\\MSI_Applications";
             writeErrorMessage(networkPath, " path Enter");
             string videoFolderPath = Path.Combine(wwwrootPath, "videos");
             string dname = deviceName.Replace(".", "");
@@ -109,7 +110,8 @@ namespace MSI.Controllers
                 //}
 
                 //writeErrorMessage(videoFilePath + '-' + dname, "End Copy the video File");
-
+                ViewBag.FilePath = null;
+                Thread.Sleep(500);
 
                 ViewBag.FilePath = dname + fileExtension;
                 ViewBag.UserType = userType;

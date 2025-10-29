@@ -173,7 +173,8 @@ namespace MSI.Controllers
                         //uploadEmployee = "70192",
                         VideoDate = uploadFileDetails.VideoDate,
                         VideoFromTime = uploadFileDetails.VideoFromTime,
-                        VideoToTime = uploadFileDetails.VideoToTime
+                        VideoToTime = uploadFileDetails.VideoToTime,
+                        alltime= uploadFileDetails.alltime
                     };
 
                     result = _domainServices.uploaddatainserted(uploadDetails);
@@ -228,12 +229,12 @@ namespace MSI.Controllers
             }
         }
         [HttpPost]
-        public JsonResult deleteFileMapping(int systemid,string videoDate, string fromtime, string totime)
+        public JsonResult deleteFileMapping(int systemid,int uploadId, string videoDate, string fromtime, string totime,string alltime)
         {
             int resultdel = 0;
             try
             {
-                 resultdel = _domainServices.deleteFileMapping(systemid, videoDate, fromtime, totime);
+                 resultdel = _domainServices.deleteFileMapping(uploadId,systemid, videoDate, fromtime, totime,alltime);
                }
              
             catch(Exception ex)

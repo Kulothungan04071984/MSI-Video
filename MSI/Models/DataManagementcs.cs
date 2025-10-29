@@ -36,9 +36,19 @@ namespace MSI.Models
                         cmd.Parameters.AddWithValue("@uploadVideoPath", objFileDetails.filepath);
                         cmd.Parameters.AddWithValue("@uploadDateTime", objFileDetails.uploaddatetime);
                         cmd.Parameters.AddWithValue("@userid", objFileDetails.uploadEmployee);
-                        cmd.Parameters.AddWithValue("@fromTime", objFileDetails.VideoFromTime);
-                        cmd.Parameters.AddWithValue("@toTime",objFileDetails.VideoToTime);
-                        cmd.Parameters.AddWithValue("@videodate",objFileDetails.VideoDate);
+                        if (objFileDetails.alltime == false)
+                        {
+                            cmd.Parameters.AddWithValue("@fromTime", objFileDetails.VideoFromTime);
+                            cmd.Parameters.AddWithValue("@toTime", objFileDetails.VideoToTime);
+                            cmd.Parameters.AddWithValue("@videodate", objFileDetails.VideoDate);
+                        }
+                        else
+                        {
+                            cmd.Parameters.AddWithValue("@fromTime", "00:00:00");
+                            cmd.Parameters.AddWithValue("@toTime", "00:00:00");
+                            cmd.Parameters.AddWithValue("@videodate", "1900-01-01 00:00:00");
+                        }
+                        cmd.Parameters.AddWithValue("@alltime", objFileDetails.alltime);
                         conn.Open();
                         result = cmd.ExecuteNonQuery();
                         conn.Close();
@@ -471,12 +481,23 @@ namespace MSI.Models
                                     foreach (DataRow row in dataTable.Rows)
                                     {
                                         objFileMapping = new FileMappingDetails();
+                                        objFileMapping.uploadid= Convert.ToInt32(row["uploadFileid"].ToString());
                                         objFileMapping.systemid = Convert.ToInt32(row["systemid"].ToString());
+                                        objFileMapping.alltime = row["alltime"].ToString();
                                         objFileMapping.systemname = row["system_name"].ToString();
                                         objFileMapping.filepath = row["File_Path"].ToString();
                                         objFileMapping.videoDate = row["VideoDate"].ToString();
-                                        objFileMapping.fromtime = row["FromTime"].ToString();
-                                        objFileMapping.totime = row["Totime"].ToString();
+                                        if (objFileMapping.alltime == "True")
+                                        {
+                                            objFileMapping.fromtime = string.Empty;
+                                            objFileMapping.totime = string.Empty;
+                                        }
+                                        else if (objFileMapping.alltime == "False")
+                                        {
+                                            objFileMapping.fromtime = row["FromTime"].ToString();
+                                            objFileMapping.totime = row["Totime"].ToString();
+                                        }
+                                       
                                         lstFileMapping.Add(objFileMapping);
                                     }
                                 }
@@ -631,7 +652,7 @@ namespace MSI.Models
             return null;
         }
 
-        public int deleteFileMapping(int fileMappingId,string videoDate, string fromtime, string totime)
+        public int deleteFileMapping(int uploadId,int fileMappingId,string videoDate, string fromtime, string totime,string alltime)
         {
             int resultDelete = 0;
             try
@@ -641,10 +662,13 @@ namespace MSI.Models
                     using (SqlCommand command = new SqlCommand("pro_deleteFileMapping", con))
                     {
                         command.CommandType = CommandType.StoredProcedure;
-                        command.Parameters.AddWithValue("@systemid", fileMappingId);
-                        command.Parameters.AddWithValue("@videodate", videoDate);
-                        command.Parameters.AddWithValue("@fromTime", fromtime);
-                        command.Parameters.AddWithValue("@toTime", totime);
+                        
+                        command.Parameters.AddWithValue("@uploadid", uploadId);
+                        //command.Parameters.AddWithValue("@systemid", fileMappingId);
+                        //command.Parameters.AddWithValue("@videodate", videoDate);
+                        //command.Parameters.AddWithValue("@fromTime", fromtime);
+                        //command.Parameters.AddWithValue("@toTime", totime);
+                        //command.Parameters.AddWithValue("@alltime", alltime);
                         con.Open();
                         resultDelete = command.ExecuteNonQuery();
                         con.Close();

@@ -37,6 +37,8 @@ namespace MSI.Models
 
         public string approvedfgname { get; set; }
 
+        public bool alltime { get; set; }
+
         public IEnumerable<SelectListItem> lstapprovecustomers { get; set; }
 
         public IEnumerable<SelectListItem> lstapprovefgnames { get; set; }

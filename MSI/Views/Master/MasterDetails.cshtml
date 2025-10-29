@@ -70,6 +70,12 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row m-2">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="rbtnAll" asp-for="alltime">
+                            <label class="form-check-label" >All Time</label>
+                        </div>
+                    </div>
 
                     <!-- Upload Section -->
                     <div class="row mt-4">                     
@@ -119,9 +125,11 @@
                     <table class="table table-bordered table-responsive">
                         <thead class="text-center">
                             <tr>
+                                <th class="hidden"></th>
                                 <th>System ID</th>
                                 <th>System Name</th>
                                 <th>File Path</th>
+                                <th>All Time</th>
                                 <th>Date</th>
                                 <th>From Time</th>
                                 <th>To Time</th>
@@ -134,9 +142,11 @@
                                 foreach (var item in Model.lstFileMappings)
                                 {
                                     <tr>
+                                        <td class="hidden">@item.uploadid</td>
                                         <td>@item.systemid</td>
                                         <td>@item.systemname</td>
                                         <td>@item.filepath</td>
+                                        <td>@item.alltime</td>
                                         <td>@item.videoDate</td>
                                         <td>@item.fromtime</td>
                                         <td>@item.totime</td>
@@ -144,8 +154,8 @@
                                          @*  <button class="btn btn-outline-secondary" onclick="updateValue(@item.systemid)">Edit</button> *@
 
                                            @*   <input type="button" class="btn btn-outline-secondary" onclick="updateValue(@item.systemid)" name="Edit" value="Edit"/> *@
- 
-                                            <button class="btn btn-danger" onclick="deleteValue(@item.systemid, '@item.videoDate', '@item.fromtime', '@item.totime')">Delete</button>
+
+                                            <button class="btn btn-danger" onclick="deleteValue(@item.uploadid,@item.systemid, '@item.videoDate', '@item.fromtime', '@item.totime')">Delete</button>
                                         </td>
                                     </tr>
                                 }
@@ -187,7 +197,10 @@
         // Set default video date to today
         const today = new Date().toISOString().split("T")[0];
         $('#dtVideoDate').val(today).attr('min', today);
-
+        $('#rbtnAll').prop('checked', false);
+        // $('#dtVideoDate').prop('disabled', true);
+        // $('#dtFromTime').prop('disabled', true);
+        // $('#dtToTime').prop('disabled', true);
         // Populate FG list based on customer
         $('#ddlapovcustomer').change(function () {
             const customerId = $(this).val();
@@ -202,6 +215,21 @@
                         $('#ddlapovfg').append(`<option value="${item.value}">${item.text}</option>`);
                     });
                 }).fail(() => alert('Error fetching FG Names.'));
+            }
+        });
+
+            //  $('#rbtnAll').is(':checked')
+
+        $('#rbtnAll').change(function () {
+            if ($('#rbtnAll').is(':checked')) {
+                $('#dtVideoDate').prop('disabled', true);
+                $('#dtFromTime').prop('disabled', true);
+                $('#dtToTime').prop('disabled', true);
+            }
+            else if ($('#rbtnAll').is(':checked') == false) {
+                $('#dtVideoDate').prop('disabled', false);
+                $('#dtFromTime').prop('disabled', false);
+                $('#dtToTime').prop('disabled', false);
             }
         });
 
@@ -266,10 +294,25 @@
             const from = $('#dtFromTime').val();
             const to = $('#dtToTime').val();
 
-            if (!custname || !fgname || !system || !file || !date || !from || !to) {
-                alert("Please fill all fields before upload.");
-                e.preventDefault();
+
+            var alltime = $('#rbtnAll').is(':checked');
+
+            if (!alltime) {
+                if (!custname || !fgname || !system || !file || !date || !from || !to) {
+                    alert("Please fill all fields before upload.");
+                    e.preventDefault();
+                }
+
             }
+            else if (alltime) { 
+                if (!custname || !fgname || !system || !file) {
+                    alert("Please fill all fields before upload.");
+                    e.preventDefault();
+                }
+
+            }
+
+      
         });
 
     });
@@ -279,21 +322,23 @@
         $('#ddlsystem').val(sysid);
     }
 
-    function deleteValue(systemid, date, from, to) {
-        $.post('/Master/deleteFileMapping', {
-            systemid,
-            videoDate: date,
-            fromtime: from,
-            totime: to
-        }, function (result) {
-            if (result > 0) {
-                alert('Deleted successfully'); 
-                 window.location.href = "/Master/MasterDetails";
-               // location.reload();
-            } else {
-                alert("Not Deleted");
-            }
-        }).fail(xhr => alert('Error: ' + xhr.responseText));
+        function deleteValue(uploadid,systemid, date, from, to, allti) {
+            $.post('/Master/deleteFileMapping', {
+                systemid,
+                uploadId: uploadid,
+                videoDate: date,
+                fromtime: from,
+                totime: to,
+                alltime: allti
+            }, function (result) {
+                if (result > 0) {
+                    alert('Deleted successfully');
+                    window.location.href = "/Master/MasterDetails";
+                    // location.reload();
+                } else {
+                    alert("Not Deleted");
+                }
+            }).fail(xhr => alert('Error: ' + xhr.responseText));
     }
 </script>
 }

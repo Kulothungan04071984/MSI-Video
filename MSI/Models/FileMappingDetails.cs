@@ -15,6 +15,10 @@
 
         public string totime { get; set; }
 
+        public string alltime { get; set; }
+
+        public int uploadid { get; set; }
+
 
     }
 
