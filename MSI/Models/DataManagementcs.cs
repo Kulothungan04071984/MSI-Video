@@ -1,12 +1,6 @@
 ﻿
 using System.Data;
-using System.DirectoryServices;
-using System.DirectoryServices.AccountManagement;
-using System.Drawing;
-using System.Reflection.PortableExecutable;
 using System.Security.Principal;
-using System.Xml.Linq;
-using Humanizer;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Microsoft.CodeAnalysis.Elfie.Serialization;
@@ -14,7 +8,6 @@ using Microsoft.Data.SqlClient;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 using PdfSharp.Pdf.IO;
-using static System.Net.Mime.MediaTypeNames;
 namespace MSI.Models
 {
 
@@ -43,9 +36,19 @@ namespace MSI.Models
                         cmd.Parameters.AddWithValue("@uploadVideoPath", objFileDetails.filepath);
                         cmd.Parameters.AddWithValue("@uploadDateTime", objFileDetails.uploaddatetime);
                         cmd.Parameters.AddWithValue("@userid", objFileDetails.uploadEmployee);
-                        cmd.Parameters.AddWithValue("@fromTime", objFileDetails.VideoFromTime);
-                        cmd.Parameters.AddWithValue("@toTime",objFileDetails.VideoToTime);
-                        cmd.Parameters.AddWithValue("@videodate",objFileDetails.VideoDate);
+                        if (objFileDetails.alltime == false)
+                        {
+                            cmd.Parameters.AddWithValue("@fromTime", objFileDetails.VideoFromTime);
+                            cmd.Parameters.AddWithValue("@toTime", objFileDetails.VideoToTime);
+                            cmd.Parameters.AddWithValue("@videodate", objFileDetails.VideoDate);
+                        }
+                        else
+                        {
+                            cmd.Parameters.AddWithValue("@fromTime", "00:00:00");
+                            cmd.Parameters.AddWithValue("@toTime", "00:00:00");
+                            cmd.Parameters.AddWithValue("@videodate", "1900-01-01 00:00:00");
+                        }
+                        cmd.Parameters.AddWithValue("@alltime", objFileDetails.alltime);
                         conn.Open();
                         result = cmd.ExecuteNonQuery();
                         conn.Close();
@@ -478,12 +481,23 @@ namespace MSI.Models
                                     foreach (DataRow row in dataTable.Rows)
                                     {
                                         objFileMapping = new FileMappingDetails();
+                                        objFileMapping.uploadid= Convert.ToInt32(row["uploadFileid"].ToString());
                                         objFileMapping.systemid = Convert.ToInt32(row["systemid"].ToString());
+                                        objFileMapping.alltime = row["alltime"].ToString();
                                         objFileMapping.systemname = row["system_name"].ToString();
                                         objFileMapping.filepath = row["File_Path"].ToString();
                                         objFileMapping.videoDate = row["VideoDate"].ToString();
-                                        objFileMapping.fromtime = row["FromTime"].ToString();
-                                        objFileMapping.totime = row["Totime"].ToString();
+                                        if (objFileMapping.alltime == "True")
+                                        {
+                                            objFileMapping.fromtime = string.Empty;
+                                            objFileMapping.totime = string.Empty;
+                                        }
+                                        else if (objFileMapping.alltime == "False")
+                                        {
+                                            objFileMapping.fromtime = row["FromTime"].ToString();
+                                            objFileMapping.totime = row["Totime"].ToString();
+                                        }
+                                       
                                         lstFileMapping.Add(objFileMapping);
                                     }
                                 }
@@ -603,8 +617,8 @@ namespace MSI.Models
                         cmd.CommandType = CommandType.StoredProcedure;
                         writeErrorMessage(device_name, "Device Name Details");
                         // Add parameters for the stored procedure
-                        string deviceName = device_name == "::1" ? "10.10.120.221" : device_name;
-                        string dname= string.IsNullOrEmpty(deviceName) ? "10.10.120.221" : deviceName;
+                        string deviceName = device_name == "::1" ? "10.10.121.128" : device_name;
+                        string dname= string.IsNullOrEmpty(deviceName) ? "10.10.121.128" : deviceName;
                         cmd.Parameters.AddWithValue("@device_name", dname);
                         cmd.Parameters.AddWithValue("@timedetails", currentTime);
                         cmd.Parameters.AddWithValue("@date", currentDate);
@@ -638,7 +652,7 @@ namespace MSI.Models
             return null;
         }
 
-        public int deleteFileMapping(int fileMappingId,string videoDate, string fromtime, string totime)
+        public int deleteFileMapping(int uploadId,int fileMappingId,string videoDate, string fromtime, string totime,string alltime)
         {
             int resultDelete = 0;
             try
@@ -648,10 +662,13 @@ namespace MSI.Models
                     using (SqlCommand command = new SqlCommand("pro_deleteFileMapping", con))
                     {
                         command.CommandType = CommandType.StoredProcedure;
-                        command.Parameters.AddWithValue("@systemid", fileMappingId);
-                        command.Parameters.AddWithValue("@videodate", videoDate);
-                        command.Parameters.AddWithValue("@fromTime", fromtime);
-                        command.Parameters.AddWithValue("@toTime", totime);
+                        
+                        command.Parameters.AddWithValue("@uploadid", uploadId);
+                        //command.Parameters.AddWithValue("@systemid", fileMappingId);
+                        //command.Parameters.AddWithValue("@videodate", videoDate);
+                        //command.Parameters.AddWithValue("@fromTime", fromtime);
+                        //command.Parameters.AddWithValue("@toTime", totime);
+                        //command.Parameters.AddWithValue("@alltime", alltime);
                         con.Open();
                         resultDelete = command.ExecuteNonQuery();
                         con.Close();
@@ -767,7 +784,7 @@ namespace MSI.Models
                 errLogs.Close();
             }
         }
-        public int SaveDataToDatabase(string SystemId, string Usertype,string StageName)
+        public int SaveDataToDatabase(string SystemId, string Usertype,string StageName,string Customername,string Fgno)
         {
             // var dt = DateTime.Today;
             var insertlist = 0;
@@ -780,6 +797,8 @@ namespace MSI.Models
                     cmd.Parameters.AddWithValue("@SystemId", SystemId);
                     cmd.Parameters.AddWithValue("@Usertype", Usertype);
                     cmd.Parameters.AddWithValue("@StageName", StageName);            
+                    cmd.Parameters.AddWithValue("@customername", Customername);            
+                    cmd.Parameters.AddWithValue("@fgname", Fgno);            
                     connection.Open();
                     insertlist = cmd.ExecuteNonQuery();
                     connection.Close();
@@ -935,7 +954,7 @@ namespace MSI.Models
                     conn.Open();
                     updateStatus = cmd.ExecuteNonQuery();
                     conn.Close();
-                    watermark = AddWatermarkcaption(path,path,"APPROVED");
+                   // watermark = AddWatermarkcaption(path,path,"APPROVED");
                 }
             }
             catch (Exception ex) {
@@ -1131,29 +1150,6 @@ namespace MSI.Models
             }
 
             return filepath;
-        }
-        public int SaveDataToDatabase(string SystemId, string Usertype, string StageName, string Customername, string Fgno)
-        {
-            // var dt = DateTime.Today;
-            var insertlist = 0;
-
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
-            {
-                using (SqlCommand cmd = new SqlCommand("pro_Insert_SystemId", connection))
-                {
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@SystemId", SystemId);
-                    cmd.Parameters.AddWithValue("@Usertype", Usertype);
-                    cmd.Parameters.AddWithValue("@StageName", StageName);
-                    cmd.Parameters.AddWithValue("@customername", Customername);
-                    cmd.Parameters.AddWithValue("@fgname", Fgno);
-                    connection.Open();
-                    insertlist = cmd.ExecuteNonQuery();
-                    connection.Close();
-                }
-
-            }
-            return insertlist;
         }
 
     }

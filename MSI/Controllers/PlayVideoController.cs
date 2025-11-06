@@ -30,11 +30,16 @@ namespace MSI.Controllers
             writeErrorMessage("PlayVideoController", "VideoPlaying Enter");
             // Get the device name (machine name)
 
-            // string deviceName =await Process_systemname();
+           // string deviceName =await Process_systemname();
             //  string deviceName = "10.10.120.218"; // Testing
 
+
+           // string deviceName =await Process_systemname();
+               string deviceName = "10.10.120.83"; // Testing
+
             // string deviceName =await Process_systemname();
-             string deviceName = "10.10.120.221"; // Testing
+            // string deviceName = "10.10.120.252"; // Testing
+
 
             DateOnly currentDate1 = DateOnly.FromDateTime(DateTime.Now);
             string currentDate2 = currentDate1.ToString("yyyy-MM-dd");
@@ -43,19 +48,17 @@ namespace MSI.Controllers
             string currentTime = currentDateTime.ToString("HH:mm:ss");
 
             // Fetch file path using DataAccess
-            string filePath1 = _domainServices.getfilepath(deviceName, currentTime, currentDate);
+             string filePath1 = string.Empty;    
+             filePath1 = _domainServices.getfilepath(deviceName, currentTime, currentDate);
             // string filePath = $@"{filePath1}";
 
             string networkPath = $@"{filePath1}";
 
             string wwwrootPath = _webHostEnvironment.WebRootPath;
-           // string wwwrootPath = "\\\\192.168.1.121\\MSI_Applications";
-            writeErrorMessage(networkPath, " path Enter");
+            writeErrorMessage(wwwrootPath, "WWW root path Enter");
             string videoFolderPath = Path.Combine(wwwrootPath, "videos");
             string dname = deviceName.Replace(".", "");
-            // string dname = "10.10.121.128";
-             writeErrorMessage(dname, "DeviceName");
-           
+            writeErrorMessage(dname, "DeviceName");
             string fileExtension = Path.GetExtension(networkPath).ToLower();
             string videoFilePath;
             //  string videoFilePath = Path.Combine(videoFolderPath, dname + ".mp4");
@@ -104,7 +107,7 @@ namespace MSI.Controllers
                 await Task.Run(() => System.IO.File.Copy(npath, videoFilePath, true));
                 //}
 
-                //writeErrorMessage(videoFilePath + '-' + dname, "End Copy the video File");
+                writeErrorMessage(videoFilePath + '-' + dname, "End Copy the video File");
 
 
                 ViewBag.FilePath = dname + fileExtension;

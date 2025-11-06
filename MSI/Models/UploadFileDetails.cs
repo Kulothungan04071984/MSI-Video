@@ -32,10 +32,12 @@ namespace MSI.Models
 
         public int approvefileid { get; set; }
 
-        public int approvedcustname { get; set; }
+        public string approvedcustname { get; set; }
         
 
-        public int approvedfgname { get; set; }
+        public string approvedfgname { get; set; }
+
+        public bool alltime { get; set; }
 
         public IEnumerable<SelectListItem> lstapprovecustomers { get; set; }
 

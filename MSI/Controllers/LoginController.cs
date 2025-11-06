@@ -32,6 +32,7 @@ namespace MSI.Controllers
                     if (result.Rows[0][0].ToString() == userid && result.Rows[0][1].ToString() == password)
                     {
                         string userType = result.Rows[0][2].ToString(); // 1, 2, or 3
+                        HttpContext.Session.SetString("UserId", userid);
                         if (userType == "1")
                         {
                             res = "Prod_Admin";

@@ -96,21 +96,163 @@
         </div>
     </div>
 </div>
+
 <script>
     $(document).ready(function () {
-        $('#userlogin').keydown(function (event) {
+        $('#txtuserid').keydown(function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                $('#txtpassword').focus();
+            }
+        });
 
-            if (event.key === "Enter") {
+        $('#txtpassword').keydown(function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
                 userValidation();
+            }
+        });
+
+        // Login button click handler
+        $('#userlogin').on('click', function () {
+            userValidation();
+        });
+
+        // Close modal
+        $('#btnClose, #btnModalClose').on('click', function () {
+            $('#myModal').modal('hide');
+        });
+
+        // Save new password
+        $('#btnSaveChanges').on('click', function () {
+            var empid = $('#txtEmpID').val();
+            var passWord = $('#txtPassword').val();
+            var ConpassWord = $('#txtConfirmPassword').val();
+            var pass = true;
+
+            if (empid === '' || passWord === '' || ConpassWord === '') {
+                alert("Please enter the value for empty fields.");
+                pass = false;
+            }
+            else if (passWord !== ConpassWord) {
+                alert("Password and Confirm Password Not Matched");
+                pass = false;
+            }
+            else if (passWord.length <= 4) {
+                alert("Password length should be greater than 4");
+                pass = false;
+            }
+
+            if (pass) {
+                $.ajax({
+                    url: '/Login/UpdatePassword/',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { userid: empid, password: passWord },
+                    cache: false,
+                    async: false,
+                    success: function (result) {
+                        if (result > 0) {
+                            alert('Update Password Successfully');
+                            $('#txtEmpID').val('');
+                            $('#txtPassword').val('');
+                            $('#txtConfirmPassword').val('');
+                            $('#myModal').modal('hide');
+                        }
+                    },
+                    error: function (result) {
+                        alert('Error: ' + result);
+                    }
+                });
             }
         });
     });
 
-    document.addEventListener("keydown", function (e) {
-        if (e.key === "Enter") {
-            document.getElementById("userlogin").click();
-        }
+    // Show forgot password popup
+    function showpopup() {
+        $('#myModal').modal('show');
+    }
+
+    // User login validation
+    function userValidation() {
+        var uid = $('#txtuserid').val();
+        var pwd = $('#txtpassword').val();
+
+        $.ajax({
+            url: '/Login/loginValidation',
+            type: 'GET',
+            dataType: 'json',
+            data: {
+                userid: uid,
+                password: pwd
+            },
+            cache: false,
+            async: false,
+            success: function (result) {
+                if (result != null) {
+                    switch (result) {
+                        case 'Prod_Admin':
+                        case 'Admin':
+                            window.location.href = "/Master/MasterDetails";
+                            break;
+                        case 'Prod_User':
+                            window.location.href = "/PlayVideo/VideoPlaying?userType=" + result;
+                            break;
+                        case 'Doc_Dept':
+                            window.location.href = "/DocUpload/ShowuploadDetails";
+                            break;
+                        case 'QA_Dept':
+                            window.location.href = "/DocVerified/ShowDocDetails";
+                            break;
+                        case 'invalid':
+                            alert('Please check your username and password');
+                            break;
+                    }
+                }
+            },
+            error: function (result) {
+                alert('An error occurred: ' + result);
+                $('#txtuserid').val('');
+                $('#txtpassword').val('');
+            }
+        });
+    }
+</script>
+
+@* <script>
+    $(document).ready(function () {
+        $('#txtuserid').keydown(function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                $('#txtpassword').focus();
+            }
+        });
+
+        $('#txtpassword').keydown(function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                userValidation();
+            }
+        });
+
+        // Login button click handler
+        $('#userlogin').on('click', function () {
+            userValidation();
+        });
     });
+         //     $('#userlogin').keydown(function (event) {
+
+        //         if (event.key === "Enter") {
+        //             userValidation();
+      //         }
+      //     });
+      // });
+
+       // document.addEventListener("keydown", function (e) {
+      //     if (e.key === "Enter") {
+      //         document.getElementById("userlogin").click();
+      //     }
+     // });
     $('#btnClose').on('click', function () {
         $('#myModal').modal('hide');
     });
@@ -161,7 +303,7 @@
 
     function userValidation() {
 
-         debugger;
+      
 
         var uid = $('#txtuserid').val();
         var pwd = $('#txtpassword').val();
@@ -206,4 +348,4 @@
         });
 
     }
-</script>
+</script> *@

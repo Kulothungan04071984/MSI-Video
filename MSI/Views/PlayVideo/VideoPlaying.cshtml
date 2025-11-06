@@ -7,167 +7,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Load Video from URL</title>
+    <title>Auto Scroll Viewer</title>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <title>WI Instructions</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
-	@* <script src="~/lib/jquery/dist/viewer.js"></script> *@
+
     <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            overflow: hidden;
+        }
+
+        .fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 9999;
+            background-color: #000;
+            overflow-y: auto;
+        }
+
         #videoPlayer {
             display: none;
             width: 100%;
             height: 100%;
-        }
-        /* Video Positioning Styles */
-        .video-player {
-            position: fixed; /* Position relative to the viewport */
-            height: auto; /* Maintain aspect ratio */
-            z-index: 9999; /* Make sure it stays on top */
+            object-fit: contain;
         }
 
-        /* Error Card Styles */
         .error-card {
-            background-color: #f8d7da; /* Light red background */
-            border-color: #f5c6cb; /* Light pink border */
-            color: #721c24; /* Dark red text color */
-            padding: 250px; /* Space inside the card */
-            margin: 50px; /* Space outside the card */
-            border: 1px solid transparent; /* Make sure border is visible */
-            border-radius: .25rem; /* Rounded corners */
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 250px;
+            margin: 50px;
+            border: 1px solid #f5c6cb;
+            border-radius: .25rem;
             font-family: Arial, sans-serif;
             font-size: 40px;
-            text-align: center; /* Font style */
+            text-align: center;
         }
-
-            /* Additional Styling for Error Card Text */
-            .error-card p {
-                margin: 0; /* Remove default margin for the paragraph */
-            }
-
-            /* Optional: Hover effect for the error card to make it interactive */
-            .error-card:hover {
-                background-color: #f5c6cb; /* Change background on hover */
-                cursor: pointer; /* Make cursor pointer when hovering */
-            }
 
         #loading {
             font-size: 24px;
             font-weight: bold;
             text-align: center;
             margin-top: 100px;
+            color: #fff;
         }
 
-        #htmlContent {
+        #htmlContent, #pdfContent {
             display: none;
-            overflow: hidden;
-            height: 900px;
-            width: 100%;
             padding: 10px;
+            color: white;
         }
 
+        canvas {
+            display: block;
+            margin: 0 auto;
+        }
     </style>
 </head>
 <body>
-    <!-- Error Card Display -->
+
     @if (ViewBag.FileNotFound != null && ViewBag.FileNotFound == true)
     {
         <div class="error-card">
             <p>File not found!</p>
         </div>
-        <div id="pageData" data-message="@ViewBag.FilePath" ></div>
+        <div id="pageData" data-message="@ViewBag.FilePath"></div>
     }
 
-    @*    <div id="loading">Loading video...</div>
-    <video id="videoPlayer" width="640" height="360" autoplay loop="loop" muted playsinline>
-    <source src="~/uploads/THERMAL MODULE ASSY.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-    </video> *@
+    <div id="loading">Loading content...</div>
 
-    <div id="loading">Loading video...</div>
-    <video id="videoPlayer" controls loop autoplay muted>
+    <video id="videoPlayer" class="fullscreen" controls loop autoplay muted>
         Your browser does not support the video tag.
     </video>
 
-    <div id="htmlContent" style="display:none;"></div>
-    <div class="container">
-        <div class="row">
-            <div id="pdfContent" style="display:none; overflow: hidden; height: 800px;">
-                <canvas id="pdfCanvas"></canvas>
-                @* <script src="viewer.js"></script> *@
-            </div>
-        </div>
-    </div>
-   
+    <div id="htmlContent" class="fullscreen"></div>
+
+    <div id="pdfContent" class="fullscreen"></div>
 
 </body>
 </html>
+
 <script>
-      var pathviwer = '@ViewBag.FilePath'.trim();
+    var scrollPaused = false;
+    var scrollSpeed = 0.5; // pixels per frame
+    var scrollElement = null;
+
+    function enterFullscreen(element) {
+        if (element.requestFullscreen) {
+            element.requestFullscreen();
+        } else if (element.webkitRequestFullscreen) {
+            element.webkitRequestFullscreen();
+        } else if (element.mozRequestFullScreen) {
+            element.mozRequestFullScreen();
+        } else if (element.msRequestFullscreen) {
+            element.msRequestFullscreen();
+        }
+    }
+
+    function startSmoothAutoScroll(el) {
+        scrollElement = el;
+
+        function scrollStep() {
+            if (!scrollPaused && scrollElement) {
+                scrollElement.scrollTop += scrollSpeed;
+
+                if (scrollElement.scrollTop + scrollElement.clientHeight >= scrollElement.scrollHeight) {
+                    scrollElement.scrollTop = 0; // Loop to top
+                }
+            }
+
+            requestAnimationFrame(scrollStep);
+        }
+
+        requestAnimationFrame(scrollStep);
+    }
+
     $(document).ready(function () {
-        var userT = '@ViewBag.UserType';
-        if (userT == 'valid-user') {
-            $('#dvNewSystem').css('display', 'none');
-            $('#dvWorkInstruction').css('display', 'none');
-        }
-        else {
-            $('#dvNewSystem').css('display', '');
-            $('#dvWorkInstruction').css('display', '');
-        }
         var path = '@ViewBag.FilePath'.trim();
-        console.log("File Path:", path);
+        console.log(path);
         var fileType = path.split('.').pop().toLowerCase();
-        console.log("File Type:", fileType);
         var videoElement = $("#videoPlayer");
+
         if (fileType === 'mp4') {
             var videoSrc = "/videos/" + path;
             videoElement.attr("src", videoSrc);
-            videoElement.prop('loop', true);
-            videoElement.prop('autoplay', true);
             videoElement.on("canplay", function () {
                 $("#loading").hide();
                 videoElement.show();
+                enterFullscreen(videoElement[0]);
             });
             videoElement.on("error", function () {
                 $("#loading").text("Failed to load video.");
             });
+
         } else if (fileType === 'html') {
-            var htmlContentContainer = $("#htmlContent");
+            var htmlContainer = $("#htmlContent");
             $("#loading").hide();
+
             $.ajax({
                 url: "/videos/" + path,
-                success: function (data) {
-                    htmlContentContainer.html(data);
-                    htmlContentContainer.show();
-                    startAutoScroll();
+                cache: false,
+                async: false,
+                success: function (data)
+                 {
+                    htmlContainer.html(data);
+                    htmlContainer.show();
+                    enterFullscreen(htmlContainer[0]);
+                    startSmoothAutoScroll(htmlContainer[0]);
                 },
                 error: function () {
                     $("#loading").text("Failed to load HTML file.");
                 }
             });
+
         } else if (fileType === 'pdf') {
-            var pdfContainer = $("#pdfContent");
-            var pdfSrc = "/videos/" + path;
+            var pdfContainer = document.getElementById("pdfContent");         
+           // var pdfSrc = "/videos/" + path;
+            var pdfSrc = "/videos/" + path + "?t=" + new Date().getTime();
+
+            console.log(pdfSrc);
             $("#loading").hide();
 
-            // Initialize PDF.js and load the PDF
-            // var loadingTask = pdfjsLib.getDocument(pdfSrc);
-            // loadingTask.promise.then(function (pdfDoc_) {
-            //     var pdfDoc = pdfDoc_;
-            //     var scale = 2; // Scale for better readability
-            //     var pageNum = 1;
+            var loadingTask = pdfjsLib.getDocument(pdfSrc);
+          
+            loadingTask.promise.then(async function (pdfDoc_) {
+                
+                var pdfDoc = pdfDoc_;
+                var canvases = [];
 
-            //     // Array to store canvas elements for each page
-            //     var canvases = [];
+             //     async function renderPage(pageNum) {
+             //         pdfDoc.getPage(pageNum).then(async function (page) {
+             //             var canvas = document.createElement('canvas');
+             //             var ctx = canvas.getContext('2d');
 
-            //     // Function to render each page of the PDF
-            //     function renderPage(pageNum) {
-            //         pdfDoc.getPage(pageNum).then(function (page) {
-            //             var canvas = document.createElement('canvas');
-            //             canvases.push(canvas); // Store canvas element
-            //             var ctx = canvas.getContext('2d');
+             //             var unscaledViewport = page.getViewport({ scale: 1 });
+            //             var containerWidth = pdfContainer.clientWidth;
+            //             var scale = containerWidth / unscaledViewport.width;
+            //             var viewport = page.getViewport({ scale: scale });
 
-                    
-            //             var viewport = page.getViewport({ scale: Scale });
             //             canvas.height = viewport.height;
             //             canvas.width = viewport.width;
 
@@ -175,189 +198,72 @@
             //                 canvasContext: ctx,
             //                 viewport: viewport
             //             };
-            //             page.render(renderContext).promise.then(function () {
-            //                 // Once rendered, append it to the container
-            //                 pdfContainer.append(canvas);
+
+            //             await page.render(renderContext).promise.then(function () {
+            //                 pdfContainer.appendChild(canvas);
             //             });
             //         });
             //     }
 
-            //     // Render all pages of the PDF
-            //     var totalPages = pdfDoc.numPages;
-            //     for (let page = 1; page <= totalPages; page++) {
-            //         renderPage(page);
+            //     for (let page = 1; page <= pdfDoc.numPages; page++) {
+            //         debugger;
+            //         await renderPage(page);
             //     }
 
-            //     // Start auto-scrolling for the PDF pages
-            //     startAutoScrollForPdf(pdfDoc.numPages);
+            //     pdfContainer.style.display = "block";
+            //     enterFullscreen(pdfContainer);
+            //     startSmoothAutoScroll(pdfContainer);
             // });
+                async function renderAllPages() {
+                    for (let page = 1; page <= pdfDoc.numPages; page++) {
+                        const p = await pdfDoc.getPage(page);
 
-            // pdfContainer.show();
+                        var canvas = document.createElement('canvas');
+                        canvases.push(canvas);
+                        var ctx = canvas.getContext('2d');
 
-                var pdfContainer = document.getElementById("pdfContent");
+                        // Get unscaled viewport
+                        var unscaledViewport = p.getViewport({ scale: 1 });
 
-    var loadingTask = pdfjsLib.getDocument(pdfSrc);
-    loadingTask.promise.then(function (pdfDoc_) {
-        var pdfDoc = pdfDoc_;
-        var canvases = [];
+                        // Fit to container width
+                        var containerWidth = pdfContainer.clientWidth;
+                        var scale = containerWidth / unscaledViewport.width;
 
-        // function renderPage(pageNum) {
-        //     pdfDoc.getPage(pageNum).then(function (page) {
-        //         var canvas = document.createElement('canvas');
-        //         canvases.push(canvas);
-        //         var ctx = canvas.getContext('2d');
+                        // Get scaled viewport
+                        var viewport = p.getViewport({ scale: scale });
 
-        //         // Get unscaled viewport
-        //         var unscaledViewport = page.getViewport({ scale: 1 });
+                        canvas.height = viewport.height;
+                        canvas.width = viewport.width;
 
-        //         // Fit to container width
-        //         var containerWidth = pdfContainer.clientWidth;
-        //         var scale = containerWidth / unscaledViewport.width;
+                        var renderContext = {
+                            canvasContext: ctx,
+                            viewport: viewport
+                        };
 
-        //         // Get scaled viewport
-        //         var viewport = page.getViewport({ scale: scale });
+                        await p.render(renderContext).promise;
 
-        //         canvas.height = viewport.height;
-        //         canvas.width = viewport.width;
+                        pdfContainer.append(canvas);
+                    }
 
-        //         var renderContext = {
-        //             canvasContext: ctx,
-        //             viewport: viewport
-        //         };
+                    // Auto scroll if you need
+                   // startAutoScrollForPdf(pdfDoc.numPages);
+                }
 
-        //         page.render(renderContext).promise.then(function () {
-        //             pdfContainer.append(canvas);
-        //         });
-        //     });
-        // }
+                renderAllPages();
+            });
 
-        // Render all pages
-        // for (let page = 1; page <= pdfDoc.numPages; page++) {
-        //     renderPage(page);
-        // }
-
-        // // Auto scroll if you need
-        // startAutoScrollForPdf(pdfDoc.numPages);
-
-            async function renderAllPages() {
-        for (let page = 1; page <= pdfDoc.numPages; page++) {
-            const p = await pdfDoc.getPage(page);
-
-            var canvas = document.createElement('canvas');
-            canvases.push(canvas);
-            var ctx = canvas.getContext('2d');
-
-            // Get unscaled viewport
-            var unscaledViewport = p.getViewport({ scale: 1 });
-
-            // Fit to container width
-            var containerWidth = pdfContainer.clientWidth;
-            var scale = containerWidth / unscaledViewport.width;
-
-            // Get scaled viewport
-            var viewport = p.getViewport({ scale: scale });
-
-            canvas.height = viewport.height;
-            canvas.width = viewport.width;
-
-            var renderContext = {
-                canvasContext: ctx,
-                viewport: viewport
-            };
-
-            await p.render(renderContext).promise;
-
-            pdfContainer.append(canvas);
-        }
-
-        // Auto scroll if you need
-        startAutoScrollForPdf(pdfDoc.numPages);
-    }
-
-    renderAllPages();
-   });
-
-    pdfContainer.style.display = "block";
-
+            pdfContainer.style.display = "block";
+            enterFullscreen(pdfContainer);
+            startSmoothAutoScroll(pdfContainer);
 
 
         } else {
             $("#loading").text("Invalid file type.");
         }
 
-
-        var scrollTimer;
-        var scrollDistance = 0;
-        var scrollStep = 5;
-        var scrollInterval = 300;
-
-        function scrollContent() {
-            var contentFile = $('#htmlContent');
-            scrollDistance += scrollStep;
-            contentFile.scrollTop(scrollDistance);
-
-            if (contentFile.scrollTop() >= contentFile[0].scrollHeight - contentFile.height()) {
-                contentFile.scrollTop(0);
-                scrollDistance = 0;
-            }
-        }
-        function scrollPdfContent() {
-            var canvas = $('#pdfCanvas');
-            scrollDistance += scrollStep;
-
-            var pdfContentContainer = $('#pdfContent');
-            pdfContentContainer.scrollTop(scrollDistance);
-
-            if (pdfContentContainer.scrollTop() >= pdfContentContainer[0].scrollHeight - pdfContentContainer.height()) {
-                pdfContentContainer.scrollTop(0);
-                scrollDistance = 0;
-            }
-        }
-        function startAutoScroll() {
-            console.log("Starting auto-scroll...");
-            scrollTimer = setInterval(scrollContent, scrollInterval);
-        }
-        function startAutoScrollForPdf() {
-            console.log("Starting auto-scroll for PDF...");
-            scrollTimer = setInterval(scrollPdfContent, scrollInterval);
-        }
-        function stopAutoScroll() {
-            console.log("Stopping auto-scroll...");
-            clearInterval(scrollTimer);
-            scrollTimer = null;
-        }
-
-        $('body').click(function () {
-            if (scrollTimer) {
-                stopAutoScroll();
-            } else {
-                if (fileType === 'html') {
-                    startAutoScroll();
-                } else if (fileType === 'pdf') {
-                    startAutoScrollForPdf();
-                }
-            }
+        // Click toggles scroll pause/resume
+        $('body').on('click', function () {
+            scrollPaused = !scrollPaused;
         });
     });
-
-
-
-    // function opensscreen(myvideo)
-    // {
-
-    //          console.log("hitting");
-    // var elem = myVideo;
-    // console.log(elem);
-    // if (elem.requestFullscreen) {
-    //   elem.requestFullscreen();
-    // } else if (elem.mozRequestFullScreen) { /* Firefox */
-    //   elem.mozRequestFullScreen();
-    // } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
-    //   elem.webkitRequestFullscreen();
-    // } else if (elem.msRequestFullscreen) { /* IE/Edge */
-    //   elem.msRequestFullscreen();
-    // }
-    // }
-
 </script>
-

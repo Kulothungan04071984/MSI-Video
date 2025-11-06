@@ -32,6 +32,16 @@ builder.Services.Configure<FormOptions>(options =>
 //    // Optional: Specify known proxies or networks if needed
 //    // options.KnownNetworks.Add(new IPNetwork(IPAddress.Parse("x.x.x.x"), prefixLength));
 //});
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 var app = builder.Build();
 //await FFmpegDownloader.GetLatestVersion(FFmpegVersion.Official);
 
@@ -47,7 +57,7 @@ else
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
-
+app.UseCors("AllowAll");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
@@ -59,11 +69,11 @@ app.Use(async (context, next) =>
     context.Response.Headers.Add("Referrer-Policy", "strict-origin-when-cross-origin");
     await next();
 });
-
+app.MapControllers();
 app.MapControllerRoute(
 	name: "default",
 	pattern: "{controller=Login}/{action=Login}/{id?}");
 //await EnsureFFmpegIsAvailable();
-
+//https://localhost:7012/PlayVideo/VideoPlaying
 app.Run();
 

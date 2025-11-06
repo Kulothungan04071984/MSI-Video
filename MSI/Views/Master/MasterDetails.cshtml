@@ -1,6 +1,7 @@
 ﻿@model MSI.Models.UploadFileDetails
 @{
     ViewData["Title"] = "MasterDetails";
+
 }
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -11,15 +12,15 @@
             <!-- Card Start -->
             <div class="card">
                 <div class="card-header">
-                    <span>File Mapping</span>
+                    <h4>File Mapping</h4>
                 </div>
 
                 <div class="card-body">
                     <!-- Customer & FG Info -->
                     @* <h3 class="text-center">Customer Details</h3> *@
 
-<!-- Row 1: Customer + FG -->
-                <div class="row mb-3">
+                 <!-- Row 1: Customer + FG -->
+                  <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label fw-bold">Customer Name:</label>
                         @Html.DropDownListFor(model => model.approvecustomid, Model.lstapprovecustomers, "Select a Customer", new { @id = "ddlapovcustomer", @class = "form-control" })
@@ -33,17 +34,16 @@
                 </div>
 
                 <!-- Row 2: File + View -->
-                <div class="row mb-3">
+            <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label fw-bold">Filename:</label>
                         @Html.DropDownListFor(model => model.approvefileid, Model.lstFile, "Select File", new { @id = "ddlfile", @class = "form-control" })
                         @Html.HiddenFor(model => model.approvefileid, new { id = "Filename" })
                     </div>
                     <div class="col-md-6 d-flex align-items-end">
-                        <button id="btnview" class="btn btn-primary ViewDocument">View</button>
+                            <button id="btnview" class="btn btn-primary ViewDocument" style="height:auto;width: 75px;">View</button>
                     </div>
                 </div>
-
 
                     <!-- Stage -->
                     <div class="row">
@@ -70,35 +70,44 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row m-2">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="rbtnAll" asp-for="alltime">
+                            <label class="form-check-label" >All Time</label>
+                        </div>
+                    </div>
 
                     <!-- Upload Section -->
-                    <div class="row mt-4">
-                        <div class="col-lg-6">
+                    <div class="row mt-4">                     
 @*                             <h5>File Upload</h5>
 
                             <div class="mb-3">
-                                <input type="file" class="form-control" id="file" name="file" accept="video/*,application/pdf">
+                            <input type="file" class="form-control" id="file" name="file" accept="video/*,application/pdf">
                             </div> *@
 
+                        <div class="col-lg-6">
                             <div class="row g-2">
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <label>Video Date</label>
                                     <input type="date" id="dtVideoDate" asp-for="VideoDate" class="form-control" />
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <label>From Time</label>
                                     <input type="time" id="dtFromTime" asp-for="VideoFromTime" class="form-control" />
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <label>To Time</label>
                                     <input type="time" id="dtToTime" asp-for="VideoToTime" class="form-control" />
                                 </div>
-                                <div class="col-md-3 d-flex align-items-end">
-                                    <button id="btnUpload" class="btn btn-primary">Upload</button>
-                                </div>
                             </div>
                         </div>
+
+                       
+                        <div class="col-lg-6 d-flex align-items-end justify-content-start">
+                            <button id="btnUpload" class="btn btn-primary" style="width: 75px; height: 38px;">Upload</button>
+                        </div>
                     </div>
+
 
                     <!-- ViewBag Message -->
                     <div class="row mt-3">
@@ -116,9 +125,11 @@
                     <table class="table table-bordered table-responsive">
                         <thead class="text-center">
                             <tr>
+                                <th class="hidden"></th>
                                 <th>System ID</th>
                                 <th>System Name</th>
                                 <th>File Path</th>
+                                <th>All Time</th>
                                 <th>Date</th>
                                 <th>From Time</th>
                                 <th>To Time</th>
@@ -131,15 +142,20 @@
                                 foreach (var item in Model.lstFileMappings)
                                 {
                                     <tr>
+                                        <td class="hidden">@item.uploadid</td>
                                         <td>@item.systemid</td>
                                         <td>@item.systemname</td>
                                         <td>@item.filepath</td>
+                                        <td>@item.alltime</td>
                                         <td>@item.videoDate</td>
                                         <td>@item.fromtime</td>
                                         <td>@item.totime</td>
                                         <td>
-                                            <input type="button" class="btn btn-outline-secondary" onclick="updateValue(@item.systemid)" name="Edit" value="Edit"/>
-                                            <button class="btn btn-danger" onclick="deleteValue(@item.systemid, '@item.videoDate', '@item.fromtime', '@item.totime')">Delete</button>
+                                         @*  <button class="btn btn-outline-secondary" onclick="updateValue(@item.systemid)">Edit</button> *@
+
+                                           @*   <input type="button" class="btn btn-outline-secondary" onclick="updateValue(@item.systemid)" name="Edit" value="Edit"/> *@
+
+                                            <button class="btn btn-danger" onclick="deleteValue(@item.uploadid,@item.systemid, '@item.videoDate', '@item.fromtime', '@item.totime')">Delete</button>
                                         </td>
                                     </tr>
                                 }
@@ -171,6 +187,7 @@
             </div>
         </div>
     </div>
+
 </form>
 
 <!-- JS Section -->
@@ -180,7 +197,10 @@
         // Set default video date to today
         const today = new Date().toISOString().split("T")[0];
         $('#dtVideoDate').val(today).attr('min', today);
-
+        $('#rbtnAll').prop('checked', false);
+        // $('#dtVideoDate').prop('disabled', true);
+        // $('#dtFromTime').prop('disabled', true);
+        // $('#dtToTime').prop('disabled', true);
         // Populate FG list based on customer
         $('#ddlapovcustomer').change(function () {
             const customerId = $(this).val();
@@ -195,6 +215,21 @@
                         $('#ddlapovfg').append(`<option value="${item.value}">${item.text}</option>`);
                     });
                 }).fail(() => alert('Error fetching FG Names.'));
+            }
+        });
+
+            //  $('#rbtnAll').is(':checked')
+
+        $('#rbtnAll').change(function () {
+            if ($('#rbtnAll').is(':checked')) {
+                $('#dtVideoDate').prop('disabled', true);
+                $('#dtFromTime').prop('disabled', true);
+                $('#dtToTime').prop('disabled', true);
+            }
+            else if ($('#rbtnAll').is(':checked') == false) {
+                $('#dtVideoDate').prop('disabled', false);
+                $('#dtFromTime').prop('disabled', false);
+                $('#dtToTime').prop('disabled', false);
             }
         });
 
@@ -238,24 +273,47 @@
         });
 
         // Validate before upload
-            $('#btnUpload').click(function (e) {
-                debugger;
+        // <<<<<<< HEAD
+        //         $('#btnUpload').click(function (e) {
+        //             const system = $('#ddlsystem').val();
+        //             const file = $('#file').val();
+        //             const date = $('#dtVideoDate').val();
+        //             const from = $('#dtFromTime').val();
+        //             const to = $('#dtToTime').val();
+        // =======
+        $('#btnUpload').click(function (e) {
+           
 
-                var custname = $('#ddlapovcustomer option:selected').text();
-                console.log(); // <-- this is broken! should be console.log(custname)
+            var custname = $('#ddlapovcustomer option:selected').text();
+            console.log(); // <-- this is broken! should be console.log(custname)
 
-                var fgname = $('#ddlapovfg option:selected').text();
-                const system = $('#ddlsystem').val();
-                const file = $('#ddlfile').val();
-                const date = $('#dtVideoDate').val();
-                const from = $('#dtFromTime').val();
-                const to = $('#dtToTime').val();
+            var fgname = $('#ddlapovfg option:selected').text();
+            const system = $('#ddlsystem').val();
+            const file = $('#ddlfile').val();
+            const date = $('#dtVideoDate').val();
+            const from = $('#dtFromTime').val();
+            const to = $('#dtToTime').val();
 
+
+            var alltime = $('#rbtnAll').is(':checked');
+
+            if (!alltime) {
                 if (!custname || !fgname || !system || !file || !date || !from || !to) {
                     alert("Please fill all fields before upload.");
                     e.preventDefault();
                 }
-            });
+
+            }
+            else if (alltime) { 
+                if (!custname || !fgname || !system || !file) {
+                    alert("Please fill all fields before upload.");
+                    e.preventDefault();
+                }
+
+            }
+
+      
+        });
 
     });
 
@@ -264,20 +322,23 @@
         $('#ddlsystem').val(sysid);
     }
 
-    function deleteValue(systemid, date, from, to) {
-        $.post('/Master/deleteFileMapping', {
-            systemid,
-            videoDate: date,
-            fromtime: from,
-            totime: to
-        }, function (result) {
-            if (result > 0) {
-                alert('Deleted successfully');
-                location.reload();
-            } else {
-                alert("Not Deleted");
-            }
-        }).fail(xhr => alert('Error: ' + xhr.responseText));
+        function deleteValue(uploadid,systemid, date, from, to, allti) {
+            $.post('/Master/deleteFileMapping', {
+                systemid,
+                uploadId: uploadid,
+                videoDate: date,
+                fromtime: from,
+                totime: to,
+                alltime: allti
+            }, function (result) {
+                if (result > 0) {
+                    alert('Deleted successfully');
+                    window.location.href = "/Master/MasterDetails";
+                    // location.reload();
+                } else {
+                    alert("Not Deleted");
+                }
+            }).fail(xhr => alert('Error: ' + xhr.responseText));
     }
 </script>
 }
