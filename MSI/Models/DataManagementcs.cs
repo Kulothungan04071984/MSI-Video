@@ -9,6 +9,7 @@ using System.Xml.Linq;
 using Humanizer;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.Elfie.Diagnostics;
+using Microsoft.CodeAnalysis.Elfie.Serialization;
 using Microsoft.Data.SqlClient;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
@@ -224,6 +225,7 @@ namespace MSI.Models
                                 {
                                     CustomerName = reader["customer_name"] == DBNull.Value ? null : reader["customer_name"].ToString(),
                                     FgNo = reader["Fg_name"] == DBNull.Value ? null : reader["Fg_name"].ToString(),
+                                    Document_id = reader["document_id"] == DBNull.Value ? null : reader["document_id"].ToString(),
                                     DocumentName = reader["Doc_name"] == DBNull.Value ? null : reader["Doc_name"].ToString(),
                                     DocumentStatus = reader["Doc_status"] == DBNull.Value ? null : reader["Doc_status"].ToString(),
                                     FileName = reader["File_Path"] == DBNull.Value ? null : reader["File_Path"].ToString()
@@ -563,6 +565,7 @@ namespace MSI.Models
                                         objFileupload.empId = Convert.ToInt32(row["Emp_id"].ToString());
                                         objFileupload.customer_name = row["customer_name"].ToString();
                                         objFileupload.Fg_Name = row["Fg_name"].ToString();
+                                        objFileupload.Filenameid = row["document_id"].ToString();
                                         objFileupload.docName = row["Doc_name"].ToString();
                                         objFileupload.docDateTime = row["Upload_time"].ToString();
                                         objFileupload.docType = row["Doc_Type"].ToString();
@@ -600,7 +603,8 @@ namespace MSI.Models
                         cmd.CommandType = CommandType.StoredProcedure;
                         writeErrorMessage(device_name, "Device Name Details");
                         // Add parameters for the stored procedure
-                        string dname= string.IsNullOrEmpty(device_name) ? "10.10.120.234" : device_name;
+                        string deviceName = device_name == "::1" ? "10.10.120.221" : device_name;
+                        string dname= string.IsNullOrEmpty(deviceName) ? "10.10.120.221" : deviceName;
                         cmd.Parameters.AddWithValue("@device_name", dname);
                         cmd.Parameters.AddWithValue("@timedetails", currentTime);
                         cmd.Parameters.AddWithValue("@date", currentDate);
@@ -825,10 +829,12 @@ namespace MSI.Models
                                 {
                                     dataList.Add(new Systemid
                                     {
-                                        Id=Convert.ToString(reader.GetInt32("systemid")),
-                                        SystemId = reader.GetString("systemIP"),
-                                        Usertype = reader.GetString("usertype"),
-                                        StageName = reader.GetString("stagename"),
+                                        Id = reader.IsDBNull(reader.GetOrdinal("systemid")) ? null : Convert.ToString(reader.GetInt32(reader.GetOrdinal("systemid"))),
+                                        SystemId = reader.IsDBNull(reader.GetOrdinal("systemIP")) ? null : reader.GetString(reader.GetOrdinal("systemIP")),
+                                        Usertype = reader.IsDBNull(reader.GetOrdinal("usertype")) ? null : reader.GetString(reader.GetOrdinal("usertype")),
+                                        StageName = reader.IsDBNull(reader.GetOrdinal("stagename")) ? null : reader.GetString(reader.GetOrdinal("stagename")),
+                                        cutomerName = reader.IsDBNull(reader.GetOrdinal("customer_name")) ? null : reader.GetString(reader.GetOrdinal("customer_name")),
+                                        fgNo = reader.IsDBNull(reader.GetOrdinal("fg_name")) ? null : reader.GetString(reader.GetOrdinal("fg_name")),
                                     });
                                 }
                             }
@@ -837,12 +843,13 @@ namespace MSI.Models
                     }
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                writeErrorMessage(ex.Message.ToString(), "GetData");          
+                writeErrorMessage(ex.Message.ToString(), "GetData");
             }
             return dataList;
         }
+
 
         public int deleteSystemid(string deletesystemId)
         {
@@ -891,6 +898,7 @@ namespace MSI.Models
                                 empId = Convert.ToInt32(reader["Emp_id"]),
                                 customer_name = reader["customer_name"].ToString(),
                                 Fg_Name = reader["Fg_name"].ToString(),
+                                fileId = reader["document_id"].ToString(),
                                 docName = reader["Doc_name"].ToString(),
                                 docDateTime = reader["Upload_time"].ToString(),
                                 docType = reader["Doc_Type"].ToString(),
@@ -1123,6 +1131,29 @@ namespace MSI.Models
             }
 
             return filepath;
+        }
+        public int SaveDataToDatabase(string SystemId, string Usertype, string StageName, string Customername, string Fgno)
+        {
+            // var dt = DateTime.Today;
+            var insertlist = 0;
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("pro_Insert_SystemId", connection))
+                {
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@SystemId", SystemId);
+                    cmd.Parameters.AddWithValue("@Usertype", Usertype);
+                    cmd.Parameters.AddWithValue("@StageName", StageName);
+                    cmd.Parameters.AddWithValue("@customername", Customername);
+                    cmd.Parameters.AddWithValue("@fgname", Fgno);
+                    connection.Open();
+                    insertlist = cmd.ExecuteNonQuery();
+                    connection.Close();
+                }
+
+            }
+            return insertlist;
         }
 
     }

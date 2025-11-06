@@ -11,6 +11,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <title>WI Instructions</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+	@* <script src="~/lib/jquery/dist/viewer.js"></script> *@
     <style>
         #videoPlayer {
             display: none;
@@ -73,6 +74,7 @@
         <div class="error-card">
             <p>File not found!</p>
         </div>
+        <div id="pageData" data-message="@ViewBag.FilePath" ></div>
     }
 
     @*    <div id="loading">Loading video...</div>
@@ -87,14 +89,20 @@
     </video>
 
     <div id="htmlContent" style="display:none;"></div>
-
-    <div id="pdfContent" style="display:none; overflow: hidden; height: 800px;margin-left:5%">
-        <canvas id="pdfCanvas"></canvas>
+    <div class="container">
+        <div class="row">
+            <div id="pdfContent" style="display:none; overflow: hidden; height: 800px;">
+                <canvas id="pdfCanvas"></canvas>
+                @* <script src="viewer.js"></script> *@
+            </div>
+        </div>
     </div>
+   
 
 </body>
 </html>
 <script>
+      var pathviwer = '@ViewBag.FilePath'.trim();
     $(document).ready(function () {
         var userT = '@ViewBag.UserType';
         if (userT == 'valid-user') {
@@ -142,47 +150,137 @@
             $("#loading").hide();
 
             // Initialize PDF.js and load the PDF
-            var loadingTask = pdfjsLib.getDocument(pdfSrc);
-            loadingTask.promise.then(function (pdfDoc_) {
-                var pdfDoc = pdfDoc_;
-                var scale = 2; // Scale for better readability
-                var pageNum = 1;
+            // var loadingTask = pdfjsLib.getDocument(pdfSrc);
+            // loadingTask.promise.then(function (pdfDoc_) {
+            //     var pdfDoc = pdfDoc_;
+            //     var scale = 2; // Scale for better readability
+            //     var pageNum = 1;
 
-                // Array to store canvas elements for each page
-                var canvases = [];
+            //     // Array to store canvas elements for each page
+            //     var canvases = [];
 
-                // Function to render each page of the PDF
-                function renderPage(pageNum) {
-                    pdfDoc.getPage(pageNum).then(function (page) {
-                        var canvas = document.createElement('canvas');
-                        canvases.push(canvas); // Store canvas element
-                        var ctx = canvas.getContext('2d');
-                        var viewport = page.getViewport({ scale: scale });
-                        canvas.height = viewport.height;
-                        canvas.width = viewport.width;
+            //     // Function to render each page of the PDF
+            //     function renderPage(pageNum) {
+            //         pdfDoc.getPage(pageNum).then(function (page) {
+            //             var canvas = document.createElement('canvas');
+            //             canvases.push(canvas); // Store canvas element
+            //             var ctx = canvas.getContext('2d');
 
-                        var renderContext = {
-                            canvasContext: ctx,
-                            viewport: viewport
-                        };
-                        page.render(renderContext).promise.then(function () {
-                            // Once rendered, append it to the container
-                            pdfContainer.append(canvas);
-                        });
-                    });
-                }
+                    
+            //             var viewport = page.getViewport({ scale: Scale });
+            //             canvas.height = viewport.height;
+            //             canvas.width = viewport.width;
 
-                // Render all pages of the PDF
-                var totalPages = pdfDoc.numPages;
-                for (let page = 1; page <= totalPages; page++) {
-                    renderPage(page);
-                }
+            //             var renderContext = {
+            //                 canvasContext: ctx,
+            //                 viewport: viewport
+            //             };
+            //             page.render(renderContext).promise.then(function () {
+            //                 // Once rendered, append it to the container
+            //                 pdfContainer.append(canvas);
+            //             });
+            //         });
+            //     }
 
-                // Start auto-scrolling for the PDF pages
-                startAutoScrollForPdf(pdfDoc.numPages);
-            });
+            //     // Render all pages of the PDF
+            //     var totalPages = pdfDoc.numPages;
+            //     for (let page = 1; page <= totalPages; page++) {
+            //         renderPage(page);
+            //     }
 
-            pdfContainer.show();
+            //     // Start auto-scrolling for the PDF pages
+            //     startAutoScrollForPdf(pdfDoc.numPages);
+            // });
+
+            // pdfContainer.show();
+
+                var pdfContainer = document.getElementById("pdfContent");
+
+    var loadingTask = pdfjsLib.getDocument(pdfSrc);
+    loadingTask.promise.then(function (pdfDoc_) {
+        var pdfDoc = pdfDoc_;
+        var canvases = [];
+
+        // function renderPage(pageNum) {
+        //     pdfDoc.getPage(pageNum).then(function (page) {
+        //         var canvas = document.createElement('canvas');
+        //         canvases.push(canvas);
+        //         var ctx = canvas.getContext('2d');
+
+        //         // Get unscaled viewport
+        //         var unscaledViewport = page.getViewport({ scale: 1 });
+
+        //         // Fit to container width
+        //         var containerWidth = pdfContainer.clientWidth;
+        //         var scale = containerWidth / unscaledViewport.width;
+
+        //         // Get scaled viewport
+        //         var viewport = page.getViewport({ scale: scale });
+
+        //         canvas.height = viewport.height;
+        //         canvas.width = viewport.width;
+
+        //         var renderContext = {
+        //             canvasContext: ctx,
+        //             viewport: viewport
+        //         };
+
+        //         page.render(renderContext).promise.then(function () {
+        //             pdfContainer.append(canvas);
+        //         });
+        //     });
+        // }
+
+        // Render all pages
+        // for (let page = 1; page <= pdfDoc.numPages; page++) {
+        //     renderPage(page);
+        // }
+
+        // // Auto scroll if you need
+        // startAutoScrollForPdf(pdfDoc.numPages);
+
+            async function renderAllPages() {
+        for (let page = 1; page <= pdfDoc.numPages; page++) {
+            const p = await pdfDoc.getPage(page);
+
+            var canvas = document.createElement('canvas');
+            canvases.push(canvas);
+            var ctx = canvas.getContext('2d');
+
+            // Get unscaled viewport
+            var unscaledViewport = p.getViewport({ scale: 1 });
+
+            // Fit to container width
+            var containerWidth = pdfContainer.clientWidth;
+            var scale = containerWidth / unscaledViewport.width;
+
+            // Get scaled viewport
+            var viewport = p.getViewport({ scale: scale });
+
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+
+            var renderContext = {
+                canvasContext: ctx,
+                viewport: viewport
+            };
+
+            await p.render(renderContext).promise;
+
+            pdfContainer.append(canvas);
+        }
+
+        // Auto scroll if you need
+        startAutoScrollForPdf(pdfDoc.numPages);
+    }
+
+    renderAllPages();
+   });
+
+    pdfContainer.style.display = "block";
+
+
+
         } else {
             $("#loading").text("Invalid file type.");
         }
@@ -191,7 +289,7 @@
         var scrollTimer;
         var scrollDistance = 0;
         var scrollStep = 5;
-        var scrollInterval = 100;
+        var scrollInterval = 300;
 
         function scrollContent() {
             var contentFile = $('#htmlContent');

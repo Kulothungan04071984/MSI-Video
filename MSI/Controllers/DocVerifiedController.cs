@@ -38,5 +38,43 @@ namespace MSI.Controllers
             }
             return Json(resultfilename);
         }
+
+        public ActionResult Download(string fileName)
+        {
+
+            string decodedFileName = Uri.UnescapeDataString(fileName);
+            // Assuming the files are stored in a folder on the server
+            //string fileDirectory = @"\\192.168.1.121\MSI_Applications\uploads"; // Change this to the actual folder where your files are stored
+            string filePath = decodedFileName;
+            if (!System.IO.File.Exists(filePath))
+            {
+                return NotFound("File not found.");
+            }
+
+            // Get the file data
+            byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
+            string fileExtension = Path.GetExtension(filePath);
+
+            // Return the file as a download
+            return File(fileBytes, "application/octet-stream", decodedFileName);
+        }
+
+        [HttpPost]
+        public JsonResult deleteFileMapping(int documentId)
+        {
+            int resultdel = 0;
+            try
+            {
+                resultdel = _dataManagementcs.deleteFileMapping1(documentId);
+            }
+
+            catch (Exception ex)
+            {
+                resultdel = 0;
+            }
+            return Json(resultdel);
+        }
+
+
     }
 }

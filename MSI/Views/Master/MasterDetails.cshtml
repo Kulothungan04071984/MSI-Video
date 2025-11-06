@@ -138,7 +138,7 @@
                                         <td>@item.fromtime</td>
                                         <td>@item.totime</td>
                                         <td>
-                                            <button class="btn btn-outline-secondary" onclick="updateValue(@item.systemid)">Edit</button>
+                                            <input type="button" class="btn btn-outline-secondary" onclick="updateValue(@item.systemid)" name="Edit" value="Edit"/>
                                             <button class="btn btn-danger" onclick="deleteValue(@item.systemid, '@item.videoDate', '@item.fromtime', '@item.totime')">Delete</button>
                                         </td>
                                     </tr>
@@ -260,6 +260,7 @@
     });
 
     function updateValue(sysid) {
+        debugger;
         $('#ddlsystem').val(sysid);
     }
 
