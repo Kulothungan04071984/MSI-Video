@@ -5,9 +5,9 @@
 }
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
-
+<link href="~/css/site.css" rel="stylesheet" />
 <form asp-action="MasterDetails" method="post" enctype="multipart/form-data">
-    <div class="container">
+    <div class="">
         <section>
             <!-- Card Start -->
             <div class="card">
@@ -21,30 +21,34 @@
 
                  <!-- Row 1: Customer + FG -->
                   <div class="row mb-3">
-                    <div class="col-md-6">
+                    <div class="col-lg-3">
                         <label class="form-label fw-bold">Customer Name:</label>
-                        @Html.DropDownListFor(model => model.approvecustomid, Model.lstapprovecustomers, "Select a Customer", new { @id = "ddlapovcustomer", @class = "form-control" })
+                        @Html.DropDownListFor(model => model.approvecustomid, Model.lstapprovecustomers, "Select a Customer", new { @id = "ddlapovcustomer", @class = "form-control " })
                         @Html.HiddenFor(model => model.approvedcustname, new { id = "custname" })
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-lg-3">
                         <label class="form-label fw-bold">FG No:</label>
-                        @Html.DropDownListFor(model => model.approvefgid, Model.lstapprovefgnames, "Select an FG Name", new { @id = "ddlapovfg", @class = "form-control" })
+                        @Html.DropDownListFor(model => model.approvefgid, Model.lstapprovefgnames, "Select an FG Name", new { @id = "ddlapovfg", @class = "form-control " })
                         @Html.HiddenFor(model => model.approvedfgname, new { id = "Fgname" })
                     </div>
+                        <div class="col-lg-3">
+                            <label class="form-label fw-bold">Filename:</label>
+                            @Html.DropDownListFor(model => model.approvefileid, Model.lstFile, "Select File", new { @id = "ddlfile", @class = "form-control " })
+                            @Html.HiddenFor(model => model.approvefileid, new { id = "Filename" })
+                        </div>
+                        <div class="col-lg-3 d-flex align-items-end">
+                            <button id="btnview" class="btn btn-primary ViewDocument" style="height:auto;width: 75px;">View</button>
+                        </div>
                 </div>
 
                 <!-- Row 2: File + View -->
-            <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label fw-bold">Filename:</label>
-                        @Html.DropDownListFor(model => model.approvefileid, Model.lstFile, "Select File", new { @id = "ddlfile", @class = "form-control" })
-                        @Html.HiddenFor(model => model.approvefileid, new { id = "Filename" })
-                    </div>
+          @*   <div class="row mb-3">
+                   
                     <div class="col-md-6 d-flex align-items-end">
                             <button id="btnview" class="btn btn-primary ViewDocument" style="height:auto;width: 75px;">View</button>
                     </div>
                 </div>
-
+ *@
                     <!-- Stage -->
                     <div class="row">
                         <div class="col-lg-6 mb-3">
@@ -118,15 +122,21 @@
                 </div>
             </div>
             <!-- Card End -->
-
+            <div class="pt-3">
+             
+                <input type="text" id="searchInput" class="form-control" placeholder="Type to filter rows...">
+            </div>
             <!-- File Mapping Table -->
             <div class="card mt-3" style="height:350px;">
-                <div class="tab-content" style="height:320px;overflow:auto;">
-                    <table class="table table-bordered table-responsive">
-                        <thead class="text-center">
+               
+                <div class="card-body">
+                 
+                    <div class="table-responsive table-container border rounded shadow" style="max-height:523px !important">
+                        <table class="table table-striped table-bordered" id="tblMaster">
+                        <thead class="table-primary">
                             <tr>
-                                <th class="hidden"></th>
-                                <th>System ID</th>
+                                <th style="display:none;"></th>
+                                <th style="display:none;">System ID</th>
                                 <th>System Name</th>
                                 <th>File Path</th>
                                 <th>All Time</th>
@@ -142,8 +152,8 @@
                                 foreach (var item in Model.lstFileMappings)
                                 {
                                     <tr>
-                                        <td class="hidden">@item.uploadid</td>
-                                        <td>@item.systemid</td>
+                                        <td style="display:none;">@item.uploadid</td>
+                                        <td style="display:none;">@item.systemid</td>
                                         <td>@item.systemname</td>
                                         <td>@item.filepath</td>
                                         <td>@item.alltime</td>
@@ -168,6 +178,7 @@
                             }
                         </tbody>
                     </table>
+                    </div>
                 </div>
             </div>
         </section>
@@ -190,9 +201,96 @@
 
 </form>
 
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+    }
+ 
+    input#searchInput {
+        padding:0.5%;
+        width: 25%;
+        font-size: 85%;
+    }
+
+    .table-container {
+        max-height: 424px; /* Adjust height as needed */
+        overflow-y: auto;
+        width: 100%;
+    }
+
+    thead th {
+        position: sticky;
+        top: 0;
+        background: #f8f9fa;
+        z-index: 2;
+    }
+
+    .modal-dialog {
+        margin: auto;
+    }
+
+    .btn {
+        height: 2em;
+        font-family: serif;
+    }
+/*     table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f9f9f9;
+    } */
+</style>
+
 <!-- JS Section -->
 @section Scripts {
 <script>
+
+        $(document).ready(function() {
+                // $("#searchInput").on("keyup", function() {
+                //     var value = $(this).val().toLowerCase().trim();
+
+                //         $("#tblMaster tbody tr").filter(function() {
+                //         $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                //     });
+                // });
+
+                   $('#searchInput').on('keyup', function () {
+                var searchQuery = $(this).val().toLowerCase().trim();
+
+                // Hide all rows initially
+                    $('#tblMaster tbody tr').hide();
+
+                // Show rows that match the search query
+                    $('#tblMaster tbody tr').each(function () {
+                    var rowText = $(this).text().toLowerCase();
+                    if (rowText.includes(searchQuery)) {
+                        $(this).show();
+                    }
+                });
+
+                // Display "No matching data" message
+                    if ($('#tblMaster tbody tr:visible').length === 0) {
+                        $('#tblMaster tbody').append('<tr><td colspan="10" class="text-center" id="noMatchMsg">No matching data found.</td></tr>');
+                } else {
+                    $('#noMatchMsg').remove();
+                }
+            });
+
+            });
     $(function () {
         // Set default video date to today
         const today = new Date().toISOString().split("T")[0];
@@ -343,9 +441,4 @@
 </script>
 }
 
-<style>
-    .btn {
-        height: 2em;
-        font-family: serif;
-    }
-</style>
+

@@ -17,119 +17,205 @@ namespace MSI.Controllers
         //private readonly IHttpClientFactory _httpClientFactory;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly ILogger<PlayVideoController> _logger;
-
-        public PlayVideoController(DataManagementcs domainServices, ILogger<PlayVideoController> logger,IWebHostEnvironment webHostEnvironment)
+                public PlayVideoController(DataManagementcs domainServices, ILogger<PlayVideoController> logger,IWebHostEnvironment webHostEnvironment)
         {
             _domainServices = domainServices;
             _logger = logger;
             _webHostEnvironment = webHostEnvironment;
         }
 
+        //public async Task<IActionResult> VideoPlaying(string userType)
+        //{
+        //    writeErrorMessage("PlayVideoController", "VideoPlaying Enter");
+        //    // Get the device name (machine name)
+
+        //   // string deviceName =await Process_systemname();
+        //    //  string deviceName = "10.10.120.218"; // Testing
+
+
+        //   // string deviceName =await Process_systemname();
+        //       string deviceName = "10.10.120.83"; // Testing
+
+        //    // string deviceName =await Process_systemname();
+        //    // string deviceName = "10.10.120.252"; // Testing
+
+
+        //    DateOnly currentDate1 = DateOnly.FromDateTime(DateTime.Now);
+        //    string currentDate2 = currentDate1.ToString("yyyy-MM-dd");
+        //    String currentDate = currentDate2.Replace('/', '-');
+        //    DateTime currentDateTime = DateTime.Now;
+        //    string currentTime = currentDateTime.ToString("HH:mm:ss");
+
+        //    // Fetch file path using DataAccess
+        //     string filePath1 = string.Empty;    
+        //     filePath1 = _domainServices.getfilepath(deviceName, currentTime, currentDate);
+        //    // string filePath = $@"{filePath1}";
+
+        //    string networkPath = $@"{filePath1}";
+
+        //    string wwwrootPath = _webHostEnvironment.WebRootPath;
+        //    writeErrorMessage(wwwrootPath, "WWW root path Enter");
+        //    string videoFolderPath = Path.Combine(wwwrootPath, "videos");
+        //    string dname = deviceName.Replace(".", "");
+        //    writeErrorMessage(dname, "DeviceName");
+        //    string fileExtension = Path.GetExtension(networkPath).ToLower();
+        //    string videoFilePath= string.Empty;
+        //    //  string videoFilePath = Path.Combine(videoFolderPath, dname + ".mp4");
+        //    // string fileName = dname + Path.GetExtension(networkPath);
+        //    // string localFilePath = Path.Combine(videoFilePath, fileName);   
+        //      writeErrorMessage(videoFolderPath, "VideoFilePath Enter");
+        //    if (string.IsNullOrEmpty(fileExtension))
+        //    {
+        //        fileExtension = ".mp4";
+        //    }
+
+        //    if (fileExtension == ".mp4")
+        //    {
+        //        videoFilePath = Path.Combine(videoFolderPath, dname + ".mp4");
+
+        //    }
+        //    else if (fileExtension == ".html")
+        //    {
+        //        videoFilePath = Path.Combine(videoFolderPath, dname + ".html");
+
+        //    }
+        //    else if (fileExtension == ".pdf")
+        //    {
+        //        videoFilePath = Path.Combine(videoFolderPath, dname + ".pdf");
+
+        //    }
+        //    else
+        //    {
+        //        videoFilePath = Path.Combine(videoFolderPath, "FileNotFound.mp4");
+        //    }
+        //    try
+        //    {
+        //        if (!Directory.Exists(videoFolderPath))
+        //        {
+        //            Directory.CreateDirectory(videoFolderPath);
+        //        }
+
+        //        // Log the attempt to copy the file
+        //        //  _logger.LogInformation($"Attempting to copy video from {networkPath} to {videoFilePath}");
+
+        //        // Use file I/O to copy the file
+        //        //if (Directory.Exists(videoFilePath))
+        //        //{
+        //        string npath = string.IsNullOrEmpty(networkPath) ? "\\\\192.168.1.121\\MSI_Applications\\upload\\FileNotFound.mp4" : networkPath;
+        //        writeErrorMessage(networkPath, "Strat Copy the video File");
+        //        await Task.Run(() => System.IO.File.Copy(npath, videoFilePath, true));
+        //        //}
+
+        //        writeErrorMessage(videoFilePath + '-' + dname, "End Copy the video File");
+
+        //        string fname = Path.GetFileNameWithoutExtension(npath);
+        //        if(fname == "FileNotFound")
+        //        {
+        //            _notfount++;
+        //            if(_notfount < 5)
+        //            return RedirectToAction("VideoPlaying");
+        //        }
+
+        //        ViewBag.FilePath = dname + fileExtension;
+        //        ViewBag.UserType = userType;
+        //        return View();
+
+        //        //(h  // _logger.LogInformation($"Video copied successfully to {videoFilePath}");
+        //        //  ViewBag.VideoFolderPath = dname + ".MP4";
+        //        //  // ViewBag.UserType = Request.Query[userType].ToString();
+        //        //  ViewBag.UserType = userType;
+        //        //  return View();h)
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        string errorMessage = $"An error occurred while copying the video: {ex.Message}";
+        //        writeErrorMessage(ex.Message.ToString(), "End Copy the video File");
+        //        _logger.LogError(ex, errorMessage);
+        //        return StatusCode(500, errorMessage);
+        //    }
+        //}
+
         public async Task<IActionResult> VideoPlaying(string userType)
         {
             writeErrorMessage("PlayVideoController", "VideoPlaying Enter");
-            // Get the device name (machine name)
 
-           // string deviceName =await Process_systemname();
-            //  string deviceName = "10.10.120.218"; // Testing
-
-
-           // string deviceName =await Process_systemname();
-               string deviceName = "10.10.120.83"; // Testing
-
-            // string deviceName =await Process_systemname();
-            // string deviceName = "10.10.120.252"; // Testing
-
-
+            //string deviceName =await Process_systemname();
+            string deviceName = "10.10.120.83"; // Testing
             DateOnly currentDate1 = DateOnly.FromDateTime(DateTime.Now);
-            string currentDate2 = currentDate1.ToString("yyyy-MM-dd");
-            String currentDate = currentDate2.Replace('/', '-');
+            string currentDate = currentDate1.ToString("yyyy-MM-dd");
             DateTime currentDateTime = DateTime.Now;
             string currentTime = currentDateTime.ToString("HH:mm:ss");
 
-            // Fetch file path using DataAccess
-             string filePath1 = string.Empty;    
-             filePath1 = _domainServices.getfilepath(deviceName, currentTime, currentDate);
-            // string filePath = $@"{filePath1}";
-
-            string networkPath = $@"{filePath1}";
+            string filePath1 = _domainServices.getfilepath(deviceName, currentTime, currentDate);
+            string networkPath = filePath1 ?? string.Empty;
 
             string wwwrootPath = _webHostEnvironment.WebRootPath;
-            writeErrorMessage(wwwrootPath, "WWW root path Enter");
             string videoFolderPath = Path.Combine(wwwrootPath, "videos");
             string dname = deviceName.Replace(".", "");
-            writeErrorMessage(dname, "DeviceName");
-            string fileExtension = Path.GetExtension(networkPath).ToLower();
-            string videoFilePath;
-            //  string videoFilePath = Path.Combine(videoFolderPath, dname + ".mp4");
-            // string fileName = dname + Path.GetExtension(networkPath);
-            // string localFilePath = Path.Combine(videoFilePath, fileName);   
-              writeErrorMessage(videoFolderPath, "VideoFilePath Enter");
-            if (string.IsNullOrEmpty(fileExtension))
-            {
-                fileExtension = ".mp4";
-            }
+            string fileExtension = Path.GetExtension(networkPath).ToLowerInvariant();
 
-            if (fileExtension == ".mp4")
+            if (string.IsNullOrEmpty(fileExtension))
+                fileExtension = ".mp4";
+
+            string videoFilePath = fileExtension switch
             {
-                videoFilePath = Path.Combine(videoFolderPath, dname + ".mp4");
-               
-            }
-            else if (fileExtension == ".html")
-            {
-                videoFilePath = Path.Combine(videoFolderPath, dname + ".html");
-               
-            }
-            else if (fileExtension == ".pdf")
-            {
-                videoFilePath = Path.Combine(videoFolderPath, dname + ".pdf");
-               
-            }
-            else
-            {
-                videoFilePath = Path.Combine(videoFolderPath, "FileNotFound.mp4");
-            }
+                ".mp4" => Path.Combine(videoFolderPath, dname + ".mp4"),
+                ".html" => Path.Combine(videoFolderPath, dname + ".html"),
+                ".pdf" => Path.Combine(videoFolderPath, dname + ".pdf"),
+                _ => Path.Combine(videoFolderPath, "FileNotFound.mp4")
+            };
+
             try
             {
                 if (!Directory.Exists(videoFolderPath))
-                {
                     Directory.CreateDirectory(videoFolderPath);
-                }
 
-                // Log the attempt to copy the file
-                //  _logger.LogInformation($"Attempting to copy video from {networkPath} to {videoFilePath}");
+                string sourcePath = string.IsNullOrEmpty(networkPath)
+                    ? @"\\192.168.1.121\MSI_Applications\upload\FileNotFound.mp4"
+                    : networkPath;
 
-                // Use file I/O to copy the file
-                //if (Directory.Exists(videoFilePath))
+                await Task.Run(() => System.IO.File.Copy(sourcePath, videoFilePath, true));
+
+                string fname = Path.GetFileNameWithoutExtension(sourcePath);
+                ViewBag.filename=fname;
+                //if (fname == "FileNotFound")
                 //{
-                string npath = string.IsNullOrEmpty(networkPath) ? "\\\\192.168.1.121\\MSI_Applications\\upload\\FileNotFound.mp4" : networkPath;
-                writeErrorMessage(networkPath, "Strat Copy the video File");
-                await Task.Run(() => System.IO.File.Copy(npath, videoFilePath, true));
+                //    // Retrieve current count from TempData
+                //    int notFoundCount = TempData["NotFoundCount"] != null ? (int)TempData["NotFoundCount"] : 0;
+                //    notFoundCount++;
+
+                //    // Save back to TempData (important: mark as "keep" if you want it beyond next request)
+                //    TempData["NotFoundCount"] = notFoundCount;
+
+                //    if (notFoundCount < 5)
+                //    {
+                //        // Keep the value for the next redirect
+                //        TempData.Keep("NotFoundCount");
+                //        Thread.Sleep(1000);
+                //        return RedirectToAction("VideoPlaying", new { userType });
+                //    }
+                //    else
+                //    {
+                //        // Optional: reset or handle max attempts reached
+                //        TempData.Remove("NotFoundCount");
+                //    }
                 //}
-
-                writeErrorMessage(videoFilePath + '-' + dname, "End Copy the video File");
-
 
                 ViewBag.FilePath = dname + fileExtension;
                 ViewBag.UserType = userType;
-                return View();
 
-                //(h  // _logger.LogInformation($"Video copied successfully to {videoFilePath}");
-                //  ViewBag.VideoFolderPath = dname + ".MP4";
-                //  // ViewBag.UserType = Request.Query[userType].ToString();
-                //  ViewBag.UserType = userType;
-                //  return View();h)
+                // Reset counter on successful video load (optional)
+                TempData.Remove("NotFoundCount");
+
+                return View();
             }
             catch (Exception ex)
             {
-                string errorMessage = $"An error occurred while copying the video: {ex.Message}";
-                writeErrorMessage(ex.Message.ToString(), "End Copy the video File");
-                _logger.LogError(ex, errorMessage);
-                return StatusCode(500, errorMessage);
+                writeErrorMessage(ex.Message, "Error copying video");
+                _logger.LogError(ex, "Video copy failed");
+                return StatusCode(500, "Error processing video");
             }
         }
-
-
 
         // Error handling for the app
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

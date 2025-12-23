@@ -81,15 +81,18 @@
         </div>
     </div>
     <div>
-        <div class="row justify-content-center mt-4">
+        <div class="search-container" style="margin-bottom: 10px;margin-left:17%; padding-top:3%;">
+            <input type="text" id="searchBarids" placeholder="Search" class="form-control" style="width: 300px; display: inline-block;">
+        </div>
+        <div class="row justify-content-center">
             <div class="col-md-8">
-                <div class="card" style="margin-top:2%">
+                <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title text-center">System IDs List</h4>
-                        <div class="tab-content" style="height:300px;overflow-y: auto">
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-striped" style="overflow:scroll">
-                                    <thead>
+                        <h4 class="card-header ">System IDs List</h4>
+                        <div class="table-responsive table-container border rounded shadow" style="max-height:523px !important">
+                            <div>
+                                <table class="table table-bordered table-striped" id="tblids">
+                                    <thead class="table-primary">
                                         <tr>
                                             <th class="text-center">System ID</th>
                                             <th class="text-center">Customer Name</th>
@@ -125,7 +128,47 @@
 
     </div>
 </form>
+<style>
+    .table-container {
+        max-height: 424px; /* Adjust height as needed */
+        overflow-y: auto;
+        width: 100%;
+    }
+
+    thead th {
+        position: sticky;
+        top: 0;
+        background: #f8f9fa;
+        z-index: 2;
+    }
+
+    .modal-dialog {
+        margin: auto;
+    }
+</style>
 <script>
+
+     $('#searchBarids').on('keyup', function () {
+            var searchQuery = $(this).val().toLowerCase().trim();
+
+            // Hide all rows initially
+            $('#tblids tbody tr').hide();
+
+            // Show rows that match the search query
+            $('#tblids tbody tr').each(function () {
+                var rowText = $(this).text().toLowerCase();
+                if (rowText.includes(searchQuery)) {
+                    $(this).show();
+                }
+            });
+
+            // Display "No matching data" message
+            if ($('#tblids tbody tr:visible').length === 0) {
+                $('#tblids tbody').append('<tr><td colspan="10" class="text-center" id="noMatchMsg">No matching data found.</td></tr>');
+            } else {
+                $('#noMatchMsg').remove();
+            }
+        });
     function deletesystemvalue(sysid) {
 
         $.ajax({

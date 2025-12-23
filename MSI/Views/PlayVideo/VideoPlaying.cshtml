@@ -127,13 +127,24 @@
 
         requestAnimationFrame(scrollStep);
     }
-
+   
     $(document).ready(function () {
+        var ofilename='@ViewBag.filename';
+     
+        if(ofilename=='FileNotFound')
+        {
+                setInterval(function () { location.reload(); }, 100000);
+        }
+        else if(ofilename!='FileNotFound')
+        {
+            clearInterval();
+        }
+
         var path = '@ViewBag.FilePath'.trim();
-        console.log(path);
+        //console.log(path);
         var fileType = path.split('.').pop().toLowerCase();
         var videoElement = $("#videoPlayer");
-
+     
         if (fileType === 'mp4') {
             var videoSrc = "/videos/" + path;
             videoElement.attr("src", videoSrc);
