@@ -36,9 +36,10 @@
                             @Html.DropDownListFor(model => model.approvefileid, Model.lstFile, "Select File", new { @id = "ddlfile", @class = "form-control " })
                             @Html.HiddenFor(model => model.approvefileid, new { id = "Filename" })
                         </div>
-                        <div class="col-lg-3 d-flex align-items-end">
+                        <div class="col-lg-1 d-flex align-items-end">
                             <button id="btnview" class="btn btn-primary ViewDocument" style="height:auto;width: 75px;">View</button>
                         </div>
+                       
                 </div>
 
                 <!-- Row 2: File + View -->
@@ -50,10 +51,14 @@
                 </div>
  *@
                     <!-- Stage -->
-                    <div class="row">
-                        <div class="col-lg-6 mb-3">
+                    <div class="row mb-3" >
+                        <div class="col-lg-6">
                             <label class="form-label fw-bold">Stage Name</label>
                             @Html.DropDownListFor(model => model.systemid, Model.lstSystem, "Select Stage", new { @id = "ddlsystem", @class = "form-control" })
+                        </div>
+                        <div class="form-check form-switch col-lg-6" style="padding-left:5%;padding-top:2%;">
+                            <input class="form-check-input" type="checkbox" id="rbtnAll" asp-for="alltime">
+                            <label class="form-check-label">All Time</label>
                         </div>
                     </div>
 
@@ -74,11 +79,24 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row m-2">
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="rbtnAll" asp-for="alltime">
-                            <label class="form-check-label" >All Time</label>
+                    <div class="row">
+                     
+                        <div class="col-lg-3">
+                            <label>Video Date</label>
+                            <input type="date" id="dtVideoDate" asp-for="VideoDate" class="form-control" />
                         </div>
+                        <div class="col-lg-3">
+                            <label>From Time</label>
+                            <input type="time" id="dtFromTime" asp-for="VideoFromTime" class="form-control" />
+                        </div>
+                        <div class="col-lg-3">
+                            <label>To Time</label>
+                            <input type="time" id="dtToTime" asp-for="VideoToTime" class="form-control" />
+                        </div>
+                        <div class="col-lg-3 d-flex align-items-end justify-content-start">
+                            <button id="btnUpload" class="btn btn-primary" style="width: 75px; height: 38px;">Upload</button>
+                        </div>
+                    
                     </div>
 
                     <!-- Upload Section -->
@@ -91,25 +109,12 @@
 
                         <div class="col-lg-6">
                             <div class="row g-2">
-                                <div class="col-md-4">
-                                    <label>Video Date</label>
-                                    <input type="date" id="dtVideoDate" asp-for="VideoDate" class="form-control" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label>From Time</label>
-                                    <input type="time" id="dtFromTime" asp-for="VideoFromTime" class="form-control" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label>To Time</label>
-                                    <input type="time" id="dtToTime" asp-for="VideoToTime" class="form-control" />
-                                </div>
+                               
                             </div>
                         </div>
 
                        
-                        <div class="col-lg-6 d-flex align-items-end justify-content-start">
-                            <button id="btnUpload" class="btn btn-primary" style="width: 75px; height: 38px;">Upload</button>
-                        </div>
+                      
                     </div>
 
 
@@ -131,7 +136,7 @@
                
                 <div class="card-body">
                  
-                    <div class="table-responsive table-container border rounded shadow" style="max-height:523px !important">
+                    <div class="table-responsive table-container border rounded shadow" >
                         <table class="table table-striped table-bordered" id="tblMaster">
                         <thead class="table-primary">
                             <tr>
