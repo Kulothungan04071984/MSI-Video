@@ -52,7 +52,7 @@
 </head>
 <body>
 
-    <div class="">
+    <div  style="font-size:medium;font-family:'Cambria Math'" >
         <nav class="navbar navbar-expand-lg navbar-dark">
             <div class="container" style="max-width:1900px;">
                 <a class="navbar-brand" style="white-space:nowrap" href="#">SOP Digitalization</a>
@@ -74,6 +74,9 @@
 
                         @if (Context.Session.GetString("UserType") == "3")
                         {
+                            <li class="nav-item">
+                                <a class="nav-link" style="white-space:nowrap" asp-area="" asp-controller="System" id="dvNewSystem" asp-action="Index">Add New System</a>
+                            </li>
 
                             <li class="nav-item">
                                 <a class="nav-link" style="white-space:nowrap" asp-area="" asp-controller="Approved" id="dvApproved" asp-action="ApprovedDetails">Approved</a>
@@ -125,7 +128,7 @@
         </nav>
     </div>
 
-    <div class="" style="padding-top:1%;">
+    <div class="" style="padding-top:1%;font-size:medium;font-family:'Cambria Math'">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>

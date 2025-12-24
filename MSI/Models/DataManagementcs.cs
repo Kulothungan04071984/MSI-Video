@@ -169,7 +169,7 @@ namespace MSI.Models
 
             try
             {
-                using (SqlConnection connection = new SqlConnection(ConnectionString1))
+                using (SqlConnection connection = new SqlConnection(ConnectionString))
                 {
                     using (SqlCommand cmd = new SqlCommand("pro_GetApprovedDetails", connection))
                     {

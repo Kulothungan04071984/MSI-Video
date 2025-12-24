@@ -4,19 +4,22 @@
 @{
 }
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 @model MSI.Models.FileApprovedData
 
-
+@{
+    ViewData["Title"] = "Approve Details";
+}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <form asp-action="Approved" method="post">
     <div class="container mt-5">
         <div class="row justify-content-center">
-            <div class="col-md-6">
+            <div class="col-md-0">
                 <div class="card shadow-lg">
                     <div class="card-body">
                         <h3 class="card-title text-center">Customer Details</h3>
                         <div class="row align-items-center mb-3">
-                            <div class="col-md-6 text-center">
+                            <div class="col-md-6" style="text-align:end;">
                                 <label for="lblcustomerid" class="form-label fw-bold" style="font-size:120%;">Customer Name :</label>
                             </div>
                             <div class="col-md-6">
@@ -25,7 +28,7 @@
                             @Html.HiddenFor(model => model.approvedcustname, new { id = "custname" })
                         </div>
                         <div class="row align-items-center mb-3">
-                            <div class="col-md-6 text-center">
+                            <div class="col-md-6" style="text-align:end;">
                                 <label for="lblfgid" class="form-label fw-bold" style="font-size:120%;">FG.No:</label>
                             </div>
                             <div class="col-md-6">
@@ -40,14 +43,14 @@
     </div>
 
     <div class="row justify-content-center mt-4">
-        <div class="col-md-8">
+        <div class="col-md-11">
             <div class="card" style="margin-top:2%">
                 <div class="card-body">
                     <h3 class="card-title text-center">Approved List</h3>
-                    <div class="tab-content" style="height:300px;overflow-y: auto">
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-striped" style="overflow:scroll" id="tblApprovedlist">
-                                <thead>
+                    <div class="tab-content">
+                        <div class="table-responsive table-container border rounded shadow">
+                            <table class="table table-striped table-bordered" id="tblApprovedlist">
+                                <thead class="table-primary">
                                     <tr>
                                         <th class="text-center">Customer Name</th>
                                         <th class="text-center">FG.No</th>
@@ -183,4 +186,21 @@
     });
 
 </script>
+<style>
+    .table-container {
+        max-height: 424px; /* Adjust height as needed */
+        overflow-y: auto;
+        width: 100%;
+    }
 
+    thead th {
+        position: sticky;
+        top: 0;
+        background: #f8f9fa;
+        z-index: 2;
+    }
+
+    .modal-dialog {
+        margin: auto;
+    }
+</style>

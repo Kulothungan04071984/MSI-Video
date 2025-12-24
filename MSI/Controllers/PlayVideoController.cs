@@ -136,11 +136,12 @@ namespace MSI.Controllers
         //}
 
         public async Task<IActionResult> VideoPlaying(string userType)
+        
         {
             writeErrorMessage("PlayVideoController", "VideoPlaying Enter");
 
-            //string deviceName =await Process_systemname();
-            string deviceName = "10.10.120.83"; // Testing
+            string deviceName =await Process_systemname();
+           // string deviceName = "10.10.120.83"; // Testing
             DateOnly currentDate1 = DateOnly.FromDateTime(DateTime.Now);
             string currentDate = currentDate1.ToString("yyyy-MM-dd");
             DateTime currentDateTime = DateTime.Now;
