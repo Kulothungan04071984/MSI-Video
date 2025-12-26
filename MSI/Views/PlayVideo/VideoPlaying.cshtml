@@ -146,7 +146,7 @@
         var videoElement = $("#videoPlayer");
      
         if (fileType === 'mp4') {
-            var videoSrc = "/videos/" + path;
+            var videoSrc = "/videos/" + path + "?t=" + new Date().getTime();
             videoElement.attr("src", videoSrc);
             videoElement.on("canplay", function () {
                 $("#loading").hide();
@@ -182,7 +182,7 @@
            // var pdfSrc = "/videos/" + path;
             var pdfSrc = "/videos/" + path + "?t=" + new Date().getTime();
 
-            console.log(pdfSrc);
+            //console.log(pdfSrc);
             $("#loading").hide();
 
             var loadingTask = pdfjsLib.getDocument(pdfSrc);
