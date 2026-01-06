@@ -141,7 +141,7 @@ namespace MSI.Controllers
             writeErrorMessage("PlayVideoController", "VideoPlaying Enter");
 
             string deviceName =await Process_systemname();
-           // string deviceName = "10.10.120.83"; // Testing
+            //string deviceName = "10.10.120.221"; // Testing
             DateOnly currentDate1 = DateOnly.FromDateTime(DateTime.Now);
             string currentDate = currentDate1.ToString("yyyy-MM-dd");
             DateTime currentDateTime = DateTime.Now;

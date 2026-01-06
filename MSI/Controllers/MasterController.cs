@@ -247,14 +247,17 @@ namespace MSI.Controllers
 
         public void writeErrorMessage(string errorMessage, string functionName)
         {
-            var systemPath = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Syrma_Training_Errors" + "\\" + DateTime.Now.ToString("dd-MM-yyyy");
+             var systemPath = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Syrma_Training_Errors" + "\\" + DateTime.Now.ToString("dd-MM-yyyy");
+            //string basePath = @"E:\SOPDigitalizaton_log";
+            //string dateFolder = DateTime.Now.ToString("dd-MM-yyyy"); // or DateTime.Today for consistency
+            //string systemPath = Path.Combine(basePath, dateFolder);
 
             if (!Directory.Exists(systemPath))
             {
                 Directory.CreateDirectory(systemPath);
             }
 
-            string WrErrorLog = String.Format(@"{0}\{1}.txt", systemPath, "ErrorLogInRFIDTag");
+            string WrErrorLog = String.Format(@"{0}\{1}.txt", systemPath, "Digitalization_log");
             using (StreamWriter errLogs = new StreamWriter(WrErrorLog, true))
             {
                 errLogs.WriteLine("--------------------------------------------------------------------------------------------------------------------" + Environment.NewLine);
